@@ -2,6 +2,7 @@ WindowManager:
     MainWindow:
     NewRoutineWindow:
     NewTaskWindow:
+    FileChooserWindow:
         
 <MainWindow>:
     name: "Welcome"
@@ -18,10 +19,9 @@ WindowManager:
             on_release: app.root.current = "New Routine"
         Button:
             text: "Load Previous File"
-            on_release: app.root.current = "FileChooserWindow"
-            
+            on_release: app.root.current = "File Chooser Window"
 <FileChooserWindow>:
-    name: "FileChooserWindow"
+    name: "File Chooser Window"
     BoxLayout:
         orientation: 'vertical'
 
