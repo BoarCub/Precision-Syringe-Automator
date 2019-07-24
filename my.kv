@@ -5,24 +5,62 @@ WindowManager:
         
 <MainWindow>:
     name: "Welcome"
-    Button:
-        text: "Create New Routine"
-        on_release: app.root.current = "New Routine"
-    
+    BoxLayout:
+        size_hint: .5, None
+        height: 250
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button:
+            text: "Create New Routine"
+            on_release: app.root.current = "New Routine"
+        Button:
+            text: "Line-by-Line"
+            on_release: app.root.current = "New Routine"
+        Button:
+            text: "Load Previous File"
+            on_release: app.root.current = "FileChooserWindow"
+            
+<FileChooserWindow>:
+    name: "FileChooserWindow"
+    BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+            size_hint_y: None
+            height: sp(52)
+
+            Button:
+                text: 'Icon View'
+                on_press: fc.view_mode = 'icon'
+            Button:
+                text: 'List View'
+                on_press: fc.view_mode = 'list'
+
+        FileChooser:
+            id: fc
+            FileChooserIconLayout
+            FileChooserListLayout
 <NewRoutineWindow>:
     name: "New Routine"
-    GridLayout:
-        cols: 1
-        GridLayout:
-            cols: 2
-            Button:
-                text: "Assign Tasks"
-                on_release: app.root.current = "New Task"
-            Button:
-                text: "Go Back!"
-                on_release: app.root.current = "Welcome"
+    BoxLayout:
+        size_hint: .5, None
+        height: 250
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button:
+            text: "Assign Tasks"
+            on_release: app.root.current = "New Task"
+        Button:
+            text: "Go Back"
+            on_release: app.root.current = "Welcome"
 <NewTaskWindow>:
     name: "New Task"
-    Button:
-        text: "Go Back"
-        on_release: app.root.current = "New Routine"
+    BoxLayout:
+        size_hint: .5, None
+        height: 250
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button:
+            text: "Go Back"
+            on_release: app.root.current = "New Routine"
+
