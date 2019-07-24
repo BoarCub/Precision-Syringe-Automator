@@ -1,0 +1,28 @@
+WindowManager:
+    MainWindow:
+    NewRoutineWindow:
+    NewTaskWindow:
+        
+<MainWindow>:
+    name: "Welcome"
+    Button:
+        text: "Create New Routine"
+        on_release: app.root.current = "New Routine"
+    
+<NewRoutineWindow>:
+    name: "New Routine"
+    GridLayout:
+        cols: 1
+        GridLayout:
+            cols: 2
+            Button:
+                text: "Assign Tasks"
+                on_release: app.root.current = "New Task"
+            Button:
+                text: "Go Back!"
+                on_release: app.root.current = "Welcome"
+<NewTaskWindow>:
+    name: "New Task"
+    Button:
+        text: "Go Back"
+        on_release: app.root.current = "New Routine"
