@@ -22,6 +22,8 @@ WindowManager:
             on_release: app.root.current = "File Chooser Window"
 <FileChooserWindow>:
     name: "File Chooser Window"
+    size: self.size
+    pos: self.pos
     BoxLayout:
         orientation: 'vertical'
 
@@ -35,13 +37,22 @@ WindowManager:
             Button:
                 text: 'List View'
                 on_press: fc.view_mode = 'list'
-                on_press: root.choosePath("Hi")
-
-        FileChooser:
-            id: fc
+                on_press: root.getPath()
+                
+        FileChooserIconView
             path: root.getPath()
-            FileChooserIconLayout
-            FileChooserListLayout
+            on_selection: root.selectedFile = root.selectFile(*args)
+    BoxLayout:
+        size_hint: .5, None
+        height: 100
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button:
+            text: "Choose File"
+            on_release: root.openFile()
+        Button:
+            text: "Cancel"
+            on_release: app.root.current = "Welcome"
 <NewRoutineWindow>:
     name: "New Routine"
     BoxLayout:
