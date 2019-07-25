@@ -35,9 +35,11 @@ WindowManager:
             Button:
                 text: 'List View'
                 on_press: fc.view_mode = 'list'
+                on_press: root.choosePath("Hi")
 
         FileChooser:
             id: fc
+            path: root.getPath()
             FileChooserIconLayout
             FileChooserListLayout
 <NewRoutineWindow>:
