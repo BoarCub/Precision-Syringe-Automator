@@ -2,7 +2,7 @@
 "Assign Valve Output to Right": "Z", "Assign Valve Output to Left": "Y", "Configure for No Valve": "W", "Set Counter Position": "z",
 
 
-"Absolute Position": "A", "Absolute Position with Ready Status": "a", 
+"Absolute Position": "A", "Absolute Position with Ready Status": "a",
 
 
 "Relative Pickup": "P", "Relative Pickup with Ready Status": "p", "Relative Dispense": "D", "Relative Dispense with Ready Status": "d",
@@ -11,19 +11,19 @@
 "Return Steps": "K", "Back-off Steps": "k",
 
 
-"Move Valve to Input Position": "I", "Move Valve to Output Position": "O", "Move Valve to Bypass": "B", "Move Valve to Extra Position": "E", 
+"Move Valve to Input Position": "I", "Move Valve to Output Position": "O", "Move Valve to Bypass": "B", "Move Valve to Extra Position": "E",
 
 
 "Define a Position in Command String": "g",
 "Repeat Commands": "G",
- 
+
 
 "Delay": "M", "Halt Command Execution": "H",
 
 
 
 "Store Command String": "s",
-"Execuete Command String in EEPROM Location": "e", 
+"Execuete Command String in EEPROM Location": "e",
 
 
 "Standard/High Resoluion Selection": "N",
@@ -33,7 +33,7 @@
 "Terminate Command Buffer":"T",
 
 
-"Command Buffer Status":"F", "Firmware Version":"&", "Firmware Checksum": "#", "Pump Status": "Q", "Absolute Syringe Position": "?", "Start Velocity": "?1", "Maximum Velocity": "?2", 
+"Command Buffer Status":"F", "Firmware Version":"&", "Firmware Checksum": "#", "Pump Status": "Q", "Absolute Syringe Position": "?", "Start Velocity": "?1", "Maximum Velocity": "?2",
 "Stop Velocity":"?3", "Actual Position of Syringe": "?4", "Number of Return Steps": "?12", "Status of Auxiliary Input #1": "?13", "Status of Auxiliary Input #2": "?14",
 "Returns 255": "255", "Number of Back-off Steps": "?24"
 }
