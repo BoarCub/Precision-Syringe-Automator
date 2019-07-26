@@ -1,4 +1,5 @@
 "white": [255,255,255], "red": [255,0,0], "orange": [255,165,0], "yellow": [255,255,0], "green": [0,255,0], "blue": [0,0,255], "indigo": [138,43,226], "violet": [139,0,255], "black": [0,0,0]}{
+{
 #Initialization Commands
 "Assign Valve Output to Right": "Z", "Assign Valve Output to Left": "Y", "Configure for No Valve": "W", "Set Counter Position": "z", 
 
