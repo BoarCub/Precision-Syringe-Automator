@@ -23,10 +23,13 @@ class FileImporter:
             return None
     def getCommands(self):
         try:
-            with open(os.path.dirname(os.path.realpath("C:\Users\Aniket\Documents\CommandDatabase"))) as file:
-                all_commands = hjson.load(file)
+            with open(os.path.dirname(os.path.realpath(__file__)) + "/CommandsDatabase") as file:
+                all_commands = json.load(file)
             return all_commands
         except FileNotFoundError:
             print("Command Database file not found.")
+            
+    def parseImportedString(self, stringToParse):
+        
+            
 FileImporter = FileImporter()
-print(FileImporter.getCommands())
