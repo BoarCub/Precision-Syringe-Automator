@@ -1,5 +1,5 @@
 import json
-
+import os
 class FileImporter:
     
     def __init__ (self):
@@ -21,5 +21,12 @@ class FileImporter:
         except:
             print("file not compatible")
             return None
-        
+    def getCommands(self):
+        try:
+            with open(os.path.dirname(os.path.realpath("C:\Users\Aniket\Documents\CommandDatabase"))) as file:
+                all_commands = hjson.load(file)
+            return all_commands
+        except FileNotFoundError:
+            print("Command Database file not found.")
 FileImporter = FileImporter()
+print(FileImporter.getCommands())
