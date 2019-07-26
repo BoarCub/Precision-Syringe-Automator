@@ -3,6 +3,7 @@ WindowManager:
     NewRoutineWindow:
     NewTaskWindow:
     FileChooserWindow:
+    DisplayFileWindow:
         
 <MainWindow>:
     name: "Welcome"
@@ -49,10 +50,22 @@ WindowManager:
         orientation: 'vertical'
         Button:
             text: "Choose File"
-            on_release: root.openFile()
+            on_release: app.root.current = "Show File"
         Button:
             text: "Cancel"
             on_release: app.root.current = "Welcome"
+<DisplayFileWindow>:
+    name: "Show File"
+    BoxLayout:
+        size_hint: .5, None
+        height: 250
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button:
+            text: "This is the screen where I show the file"
+        Button:
+            text: "Choose other file"
+            on_release: app.root.current = "File Chooser Window"
 <NewRoutineWindow>:
     name: "New Routine"
     BoxLayout:
@@ -66,7 +79,7 @@ WindowManager:
         Button:
             text: "Go Back"
             on_release: app.root.current = "Welcome"
-<NewTaskWindow>:
+<NewTaskWindow>:    
     name: "New Task"
     BoxLayout:
         size_hint: .5, None

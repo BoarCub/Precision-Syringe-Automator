@@ -3,6 +3,7 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.dropdown import DropDown
 import os
+from DataManager import FileImporter
 class MainWindow(Screen):
     pass
 
@@ -14,23 +15,30 @@ class NewTaskWindow(Screen):
 
 class FileChooserWindow(Screen):
     
-    def __init__(self):
-        print("yo")
-    
     def selectFile(self, *args):
         try:
-            self.fileSelected = args[1][0]
+            fileSelected = args[1][0]
         except:
-            self.fileSelected = None
+            fileSelected = None
+        FileImporter.setPath(fileSelected)
     
     def getPath(self):
         return os.path.dirname(os.path.realpath(__file__)) + "/Routines"
     
     def openFile(self):
-        if self.fileSelected == None:
-            print("No file is currently selected")
+        FileImporter.importFile()
+    
+    pass
+
+class DisplayFileWindow(Screen):
+    
+    def openFile(self):
+        imported = FileImporter.importFile()
+        
+        if(imported == None):
+            return ""
         else:
-            print("Opening " + fileSelected)
+            return imported
     
     pass
 
