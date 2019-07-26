@@ -1,47 +1,40 @@
 {
-#Initialization Commands
-"Assign Valve Output to Right": "Z", "Assign Valve Output to Left": "Y", "Configure for No Valve": "W", "Set Counter Position": "z", 
+"Assign Valve Output to Right": "Z", "Assign Valve Output to Left": "Y", "Configure for No Valve": "W", "Set Counter Position": "z",
 
 
-#Positioning Commands
 "Absolute Position": "A", "Absolute Position with Ready Status": "a", 
 
 
-#Relative Commands
-"Relative Pickup": P, "Relative Pickup with Ready Status": "p", "Relative Dispense": "D", "Relative Dispense with Ready Status": "d", 
+"Relative Pickup": "P", "Relative Pickup with Ready Status": "p", "Relative Dispense": "D", "Relative Dispense with Ready Status": "d",
 
 
 "Return Steps": "K", "Back-off Steps": "k",
 
 
-#Input/Output Commands
 "Move Valve to Input Position": "I", "Move Valve to Output Position": "O", "Move Valve to Bypass": "B", "Move Valve to Extra Position": "E", 
-"Auxiliary Outputs": "J", #Controlls output pins
 
 
-#Loop/Repeat Commands
-"Define a Position in Command String": "g", #starts a particular (Inner or Outer)
-"Repeat Commands": "G", #followed by x number of repeats, closes the 'g' loop
+"Define a Position in Command String": "g",
+"Repeat Commands": "G",
  
 
-#Delay/Halt Commands
 "Delay": "M", "Halt Command Execution": "H",
 
 
-#Memory Commands
-"Store Command String": "s", #stores command in EEPROM location
-"Execue Command String in EEPROM Location": "e", #executes command in EEPROM
 
-#Motor Control Commands
-"Standard/High Resoluion Selection": "N", #0 = stand, 1 = highres
+"Store Command String": "s",
+"Execuete Command String in EEPROM Location": "e", 
+
+
+"Standard/High Resoluion Selection": "N",
 "Set Acceleration":"L", "Set Start Velocity": "v", "Set Maximum Velocity": "V", "Set Speed": "S", "Stop Velocity": "c", "Increase Stop Velocity by Steps":"C",
 
-#Async Commands
+
 "Terminate Command Buffer":"T",
 
-#Query Commands
+
 "Command Buffer Status":"F", "Firmware Version":"&", "Firmware Checksum": "#", "Pump Status": "Q", "Absolute Syringe Position": "?", "Start Velocity": "?1", "Maximum Velocity": "?2", 
 "Stop Velocity":"?3", "Actual Position of Syringe": "?4", "Number of Return Steps": "?12", "Status of Auxiliary Input #1": "?13", "Status of Auxiliary Input #2": "?14",
 "Returns 255": "255", "Number of Back-off Steps": "?24"
-
+}
 
