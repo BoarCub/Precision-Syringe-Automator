@@ -26,6 +26,7 @@ class FileChooserWindow(Screen):
         except:
             fileSelected = None
         FileImporter.setPath(fileSelected)
+        print(fileSelected)
 
     def getPath(self):
         return os.path.dirname(os.path.realpath(__file__)) + "/Routines"
@@ -33,6 +34,20 @@ class FileChooserWindow(Screen):
     def openFile(self):
         FileImporter.importFile()
         
+    def updateDisplay(self, object):
+        self.updateWidgets(FileImporter.parseImportedString(FileImporter.importFile()), object)
+        
+    def updateWidgets(self, bigList, object):
+        
+        for smallList in bigList:
+            
+            placeholderBoxLayout = BoxLayout()
+            
+            for element in smallList:
+                placeholderBoxLayout.add_widget(Label(text=element))
+                
+            object.ids.display_box.add_widget(placeholderBoxLayout)
+            
     pass
 
 class DisplayFileWindow(Screen):

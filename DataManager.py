@@ -27,7 +27,7 @@ class FileImporter:
             with open(self.filePath) as file:
                 selectedRoutine = json.load(file)
                 print("able to read file")
-                return (selectedRoutine)      
+                return selectedRoutine
         except:
             print("file not compatible")
             return None
