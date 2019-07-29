@@ -6,6 +6,7 @@ WindowManager:
     DisplayFileWindow:
         id: display_file_window
         
+#Main Menu
 <MainWindow>:
     name: "Welcome"
     BoxLayout:
@@ -13,66 +14,72 @@ WindowManager:
         height: 250
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
-        Button:
+        Button: #Create New Routine Button
             text: "Create New Routine"
-            on_release: app.root.current = "New Routine"
+            on_release: app.root.current = "New Routine" #Changes Screen to Routine Creator on Click
         Button:
             text: "Line-by-Line"
-            on_release: app.root.current = "New Routine"
-        Button:
+            on_release: app.root.current = "New Routine" #Changes Screen to Routine Creator on Click
+        Button: #Load Previous File Button
             text: "Load Previous File"
-            on_release: app.root.current = "File Chooser Window"
+            on_release: app.root.current = "File Chooser Window" #Changes Screen to File Chooser Window on Click
+            
+#Handles Interface for Choosing a File
 <FileChooserWindow>:
     name: "File Chooser Window"
     size: self.size
     pos: self.pos
-    BoxLayout:
+    BoxLayout: #File Chooser Layout
         orientation: 'vertical'
 
-        BoxLayout:
+        BoxLayout: #Displays All of the Files
             size_hint_y: None
             height: sp(52)
 
-            Button:
+            Button: #Changes to Icon View
                 text: 'Icon View'
                 on_press: fc.view_mode = 'icon'
-            Button:
+            Button: #Changes to List View
                 text: 'List View'
                 on_press: fc.view_mode = 'list'
                 on_press: root.getPath()
                 
         FileChooserIconView
             path: root.getPath()
-            on_selection: root.selectedFile = root.selectFile(*args)
-    BoxLayout:
+            on_selection: root.selectedFile = root.selectFile(*args) #Gets Selected File
+    BoxLayout: #Layout Containing Navigational Buttons
         size_hint: .5, None
         height: 100
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
-        Button:
+        Button: #Choose File Button
             text: "Choose File"
-            on_release: app.root.current = "Show File"
+            on_release: app.root.current = "Show File" #Swtiches screen to Show File
             
-            on_release: root.updateDisplay(app.root.ids.display_file_window)
-        Button:
+            on_release: root.updateDisplay(app.root.ids.display_file_window) #Updates the table of Actions in File/Routine
+        Button: #Cancel Button, Returns to Main Menu
             text: "Cancel"
             on_release: app.root.current = "Welcome"
+            
+#Display File Window, Has a Table of Actions in a File/Routine
 <DisplayFileWindow>:
     name: "Show File"
-    BoxLayout:
+    BoxLayout: #The Table, Which is Updated with Actions
         id: display_box
         size_hint: .5, None
         height: 300
         pos_hint: {'top': 1, 'center_x': 0.5}
         orientation: 'vertical'
-    BoxLayout:
+    BoxLayout: #Layout Containing Navigational Buttons
         size_hint: .5, None
         height: 100
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
-        Button:
+        Button: #Button Returns to File Chooser Window
             text: "Choose other file"
             on_release: app.root.current = "File Chooser Window"
+
+#New Routine Window, Handles the Creation of a New Routine
 <NewRoutineWindow>:
     name: "New Routine"
     BoxLayout:
@@ -80,20 +87,29 @@ WindowManager:
         height: 250
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
-        Button:
+        Button: #Button Adds New Task to Routine
             text: "Assign Tasks"
-            on_release: app.root.current = "New Task"
-        Button:
+            on_release: app.root.current = "New Task" #Switches to New Task Screen
+        Button: #Button Goes Back to Main Menu
             text: "Go Back"
             on_release: app.root.current = "Welcome"
+            
+#New Task Windows Handles the Creation of a New Task
 <NewTaskWindow>:    
     name: "New Task"
+    
+    Spinner:
+        text: "Choose an Action:"
+        values: "Test"
+        size_hint: 0.3, 0.1
+        pos_hint: {'center_x': 0.5, 'top': 1}
+    
     BoxLayout:
-        size_hint: .5, None
+        size_hint: .3, 0.1
         height: 250
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
-        Button:
+        
+        Button: #Button Goes Back to New Routine
             text: "Go Back"
             on_release: app.root.current = "New Routine"
-

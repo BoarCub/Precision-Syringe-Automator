@@ -34,7 +34,7 @@ class FileImporter:
         
     def getCommands(self): #returns the entire file using json
         try:
-            with open("/home/pi/Precision-Syringe-Automator" + "/CommandsDatabase") as file:
+            with open(os.path.dirname(os.path.realpath(__file__)) + "/CommandsDatabase") as file:
                 self.all_commands =  json.load(file)
             return self.all_commands
 
