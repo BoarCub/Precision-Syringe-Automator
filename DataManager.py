@@ -12,13 +12,13 @@ class FileImporter:
     def setPath(self, path):
         self.filePath = path
 
-    def reverseDictionary(self, inputlist):
+    def reverseDictionary(self, inputlist): #reverses the dictionary of commands so we can search by both action and command
         newDict = {}
-        for colorString in inputlist:
-            newDict.update({inputlist[colorString]: colorString})
+        for colorString in inputlist: #for ever value in the dictionary
+            newDict.update({inputlist[colorString]: colorString}) #assign the same spot in a placebo dictionary that assigns the key as value and vice versa
         return newDict
         
-    def importFile(self):
+    def importFile(self): #uses json to import the string stored in the file
         
         if self.filePath == None:
             print("no file")
@@ -32,32 +32,38 @@ class FileImporter:
             print("file not compatible")
             return None
         
-    def getCommands(self):
+    def getCommands(self): #returns the entire file using json
         try:
-            with open(os.path.dirname(os.path.realpath(__file__)) + "/CommandsDatabase") as file:
+            with open("/home/pi/Precision-Syringe-Automator" + "/CommandsDatabase") as file:
                 self.all_commands =  json.load(file)
             return self.all_commands
 
         except FileNotFoundError:
             print("Command Database file not found.")
             
-    def parseImportedString(self, stringToParse):
-        for char in range(0, len(stringToParse)):
-            if stringToParse[char].isalpha():
-                index = 1
+    def parseImportedString(self, stringToParse): #goes through every character in a given string and separates command with their associated numbers
+        current_action = ""
+        current_int = ""
+        for char_index in range(len(stringToParse)):
+            #print(char_index, ": ", stringToParse[char_index])
+            if (stringToParse[char_index].isalpha()):
+                #print("isalpha")
+                current_action = self.rev_commands[stringToParse[char_index]]
                 current_int = ""
-                try:
-                    while(stringToParse[char+index].isdigit()):
-                        current_int += stringToParse[char + index]
-                        self.actions.append([self.rev_commands[stringToParse[char]] str(int(current_int))])
-                        index +=1
-                except ValueError:
-                    self.actions.append([self.rev_commands[stringToParse[char]]])
-                    pass
-                except IndexError:
-                    break
-        print("actions are ", self.actions)
+            elif (stringToParse[char_index].isdigit()):
+                #print("isdigit")
+                current_int += stringToParse[char_index]
+            else: print("Command is in incorrect format")
+            
+            try:
+                if(stringToParse[char_index+1].isalpha()):
+                    self.actions.append([current_action, str(current_int)])
+                    #print("appending command")
+            except IndexError:
+                self.actions.append([current_action, str(current_int)])
+                #print("appending command through except")
+        #print(self.actions)
         return self.actions
             
 FileImporter = FileImporter()
-FileImporter.parseImportedString("Z2O86G6O1")
+#FileImporter.parseImportedString("Z2O86G6O1")
