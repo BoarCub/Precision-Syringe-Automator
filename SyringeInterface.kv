@@ -1,0 +1,99 @@
+WindowManager:
+    MainWindow:
+    NewRoutineWindow:
+    NewTaskWindow:
+    FileChooserWindow:
+    DisplayFileWindow:
+        id: display_file_window
+        
+<MainWindow>:
+    name: "Welcome"
+    BoxLayout:
+        size_hint: .5, None
+        height: 250
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button:
+            text: "Create New Routine"
+            on_release: app.root.current = "New Routine"
+        Button:
+            text: "Line-by-Line"
+            on_release: app.root.current = "New Routine"
+        Button:
+            text: "Load Previous File"
+            on_release: app.root.current = "File Chooser Window"
+<FileChooserWindow>:
+    name: "File Chooser Window"
+    size: self.size
+    pos: self.pos
+    BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+            size_hint_y: None
+            height: sp(52)
+
+            Button:
+                text: 'Icon View'
+                on_press: fc.view_mode = 'icon'
+            Button:
+                text: 'List View'
+                on_press: fc.view_mode = 'list'
+                on_press: root.getPath()
+                
+        FileChooserIconView
+            path: root.getPath()
+            on_selection: root.selectedFile = root.selectFile(*args)
+    BoxLayout:
+        size_hint: .5, None
+        height: 100
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button:
+            text: "Choose File"
+            on_release: app.root.current = "Show File"
+            
+            on_release: root.updateDisplay(app.root.ids.display_file_window)
+        Button:
+            text: "Cancel"
+            on_release: app.root.current = "Welcome"
+<DisplayFileWindow>:
+    name: "Show File"
+    BoxLayout:
+        id: display_box
+        size_hint: .5, None
+        height: 300
+        pos_hint: {'top': 1, 'center_x': 0.5}
+        orientation: 'vertical'
+    BoxLayout:
+        size_hint: .5, None
+        height: 100
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button:
+            text: "Choose other file"
+            on_release: app.root.current = "File Chooser Window"
+<NewRoutineWindow>:
+    name: "New Routine"
+    BoxLayout:
+        size_hint: .5, None
+        height: 250
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button:
+            text: "Assign Tasks"
+            on_release: app.root.current = "New Task"
+        Button:
+            text: "Go Back"
+            on_release: app.root.current = "Welcome"
+<NewTaskWindow>:    
+    name: "New Task"
+    BoxLayout:
+        size_hint: .5, None
+        height: 250
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button:
+            text: "Go Back"
+            on_release: app.root.current = "New Routine"
+
