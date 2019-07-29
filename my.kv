@@ -97,11 +97,19 @@ WindowManager:
 #New Task Windows Handles the Creation of a New Task
 <NewTaskWindow>:    
     name: "New Task"
+    
+    Spinner:
+        text: "Choose an Action:"
+        values: "Test"
+        size_hint: 0.3, 0.1
+        pos_hint: {'center_x': 0.5, 'top': 1}
+    
     BoxLayout:
-        size_hint: .5, None
+        size_hint: .3, 0.1
         height: 250
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
-        Button: #Button Goes Back to New Routine Screen
+        
+        Button: #Button Goes Back to New Routine
             text: "Go Back"
             on_release: app.root.current = "New Routine"
