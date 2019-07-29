@@ -32,6 +32,9 @@ class FileChooserWindow(Screen):
 
 class DisplayFileWindow(Screen):
 
+    def updateWidgets(self):
+        
+
     def openFile(self):
         imported = FileImporter.importFile()
 
@@ -39,8 +42,10 @@ class DisplayFileWindow(Screen):
             return ""
         else:
             return imported
-
+        
     pass
+
+class 
 
 class WindowManager(ScreenManager):
     pass

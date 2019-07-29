@@ -57,8 +57,16 @@ WindowManager:
 <DisplayFileWindow>:
     name: "Show File"
     BoxLayout:
+        id: "Column Layout"
         size_hint: .5, None
-        height: 250
+        height: 300
+        pos_hint: {'top': 1, 'center_x': 0.5}
+        orientation: 'vertical'
+        Button:
+            text: "yo"
+    BoxLayout:
+        size_hint: .5, None
+        height: 100
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
         Button:

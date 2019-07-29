@@ -24,14 +24,12 @@ class FileImporter:
     def getCommands(self):
         try:
             with open(os.path.dirname(os.path.realpath(__file__)) + "/CommandsDatabase") as file:
-                all_commands =  json.load(file)
+                all_commands = json.load(file)
             return all_commands
-
         except FileNotFoundError:
             print("Command Database file not found.")
             
     def parseImportedString(self, stringToParse):
-        
+        pass
             
 FileImporter = FileImporter()
-
