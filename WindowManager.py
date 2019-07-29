@@ -2,8 +2,13 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.dropdown import DropDown
+from kivy.uix.widget import Widget
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.boxlayout import BoxLayout
 import os
 from DataManager import FileImporter
+
 class MainWindow(Screen):
     pass
 
@@ -27,13 +32,21 @@ class FileChooserWindow(Screen):
 
     def openFile(self):
         FileImporter.importFile()
-
+        
     pass
 
 class DisplayFileWindow(Screen):
 
-    def updateWidgets(self):
+    def updateWidgets(bigList):
         
+        for smallList in bigList:
+            
+            placeholderBoxLayout = BoxLayout()
+            
+            for element in smallList:
+                placeholderBoxLayout.add_widget(Label(text=element))
+                
+            self.ids.display_box.add_widget(placeholderBoxLayout)
 
     def openFile(self):
         imported = FileImporter.importFile()
@@ -44,8 +57,6 @@ class DisplayFileWindow(Screen):
             return imported
         
     pass
-
-class 
 
 class WindowManager(ScreenManager):
     pass

@@ -57,13 +57,14 @@ WindowManager:
 <DisplayFileWindow>:
     name: "Show File"
     BoxLayout:
-        id: "Column Layout"
+        id: display_box
         size_hint: .5, None
         height: 300
         pos_hint: {'top': 1, 'center_x': 0.5}
         orientation: 'vertical'
         Button:
             text: "yo"
+            on_release: root.updateWidgets()
     BoxLayout:
         size_hint: .5, None
         height: 100

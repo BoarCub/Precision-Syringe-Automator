@@ -4,5 +4,3 @@ class SyringeController(object):
     
     def initialize(direction):
         self.ser.write(b"IZ", direction.encode(), b"\r")
-        
-        
