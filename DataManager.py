@@ -49,10 +49,10 @@ class FileImporter:
                 try:
                     while(stringToParse[char+index].isdigit()):
                         current_int += stringToParse[char + index]
-                        self.actions.append(self.rev_commands[stringToParse[char]] + ": " + str(int(current_int)))
+                        self.actions.append([self.rev_commands[stringToParse[char]], str(int(current_int))])
                         index +=1
                 except ValueError:
-                    self.actions.append(self.rev_commands[stringToParse[char]])
+                    self.actions.append([self.rev_commands[stringToParse[char]]])
                     pass
                 except IndexError:
                     break
