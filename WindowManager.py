@@ -8,6 +8,8 @@ from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 import os
 from DataManager import FileImporter
+ 
+ #each class is a window that is being called via the kv file
 
 class MainWindow(Screen):
     pass
@@ -20,9 +22,9 @@ class NewTaskWindow(Screen):
 
 class FileChooserWindow(Screen):
 
-    def selectFile(self, *args):
+    def selectFile(self, *args): #the FileChooser in the kv file produces a *args list of information
         try:
-            fileSelected = args[1][0]
+            fileSelected = args[1][0] #this specifies the file path that is stores within *args
         except:
             fileSelected = None
         FileImporter.setPath(fileSelected)
