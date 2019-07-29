@@ -4,6 +4,7 @@ WindowManager:
     NewTaskWindow:
     FileChooserWindow:
     DisplayFileWindow:
+        id: display_file_window
         
 <MainWindow>:
     name: "Welcome"
@@ -51,6 +52,8 @@ WindowManager:
         Button:
             text: "Choose File"
             on_release: app.root.current = "Show File"
+            
+            on_release: root.updateDisplay(app.root.ids.display_file_window)
         Button:
             text: "Cancel"
             on_release: app.root.current = "Welcome"
@@ -62,16 +65,11 @@ WindowManager:
         height: 300
         pos_hint: {'top': 1, 'center_x': 0.5}
         orientation: 'vertical'
-        Button:
-            text: "yo"
-            on_release: root.updateWidgets()
     BoxLayout:
         size_hint: .5, None
         height: 100
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
-        Button:
-            text: "This is the screen where I show the file"
         Button:
             text: "Choose other file"
             on_release: app.root.current = "File Chooser Window"
