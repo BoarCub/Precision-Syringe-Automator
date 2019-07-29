@@ -36,15 +36,24 @@ class FileChooserWindow(Screen):
         FileImporter.importFile() #calls method in DataManager which imports file using json
         
     def updateDisplay(self, object):
+        
         self.updateWidgets(FileImporter.parseImportedString(FileImporter.importFile()), object)
     
     def updateWidgets(self, bigList, object):
+        
+        if(FileImporter.displayedActions != None):
+            for action in FileImporter.displayedActions:
+                object.ids.display_box.remove_widget(action)
+        
+        FileImporter.displayedActions = []
         
         for smallList in bigList:
             placeholderLayout = BoxLayout()
             
             for element in smallList:
                 placeholderLayout.add_widget(Label(text=element))
+            
+            FileImporter.displayedActions.append(placeholderLayout)
             
             object.ids.display_box.add_widget(placeholderLayout)
         

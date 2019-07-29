@@ -8,6 +8,7 @@ class FileImporter:
         self.getCommands()
         self.rev_commands = self.reverseDictionary(self.all_commands)
         self.actions = []
+        self.displayedActions = None
         
     def setPath(self, path):
         self.filePath = path
@@ -27,6 +28,8 @@ class FileImporter:
             with open(self.filePath) as file:
                 selectedRoutine = json.load(file)
                 print("able to read file")
+                print(self.filePath)
+                print(selectedRoutine)
                 return selectedRoutine
         except:
             print("file not compatible")
@@ -42,6 +45,7 @@ class FileImporter:
             print("Command Database file not found.")
             
     def parseImportedString(self, stringToParse): #goes through every character in a given string and separates command with their associated numbers
+        self.actions = []
         current_action = ""
         current_int = ""
         for char_index in range(len(stringToParse)):

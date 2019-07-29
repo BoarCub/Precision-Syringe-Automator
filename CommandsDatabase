@@ -1,4 +1,6 @@
 {
+"Execute Command Buffer": "R", "Execute Command Buffer from Beginning": "X", 
+
 "Assign Valve Output to Right": "Z", "Assign Valve Output to Left": "Y", "Configure for No Valve": "W", "Set Counter Position": "z",
 
 

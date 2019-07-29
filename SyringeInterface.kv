@@ -54,13 +54,11 @@ WindowManager:
         orientation: 'vertical'
         Button: #Choose File Button
             text: "Choose File"
-            on_release: app.root.current = "Show File" #Swtiches screen to Show File
-            
             on_release: root.updateDisplay(app.root.ids.display_file_window) #Updates the table of Actions in File/Routine
+            on_release: app.root.current = "Show File" #Swtiches screen to Show File
         Button: #Cancel Button, Returns to Main Menu
             text: "Cancel"
             on_release: app.root.current = "Welcome"
-            
 #Display File Window, Has a Table of Actions in a File/Routine
 <DisplayFileWindow>:
     name: "Show File"
