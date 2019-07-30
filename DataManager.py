@@ -69,9 +69,9 @@ class FileImporter:
             except IndexError:
                 self.actions.append([current_action, str(current_int)])
                 #print("appending command through except")
-        print(self.actions)
+        #print(self.actions)
         return self.actions
             
 FileImporter = FileImporter()
-FileImporter.parseImportedString("Z2O86G6O1")
-print(FileImporter.userCommands())
+#FileImporter.parseImportedString("Z2O86G6O1")
+
