@@ -4,8 +4,7 @@ class FileImporter:
     
     def __init__ (self):
         self.filePath = None
-        self.all_commands = {}
-        self.getCommands()
+        self.all_commands = self.getCommands()
         self.rev_commands = self.reverseDictionary(self.all_commands)
         self.actions = []
         self.displayedActions = None
@@ -66,8 +65,8 @@ class FileImporter:
             except IndexError:
                 self.actions.append([current_action, str(current_int)])
                 #print("appending command through except")
-        #print(self.actions)
+        print(self.actions)
         return self.actions
             
 FileImporter = FileImporter()
-#FileImporter.parseImportedString("Z2O86G6O1")
+FileImporter.parseImportedString("Z2O86G6O1")

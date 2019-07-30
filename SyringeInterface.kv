@@ -3,6 +3,7 @@ WindowManager:
     NewRoutineWindow:
     NewTaskWindow:
     FileChooserWindow:
+    ExecuteFileWindow:
     DisplayFileWindow:
         id: display_file_window
         
@@ -43,9 +44,11 @@ WindowManager:
                 text: 'List View'
                 on_press: fc.view_mode = 'list'
                 on_press: root.getPath()
-                
-        FileChooserIconView
-            path: root.getPath()
+            FileChooser:
+            id: fc
+            FileChooserListLayout
+            FileChooserIconView
+                path: root.getPath()
             on_selection: root.selectedFile = root.selectFile(*args) #Gets Selected File
     BoxLayout: #Layout Containing Navigational Buttons
         size_hint: .5, None
@@ -76,6 +79,13 @@ WindowManager:
         Button: #Button Returns to File Chooser Window
             text: "Choose other file"
             on_release: app.root.current = "File Chooser Window"
+        Button:
+            text: "Execute File"
+            on_release: app.root.current = "Execute File"
+
+<ExecuteFileWindow>:
+    name: "Execute File"
+    text: "hi"
 
 #New Routine Window, Handles the Creation of a New Routine
 <NewRoutineWindow>:
