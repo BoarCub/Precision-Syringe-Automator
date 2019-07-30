@@ -35,33 +35,23 @@ WindowManager:
 
         BoxLayout: #Displays All of the Files
             size_hint_y: None
-            height: sp(52)
-
-            Button: #Changes to Icon View
-                text: 'Icon View'
-                on_press: fc.view_mode = 'icon'
-            Button: #Changes to List View
-                text: 'List View'
-                on_press: fc.view_mode = 'list'
-                on_press: root.getPath()
-            FileChooser:
-            id: fc
-            FileChooserListLayout
-            FileChooserIconView
-                path: root.getPath()
+            size: self.size
+            pos: self.pos
+        FileChooserIconView
+            path: root.getPath()
             on_selection: root.selectedFile = root.selectFile(*args) #Gets Selected File
-    BoxLayout: #Layout Containing Navigational Buttons
-        size_hint: .5, None
-        height: 100
-        pos_hint: {'center_x': .5}
-        orientation: 'vertical'
-        Button: #Choose File Button
-            text: "Choose File"
-            on_release: root.updateDisplay(app.root.ids.display_file_window) #Updates the table of Actions in File/Routine
-            on_release: app.root.current = "Show File" #Swtiches screen to Show File
-        Button: #Cancel Button, Returns to Main Menu
-            text: "Cancel"
-            on_release: app.root.current = "Welcome"
+        BoxLayout: #Layout Containing Navigational Buttons
+            size_hint: .5, None
+            height: 100
+            pos_hint: {'center_x': .5}
+            orientation: 'vertical'
+            Button: #Choose File Button
+                text: "Choose File"
+                on_release: root.updateDisplay(app.root.ids.display_file_window) #Updates the table of Actions in File/Routine
+                on_release: app.root.current = "Show File" #Swtiches screen to Show File
+            Button: #Cancel Button, Returns to Main Menu
+                text: "Cancel"
+                on_release: app.root.current = "Welcome"
 #Display File Window, Has a Table of Actions in a File/Routine
 <DisplayFileWindow>:
     name: "Show File"
@@ -106,12 +96,22 @@ WindowManager:
 <NewTaskWindow>:    
     name: "New Task"
     
-    Spinner:
-        text: "Choose an Action:"
-        values: "Test"
-        size_hint: 0.3, 0.1
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: None, None
+        size: 150, 60
         pos_hint: {'center_x': 0.5, 'top': 1}
-    
+        Spinner:
+            id: spinner_mode
+            text: 'Mode'
+            values: ['Input', 'Output']
+            on_text: root.clickMode(spinner_mode.text)
+        Spinner:
+            id: spinner_action
+            text: 'Action'
+            values: root.getUserCommands()
+            on_text: root.clickAction(spinner_action.text)
+            
     BoxLayout:
         size_hint: .3, 0.1
         height: 250

@@ -6,9 +6,10 @@ from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.spinner import Spinner
 import os
 from DataManager import FileImporter
- 
+from TaskCreator import *
  #each class is a window that is being called via the kv file
 
 class MainWindow(Screen):
@@ -18,8 +19,14 @@ class NewRoutineWindow(Screen):
     pass
 
 class NewTaskWindow(Screen):
-    pass
-
+    def clickMode(self, value):
+        taskcreator_object.takeMode(value)
+    def getUserCommands(self):
+        return FileImporter.userCommands()
+    def clickAction(self, value):
+        taskcreator_object.takeAction(value)
+    def clickNum(self, value):
+        taskcreator_object.takeNum(value)
 class ExecuteFileWindow(Screen):
     pass
 class FileChooserWindow(Screen):

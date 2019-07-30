@@ -11,7 +11,11 @@ class FileImporter:
         
     def setPath(self, path):
         self.filePath = path
-
+    def userCommands(self):
+        newList = []
+        for key in self.all_commands.keys():
+            newList.append(key)
+        return newList
     def reverseDictionary(self, inputlist): #reverses the dictionary of commands so we can search by both action and command
         newDict = {}
         for colorString in inputlist: #for ever value in the dictionary
@@ -70,3 +74,4 @@ class FileImporter:
             
 FileImporter = FileImporter()
 FileImporter.parseImportedString("Z2O86G6O1")
+print(FileImporter.userCommands())
