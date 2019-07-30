@@ -77,10 +77,14 @@ WindowManager:
 
 <ExecuteFileWindow>:
     name: "Execute File"
-    Button:
-        text: "end"
-        on_release: root.stopLoop()
-        on_release: app.root.current = "Show File"
+    BoxLayout:
+        Label:
+            id: queryLabel
+            text: "Checking..."
+        Button:
+            text: "end"
+            on_release: root.stopLoop()
+            on_release: app.root.current = "Show File"
 
 #New Routine Window, Handles the Creation of a New Routine
 <NewRoutineWindow>:

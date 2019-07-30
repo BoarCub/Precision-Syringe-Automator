@@ -15,9 +15,12 @@ class SerialManager(object):
     def queryUpdate(self):
         #Write Goes Here
         #Read Goes Here
-        print(time.localtime())
+        datetime = time.localtime(time.time())
+        datetimeString = time.strftime('%Y-%m-%d %H-%M-%S', datetime)
+        self.label.text = datetimeString
         
-    def startQueryUpdate(self):
+    def startQueryUpdate(self, label):
+        self.label = label
         self.queryUpdater = ThreadUpdater(self.queryUpdate, 1)
         self.queryUpdater.start()
         

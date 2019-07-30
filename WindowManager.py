@@ -33,7 +33,7 @@ class NewTaskWindow(Screen):
 class ExecuteFileWindow(Screen):
     
     def startLoop(self):
-        serial_object.startQueryUpdate()
+        serial_object.startQueryUpdate(self.ids.queryLabel)
         
     def stopLoop(self):
         serial_object.stopQueryUpdate()
