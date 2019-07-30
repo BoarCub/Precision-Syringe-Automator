@@ -4,6 +4,7 @@ WindowManager:
     NewTaskWindow:
     FileChooserWindow:
     ExecuteFileWindow:
+        id: execute_file_window
     DisplayFileWindow:
         id: display_file_window
         
@@ -72,10 +73,14 @@ WindowManager:
         Button:
             text: "Execute File"
             on_release: app.root.current = "Execute File"
+            on_release: app.root.ids.execute_file_window.startLoop()
 
 <ExecuteFileWindow>:
     name: "Execute File"
-    text: "hi"
+    Button:
+        text: "end"
+        on_release: root.stopLoop()
+        on_release: app.root.current = "Show File"
 
 #New Routine Window, Handles the Creation of a New Routine
 <NewRoutineWindow>:

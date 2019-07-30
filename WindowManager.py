@@ -10,6 +10,9 @@ from kivy.uix.spinner import Spinner
 import os
 from DataManager import FileImporter
 from TaskCreator import *
+
+from SerialManager import *
+
  #each class is a window that is being called via the kv file
 
 class MainWindow(Screen):
@@ -28,6 +31,13 @@ class NewTaskWindow(Screen):
     def clickNum(self, value):
         taskcreator_object.takeNum(value)
 class ExecuteFileWindow(Screen):
+    
+    def startLoop(self):
+        serial_object.startQueryUpdate()
+        
+    def stopLoop(self):
+        serial_object.stopQueryUpdate()
+    
     pass
 class FileChooserWindow(Screen):
 
