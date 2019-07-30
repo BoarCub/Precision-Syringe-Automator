@@ -2,6 +2,7 @@ WindowManager:
     MainWindow:
     NewRoutineWindow:
     NewTaskWindow:
+    SaveFileWindow:
     FileChooserWindow:
     ExecuteFileWindow:
         id: execute_file_window
@@ -54,6 +55,11 @@ WindowManager:
                 text: "Cancel"
                 on_release: app.root.current = "Welcome"
 #Display File Window, Has a Table of Actions in a File/Routine
+<SaveFileWindow>:
+    name: "Save File"
+    FloatLayout:
+        TextInput:
+            pos_hint: {"top": 1, "right": 1}
 <DisplayFileWindow>:
     name: "Show File"
     BoxLayout: #The Table, Which is Updated with Actions
@@ -120,7 +126,9 @@ WindowManager:
             text: 'Action'
             values: root.getUserCommands()
             on_text: root.clickAction(spinner_action.text)
-            
+        Button:
+            text: "Save Task"
+            on_release: app.root.current = "Save File"
     BoxLayout:
         size_hint: .3, 0.1
         height: 250

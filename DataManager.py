@@ -46,7 +46,15 @@ class FileImporter:
 
         except FileNotFoundError:
             print("Command Database file not found.")
-            
+    def encodedCommands(self, big_list):
+        command = ""
+        current_action = ""
+        current_num = 0
+        for small_list in big_list:
+            current_action = small_list[0]
+            current_num = small_list[1]
+            command += self.all_commands[current_action] + current_num
+        return command
     def parseImportedString(self, stringToParse): #goes through every character in a given string and separates command with their associated numbers
         self.actions = []
         current_action = ""

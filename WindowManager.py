@@ -11,7 +11,7 @@ import os
 from DataManager import FileImporter
 from TaskCreator import *
 
-from SerialManager import *
+#from SerialManager import *
 
  #each class is a window that is being called via the kv file
 
@@ -30,14 +30,18 @@ class NewTaskWindow(Screen):
         taskcreator_object.takeAction(value)
     def clickNum(self, value):
         taskcreator_object.takeNum(value)
+
 class ExecuteFileWindow(Screen):
-    
+    """
     def startLoop(self):
         serial_object.startQueryUpdate(self.ids.queryLabel)
         
     def stopLoop(self):
         serial_object.stopQueryUpdate()
-    
+    """
+    pass
+
+class SaveFileWindow(Screen):
     pass
 class FileChooserWindow(Screen):
 
