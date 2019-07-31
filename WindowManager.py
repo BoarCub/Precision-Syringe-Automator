@@ -53,13 +53,22 @@ class NewTaskWindow(Screen):
                 return child
     
     def save(self, instance):
-        print(instance.text)
         
         self.getObjectFromID(self.editPopup.content, 'message_label').text = 'Saved...'
         
+        try:
+            valueParameter = int(self.getObjectFromID(self.editPopup.content, 'value_input').text)
+        except:
+            valueParameter = None
+        
         if(self.spinnerText == None):
             self.getObjectFromID(self.editPopup.content, 'message_label').text = 'Select an Action'
-        elif(True):
+        elif(FileImporter.checkValue(
+            [
+            FileImporter.all_commands[self.spinnerText],
+            valueParameter
+            ]
+            )):
             index = int(self.editPopup.title[13:]) - 1
             
             taskcreator_object.actions[index][1] = self.spinnerText
@@ -68,6 +77,8 @@ class NewTaskWindow(Screen):
             taskcreator_object.buttons[index].text = self.getButtonString(taskcreator_object.actions[index])
             
             self.editPopup.dismiss()
+        else:
+            self.getObjectFromID(self.editPopup.content, 'message_label').text = 'Values Input does not Match Action'
             
     def saveSpinnerText(self, spinner, text):
         self.spinnerText = text

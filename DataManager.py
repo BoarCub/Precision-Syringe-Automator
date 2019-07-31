@@ -27,7 +27,8 @@ class FileImporter:
 
         except FileNotFoundError:
             print("Value Database file not found.")
-        if (self.command_values[pair[0]] != None):
+        
+        if (self.command_values[pair[0]] != []):
             min = self.command_values[pair[0]][0]
             max = self.command_values[pair[0]][1]
             if (pair[1]<=max and pair[1]>=min):
@@ -104,3 +105,4 @@ class FileImporter:
             
 FileImporter = FileImporter()
 #FileImporter.parseImportedString("Z2O86G6O1")
+#print(FileImporter.checkValue(["R", 150]))
