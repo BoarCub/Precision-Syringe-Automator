@@ -8,6 +8,7 @@ from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.spinner import Spinner
 from kivy.uix.popup import Popup
+from kivy.uix.textinput import TextInput
 import os
 from DataManager import FileImporter
 from TaskCreator import *
@@ -46,9 +47,22 @@ class NewTaskWindow(Screen):
         
     def editTask(self):
         editPopup = Popup(title = 'Edit Task',
-                          content = Label(text = 'yo'),
-                          size_hint = (None, None), size = (400, 400),
+                          content = BoxLayout(orientation='horizontal', spacing = 20, size_hint=(1, 0.1), pos_hint = {'top': 1}),
+                          size_hint = (None, None), size = (600, 600),
                           )
+        
+        spinner = Spinner(
+            text = 'Action',
+            values = FileImporter.all_commands,
+            id = 'action_spinner'
+            )
+        
+        valueInput = TextInput(
+            hint_text = 'Value',
+            multiline = False)
+        
+        editPopup.content.add_widget(spinner)
+        editPopup.content.add_widget(valueInput)
         editPopup.open()
                           
         pass
