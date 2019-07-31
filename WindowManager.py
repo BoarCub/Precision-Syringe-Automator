@@ -32,6 +32,8 @@ class NewTaskWindow(Screen):
         buttonTemp.bind(on_release = self.callback)
         
         self.ids.grid.add_widget(buttonTemp)
+        
+        taskcreator_object.buttons.append(buttonTemp)
             
     def getButtonString(self, ls):
         str = 'Task '
@@ -55,7 +57,24 @@ class NewTaskWindow(Screen):
         
         self.getObjectFromID(self.editPopup.content, 'message_label').text = 'Saved...'
         
+        if(self.spinnerText == None):
+            self.getObjectFromID(self.editPopup.content, 'message_label').text = 'Select an Action'
+        elif(True):
+            index = int(self.editPopup.title[13:]) - 1
+            
+            taskcreator_object.actions[index][1] = self.spinnerText
+            taskcreator_object.actions[index][2] = self.getObjectFromID(self.editPopup.content, 'value_input').text
+            
+            taskcreator_object.buttons[index].text = self.getButtonString(taskcreator_object.actions[index])
+            
+            self.editPopup.dismiss()
+            
+    def saveSpinnerText(self, spinner, text):
+        self.spinnerText = text
+        
     def editTask(self, buttonText):
+        
+        self.spinnerText = None
         
         lines = buttonText.splitlines()
         
@@ -67,11 +86,13 @@ class NewTaskWindow(Screen):
         spinner = Spinner(
             text = 'Select Action',
             values = FileImporter.all_commands,
-            id = 'action_spinner'
+            id = 'action_spinner',
+            on_value = self.saveSpinnerText
             )
         
+        spinner.bind(text = self.saveSpinnerText)
+        
         valueInput = TextInput(
-<<<<<<< HEAD
             id = 'value_input',
             hint_text = 'Type Value',
             multiline = False,
