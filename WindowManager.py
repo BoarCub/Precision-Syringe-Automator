@@ -7,6 +7,7 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.spinner import Spinner
+from kivy.uix.popup import Popup
 import os
 from DataManager import FileImporter
 from TaskCreator import *
@@ -22,14 +23,37 @@ class NewRoutineWindow(Screen):
     pass
 
 class NewTaskWindow(Screen):
-    def clickMode(self, value):
-        taskcreator_object.takeMode(value)
-    def getUserCommands(self):
-        return FileImporter.userCommands()
-    def clickAction(self, value):
-        taskcreator_object.takeAction(value)
-    def clickNum(self, value):
-        taskcreator_object.takeNum(value)
+        
+    def addEmptyTask(self):
+        taskcreator_object.actions.append([str(len(taskcreator_object.actions) + 1), 'Empty', 'Empty'])
+        buttonTemp = Button(text=self.getButtonString(taskcreator_object.actions[len(taskcreator_object.action)-1]))
+            
+        buttonTemp.bind(on_release = self.callback)
+        
+        self.ids.grid.add_widget(buttonTemp)
+            
+    def getButtonString(self, ls):
+        str = 'Task '
+        str += ls[0]
+        str += '\nAction: '
+        str += ls[1]
+        str += '\nValue: '
+        str += ls[2]
+        return str
+    
+    def callback(self, instance):
+        self.editTask()
+        
+    def editTask(self):
+        editPopup = Popup(title = 'Edit Task',
+                          content = Label(text = 'yo'),
+                          size_hint = (None, None), size = (400, 400),
+                          )
+        editPopup.open()
+                          
+        pass
+        
+    pass
 class ExecuteFileWindow(Screen):
     
     def startLoop(self):
