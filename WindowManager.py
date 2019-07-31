@@ -78,11 +78,25 @@ class NewTaskWindow(Screen):
             
             self.editPopup.dismiss()
         else:
-            self.getObjectFromID(self.editPopup.content, 'message_label').text = 'Values Input does not Match Action'
+            self.getObjectFromID(self.editPopup.content, 'message_label').text = 'Inputed Value Does Not Match Action'
             
     def saveSpinnerText(self, spinner, text):
         self.spinnerText = text
         
+        if( len((FileImporter.getValues()[FileImporter.all_commands[self.spinnerText]])) > 0):
+            self.getObjectFromID(self.editPopup.content, 'value_input').disabled = False
+        else:
+            self.getObjectFromID(self.editPopup.content, 'value_input').disabled = True
+        
+        self.getObjectFromID(self.editPopup.content, 'value_input').hint_text = self.returnHintText(text)
+
+    def returnHintText(self, spinner_text):
+        if (spinner_text == None):
+            return "Enter Value"
+        else:
+            if ((FileImporter.getValues()[FileImporter.all_commands[self.spinnerText]])==[]):
+                return "No Value Needed"
+            else: return 'Type Value from '+ str(FileImporter.getValues()[FileImporter.all_commands[self.spinnerText]][0]) + ' to ' + str(FileImporter.getValues()[FileImporter.all_commands[self.spinnerText]][1])
     def editTask(self, buttonText):
         
         self.spinnerText = None
@@ -105,9 +119,10 @@ class NewTaskWindow(Screen):
         
         valueInput = TextInput(
             id = 'value_input',
-            hint_text = 'Type Value',
+            hint_text = 'Choose an Action Before Typing Values',
             multiline = False,
-            input_filter = 'int'
+            input_filter = 'int',
+            disabled = True
             )
         
         saveButton = Button(
@@ -128,7 +143,6 @@ class NewTaskWindow(Screen):
         self.editPopup.open()
                           
         pass
-
 class LineByLineWindow(Screen):
     def getCommands(self):
         return FileImporter.all_commands
