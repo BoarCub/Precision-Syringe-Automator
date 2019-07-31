@@ -8,7 +8,7 @@ class FileImporter:
         self.rev_commands = self.reverseDictionary(self.all_commands)
         self.actions = []
         self.displayedActions = None
-        self.command_values = {}
+        self.command_values = self.getValues()
 
         
     def setPath(self, path):
@@ -18,15 +18,15 @@ class FileImporter:
         for key in self.all_commands.keys():
             newList.append(key)
         return newList
-
-    def checkValue(self, pair):
+    def getValues(self):
         try:
             with open(os.path.dirname(os.path.realpath(__file__)) + "/ValuesDatabase") as file:
                 self.command_values =  json.load(file)
             print(self.command_values)
-
+            return self.command_values
         except FileNotFoundError:
             print("Value Database file not found.")
+    def checkValue(self, pair):
         if (self.command_values[pair[0]] != None):
             min = self.command_values[pair[0]][0]
             max = self.command_values[pair[0]][1]

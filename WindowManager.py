@@ -71,7 +71,11 @@ class NewTaskWindow(Screen):
             
     def saveSpinnerText(self, spinner, text):
         self.spinnerText = text
-        
+
+    def returnHintText(self, spinner_text):
+        if (spinner_text == None):
+            return "Enter Value"
+        else: return 'Value from '+ FileImporter.getValues()[FileImporter.all_commands[self.spinnerText]]
     def editTask(self, buttonText):
         
         self.spinnerText = None
@@ -94,7 +98,7 @@ class NewTaskWindow(Screen):
         
         valueInput = TextInput(
             id = 'value_input',
-            hint_text = 'Type Value',
+            hint_text = self.returnHintText(),
             multiline = False,
             input_filter = 'int'
             )
@@ -117,7 +121,6 @@ class NewTaskWindow(Screen):
         self.editPopup.open()
                           
         pass
-
 class LineByLineWindow(Screen):
     def getCommands(self):
         return FileImporter.all_commands
