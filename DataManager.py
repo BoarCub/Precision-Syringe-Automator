@@ -104,4 +104,3 @@ class FileImporter:
             
 FileImporter = FileImporter()
 #FileImporter.parseImportedString("Z2O86G6O1")
-print(FileImporter.checkValue("R"))
