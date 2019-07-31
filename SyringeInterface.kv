@@ -23,14 +23,22 @@ WindowManager:
             on_release: app.root.current = "New Task" #Changes Screen to Routine Creator on Click
         Button:
             text: "Line-by-Line"
-            on_release: app.root.current = "New Task" #Changes Screen to Routine Creator on Click
+            on_release: app.root.current = "Line By Line" #Changes Screen to Routine Creator on Click
         Button: #Load Previous File Button
             text: "Load Previous File"
             on_release: app.root.current = "File Chooser Window" #Changes Screen to File Chooser Window on Click
 
 <LineByLineWindow>:
     name: "Line By Line"
-
+    FloatLayout:
+        Spinner:
+            values: root.getCommands()
+        TextInput:
+            hint_text: "value"
+            size_hint_y: None
+            height: 30
+            multiline: False
+            input_filter: 'int'
 #Handles Interface for Choosing a File
 <FileChooserWindow>:
     name: "File Chooser Window"

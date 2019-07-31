@@ -60,13 +60,16 @@ class NewTaskWindow(Screen):
         valueInput = TextInput(
             hint_text = 'Value',
             multiline = False)
-        
+
         editPopup.content.add_widget(spinner)
         editPopup.content.add_widget(valueInput)
         editPopup.open()
                           
         pass
-        
+
+class LineByLineWindow(Screen):
+    def getCommands(self):
+        return FileImporter.all_commands
 class ExecuteFileWindow(Screen):
 
     def startLoop(self):
@@ -75,7 +78,7 @@ class ExecuteFileWindow(Screen):
         pass
     def stopLoop(self):
         serial_object.stopQueryUpdate()
-
+        pass
 
 class SaveFileWindow(Screen):
     def save(self, path, filename):
