@@ -4,6 +4,7 @@ WindowManager:
     NewTaskWindow:
     SaveFileWindow:
     FileChooserWindow:
+    LineByLineWindow:
     ExecuteFileWindow:
         id: execute_file_window
     DisplayFileWindow:
@@ -19,14 +20,17 @@ WindowManager:
         orientation: 'vertical'
         Button: #Create New Routine Button
             text: "Create New Routine"
-            on_release: app.root.current = "New Routine" #Changes Screen to Routine Creator on Click
+            on_release: app.root.current = "New Task" #Changes Screen to Routine Creator on Click
         Button:
             text: "Line-by-Line"
-            on_release: app.root.current = "New Routine" #Changes Screen to Routine Creator on Click
+            on_release: app.root.current = "New Task" #Changes Screen to Routine Creator on Click
         Button: #Load Previous File Button
             text: "Load Previous File"
             on_release: app.root.current = "File Chooser Window" #Changes Screen to File Chooser Window on Click
-            
+
+<LineByLineWindow>:
+    name: "Line By Line"
+
 #Handles Interface for Choosing a File
 <FileChooserWindow>:
     name: "File Chooser Window"
@@ -50,16 +54,40 @@ WindowManager:
             Button: #Choose File Button
                 text: "Choose File"
                 on_release: root.updateDisplay(app.root.ids.display_file_window) #Updates the table of Actions in File/Routine
-                on_release: app.root.current = "Show File" #Swtiches screen to Show File
+                on_release: app.root.current = "Show File" #Switches screen to Show File
             Button: #Cancel Button, Returns to Main Menu
                 text: "Cancel"
                 on_release: app.root.current = "Welcome"
 #Display File Window, Has a Table of Actions in a File/Routine
 <SaveFileWindow>:
     name: "Save File"
-    FloatLayout:
+    text_input: text_input
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            path: root.getPath()
+            id: filechooser
+            #on_selection: text_input.text = self.selection and self.selection[0] or ''
+
         TextInput:
-            pos_hint: {"top": 1, "right": 1}
+            id: text_input
+            hint_text: "File Name"
+            size_hint_y: None
+            height: 30
+            multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.root.current = "New Task"
+
+            Button:
+                text: "Save"
+                on_release: root.save(filechooser.path, text_input.text)
 <DisplayFileWindow>:
     name: "Show File"
     BoxLayout: #The Table, Which is Updated with Actions
@@ -93,20 +121,6 @@ WindowManager:
             on_release: root.stopLoop()
             on_release: app.root.current = "Show File"
 
-#New Routine Window, Handles the Creation of a New Routine
-<NewRoutineWindow>:
-    name: "New Routine"
-    BoxLayout:
-        size_hint: .5, None
-        height: 250
-        pos_hint: {'center_x': .5}
-        orientation: 'vertical'
-        Button: #Button Adds New Task to Routine
-            text: "Assign Tasks"
-            on_release: app.root.current = "New Task" #Switches to New Task Screen
-        Button: #Button Goes Back to Main Menu
-            text: "Go Back"
-            on_release: app.root.current = "Welcome"
 
 #New Task Windows Handles the Creation of a New Task
 <NewTaskWindow>:
@@ -140,12 +154,16 @@ WindowManager:
 
     BoxLayout:
         size_hint: .3, 0.1
-        height: 250
+        height: 600
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
         Button:
             text: "Add Task"
             on_release: root.addEmptyTask()
+        Button:
+            text: "Save File"
+            on_release: app.root.current = "Save File"
         Button: #Button Goes Back to New Routine
             text: "Go Back"
-            on_release: app.root.current = "New Routine"
+            on_release: app.root.current = "Welcome"
+

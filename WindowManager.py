@@ -57,14 +57,19 @@ class ExecuteFileWindow(Screen):
 
     def startLoop(self):
         serial_object.startQueryUpdate(self.ids.queryLabel)
-        
+
+        pass
     def stopLoop(self):
         serial_object.stopQueryUpdate()
 
-    pass
 
 class SaveFileWindow(Screen):
-    pass
+    def save(self, path, filename):
+        with open(os.path.join(path, filename), 'w') as stream:
+            stream.write("hi")
+
+    def getPath(self):
+        return os.path.dirname(os.path.realpath(__file__)) + "/Routines" #sets default folder to FileChooser interface
 class FileChooserWindow(Screen):
 
     def selectFile(self, *args): #the FileChooser in the kv file produces a *args list of information
