@@ -71,7 +71,6 @@ class NewTaskWindow(Screen):
             )
         
         valueInput = TextInput(
-<<<<<<< HEAD
             id = 'value_input',
             hint_text = 'Type Value',
             multiline = False,
