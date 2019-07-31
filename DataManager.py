@@ -8,6 +8,8 @@ class FileImporter:
         self.rev_commands = self.reverseDictionary(self.all_commands)
         self.actions = []
         self.displayedActions = None
+        self.command_values = {}
+
         
     def setPath(self, path):
         self.filePath = path
@@ -16,6 +18,26 @@ class FileImporter:
         for key in self.all_commands.keys():
             newList.append(key)
         return newList
+
+    def checkValue(self, pair):
+        try:
+            with open(os.path.dirname(os.path.realpath(__file__)) + "/ValuesDatabase") as file:
+                self.command_values =  json.load(file)
+            print(self.command_values)
+
+        except FileNotFoundError:
+            print("Value Database file not found.")
+        if (self.command_values[pair[0]] != None):
+            min = self.command_values[pair[0]][0]
+            max = self.command_values[pair[0]][1]
+            if (pair[1]<=max and pair[1]>=min):
+                return True
+            else: return False
+        else:
+            if pair[1] == None:
+                return True
+            else:
+                return False
     def reverseDictionary(self, inputlist): #reverses the dictionary of commands so we can search by both action and command
         newDict = {}
         for colorString in inputlist: #for ever value in the dictionary
