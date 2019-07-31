@@ -43,30 +43,61 @@ class NewTaskWindow(Screen):
         return str
     
     def callback(self, instance):
-        self.editTask()
+        self.editTask(instance.text)
+    
+    def getObjectFromID(self, parent, id):
+        for child in parent.children:
+            if child.id == id:
+                return child
+    
+    def save(self, instance):
+        print(instance.text)
         
-    def editTask(self):
-        editPopup = Popup(title = 'Edit Task',
-                          content = BoxLayout(orientation='horizontal', spacing = 20, size_hint=(1, 0.1), pos_hint = {'top': 1}),
-                          size_hint = (None, None), size = (600, 600),
+        self.getObjectFromID(self.editPopup.content, 'message_label').text = 'Saved...'
+        
+    def editTask(self, buttonText):
+        
+        lines = buttonText.splitlines()
+        
+        self.editPopup = Popup(title = "Editing " + lines[0],
+                          content = BoxLayout(orientation='vertical', spacing = 50, size_hint=(0.6, 1), pos_hint = {'top': 1}),
+                          size_hint = (None, None), size = (400, 400),
                           )
         
         spinner = Spinner(
-            text = 'Action',
+            text = 'Select Action',
             values = FileImporter.all_commands,
             id = 'action_spinner'
             )
         
         valueInput = TextInput(
-            hint_text = 'Value',
-            multiline = False)
+            id = 'value_input',
+            hint_text = 'Type Value',
+            multiline = False,
+            input_filter = 'int'
+            )
         
-        editPopup.content.add_widget(spinner)
-        editPopup.content.add_widget(valueInput)
-        editPopup.open()
+        saveButton = Button(
+            id = 'save_button',
+            text = 'Save',
+            on_release = self.save
+            )
+        
+        messageLabel = Label(
+            id = 'message_label',
+            text = 'Console'
+            )
+        
+        self.editPopup.content.add_widget(spinner)
+        self.editPopup.content.add_widget(valueInput)
+        self.editPopup.content.add_widget(saveButton)
+        self.editPopup.content.add_widget(messageLabel)
+        self.editPopup.open()
                           
         pass
         
+class LineByLineWindow(Screen):
+    pass
 class ExecuteFileWindow(Screen):
 
     def startLoop(self):
