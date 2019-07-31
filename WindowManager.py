@@ -53,15 +53,17 @@ class NewTaskWindow(Screen):
                           
         pass
         
-    pass
 class ExecuteFileWindow(Screen):
-    
+
     def startLoop(self):
         serial_object.startQueryUpdate(self.ids.queryLabel)
         
     def stopLoop(self):
         serial_object.stopQueryUpdate()
-    
+
+    pass
+
+class SaveFileWindow(Screen):
     pass
 class FileChooserWindow(Screen):
 

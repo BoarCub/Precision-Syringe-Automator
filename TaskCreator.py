@@ -5,13 +5,5 @@ class TaskCreator(object):
         self.num = 1
         self.actions = []
         self.buttons = []
-    def takeMode(self, value):
-        print(value)
-        self.mode = value
-    def takeAction(self, value):
-        print(value)
-        self.action = value
-    def takeNum(self, value):
-        print(value)
-        self.num = value
+
 taskcreator_object = TaskCreator()
