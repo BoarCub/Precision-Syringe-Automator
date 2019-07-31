@@ -71,6 +71,7 @@ class NewTaskWindow(Screen):
             )
         
         valueInput = TextInput(
+<<<<<<< HEAD
             id = 'value_input',
             hint_text = 'Type Value',
             multiline = False,
@@ -95,9 +96,11 @@ class NewTaskWindow(Screen):
         self.editPopup.open()
                           
         pass
-        
+
 class LineByLineWindow(Screen):
-    pass
+    def getCommands(self):
+        return FileImporter.all_commands
+
 class ExecuteFileWindow(Screen):
 
     def startLoop(self):
@@ -106,7 +109,7 @@ class ExecuteFileWindow(Screen):
         pass
     def stopLoop(self):
         serial_object.stopQueryUpdate()
-
+        pass
 
 class SaveFileWindow(Screen):
     def save(self, path, filename):
