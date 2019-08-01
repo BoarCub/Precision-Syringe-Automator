@@ -1,10 +1,9 @@
 WindowManager:
     MainWindow:
     NewRoutineWindow:
-    OldNewTaskWindow:
+    NewTaskWindow:
     SaveFileWindow:
     FileChooserWindow:
-    NewNewTaskWindow:
     LineByLineWindow:
     ExecuteFileWindow:
         id: execute_file_window
@@ -14,12 +13,6 @@ WindowManager:
 #Main Menu
 <MainWindow>:
     name: "Welcome"
-    FloatLayout:
-        Button:
-            pos_hint: {'top': 1, 'right': 1}
-            size_hint: 0.1, 0.1
-            text: "Old"
-            on_release: app.root.current = "Old New Task"
     BoxLayout:
         size_hint: .5, None
         height: 250
@@ -27,7 +20,7 @@ WindowManager:
         orientation: 'vertical'
         Button: #Create New Routine Button
             text: "Create New Routine"
-            on_release: app.root.current = "New New Task" #Changes Screen to Routine Creator on Click
+            on_release: app.root.current = "New Task" #Changes Screen to Routine Creator on Click
         Button:
             text: "Line-by-Line"
             on_release: app.root.current = "Line By Line" #Changes Screen to Routine Creator on Click
@@ -73,10 +66,6 @@ WindowManager:
             Button: #Cancel Button, Returns to Main Menu
                 text: "Cancel"
                 on_release: app.root.current = "Welcome"
-<NewNewTaskWindow>:
-    name: "New New Task"
-    text: "Our New Task Creator"
-
 #Display File Window, Has a Table of Actions in a File/Routine
 <SaveFileWindow>:
     name: "Save File"
@@ -142,8 +131,8 @@ WindowManager:
 
 
 #New Task Windows Handles the Creation of a New Task
-<OldNewTaskWindow>:
-    name: "Old New Task"
+<NewTaskWindow>:
+    name: "New Task"
 
     GridLayout:
         id: grid
