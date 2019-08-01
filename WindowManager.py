@@ -41,7 +41,10 @@ class NewTaskWindow(Screen):
         str += '\nAction: '
         str += ls[1]
         str += '\nValue: '
-        str += ls[2]
+        if ls[2] != '':
+            str += ls[2]
+        else:
+            str += 'N/A'
         return str
     
     def callback(self, instance):
@@ -69,6 +72,7 @@ class NewTaskWindow(Screen):
             valueParameter
             ]
             )):
+            
             index = int(self.editPopup.title[13:]) - 1
             
             taskcreator_object.actions[index][1] = self.spinnerText
@@ -88,6 +92,7 @@ class NewTaskWindow(Screen):
         else:
             self.getObjectFromID(self.editPopup.content, 'value_input').disabled = True
         
+        self.getObjectFromID(self.editPopup.content, 'value_input').text = ""
         self.getObjectFromID(self.editPopup.content, 'value_input').hint_text = self.returnHintText(text)
 
     def returnHintText(self, spinner_text):

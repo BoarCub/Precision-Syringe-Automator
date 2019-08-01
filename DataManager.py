@@ -28,10 +28,15 @@ class FileImporter:
             print("Value Database file not found.")
 
     def checkValue(self, pair):
-        if (self.command_values[pair[0]] != [] or self.command_values[pair[0]] != None):
+        if (len(self.command_values[pair[0]]) == 0):
+            if(pair[1] == None):
+                return True
+            else:
+                return False
+        elif (self.command_values[pair[0]] != [] or self.command_values[pair[0]] != None):
             min = self.command_values[pair[0]][0]
             max = self.command_values[pair[0]][1]
-            if (pair[1]<=max and pair[1]>=min):
+            if (pair[1] != None and pair[1]<=max and pair[1]>=min):
                 return True
             else: return False
         else:
