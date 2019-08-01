@@ -67,8 +67,8 @@ class FileImporter:
             return None
         
     def getCommands(self): #returns the entire file using json
-        try:
-            with open(self.makeBroaderPath(os.path.dirname(os.path.realpath(__file__))) + "Databases/CommandsDatabase") as file:
+        try: #self.makeBroaderPath(os.path.dirname(os.path.realpath(__file__))) +
+            with open(self.makeBroaderPath(os.path.dirname(os.path.realpath(__file__)))+ "\Databases\CommandsDatabase") as file:
                 self.all_commands =  json.load(file)
             return self.all_commands
 
@@ -81,6 +81,7 @@ class FileImporter:
         for index in range ((len(file_path)-1), 0, -1):
             if file_path[index] == "/" or file_path[index] == "\\":
                 dash_index = index
+                break
         file_path = file_path[0:index]
         return file_path
     def encodedCommands(self, big_list):
@@ -121,4 +122,3 @@ class FileImporter:
 FileImporter = FileImporter()
 #FileImporter.parseImportedString("Z2O86G6O1")
 #print(FileImporter.checkValue(["R", 150]))
-print(FileImporter.makeBroaderPath(r"C:\Users\Aniket\Documents\GitHub\Precision-Syringe-Automator\Programs"))

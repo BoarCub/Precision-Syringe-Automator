@@ -1,7 +1,7 @@
 import os
 
 from DataManager import FileImporter
-from SerialManager import *
+#from serialManager import *
 from TaskCreator import *
 from kivy.app import App
 from kivy.lang import Builder
@@ -13,7 +13,6 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.spinner import Spinner
 from kivy.uix.textinput import TextInput
 
-from serialManager import *
 
 #each class is a window that is being called via the kv file
 
@@ -155,11 +154,11 @@ class LineByLineWindow(Screen):
 class ExecuteFileWindow(Screen):
 
     def startLoop(self):
-        #serial_object.startQueryUpdate(self.ids.queryLabel)
+        ##serial_object.startQueryUpdate(self.ids.queryLabel)
 
         pass
     def stopLoop(self):
-        #serial_object.stopQueryUpdate()
+        ##serial_object.stopQueryUpdate()
         pass
 
 class SaveFileWindow(Screen):
@@ -168,7 +167,7 @@ class SaveFileWindow(Screen):
             stream.write("hi")
 
     def getPath(self):
-        return os.path.dirname(os.path.realpath(__file__)) + "/Routines" #sets default folder to FileChooser interface
+        return FileImporter.makeBroaderPath(os.path.dirname(os.path.realpath(__file__))) + "/Routines" #sets default folder to FileChooser interface
 class FileChooserWindow(Screen):
 
     def selectFile(self, *args): #the FileChooser in the kv file produces a *args list of information
@@ -179,7 +178,7 @@ class FileChooserWindow(Screen):
         FileImporter.setPath(fileSelected)
 
     def getPath(self):
-        return os.path.dirname(os.path.realpath(__file__)) + "/Routines" #sets default folder to FileChooser interface
+        return FileImporter.makeBroaderPath(os.path.dirname(os.path.realpath(__file__))) + "/Routines" #sets default folder to FileChooser interface
 
     def openFile(self):
         FileImporter.importFile() #calls method in DataManager which imports file using json
