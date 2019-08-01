@@ -10,7 +10,7 @@ class FileImporter:
         self.displayedActions = None
         self.command_values = self.getValues()
 
-        
+
     def setPath(self, path):
         self.filePath = path
     def userCommands(self):
@@ -20,7 +20,7 @@ class FileImporter:
         return newList
     def getValues(self):
         try:
-            with open(os.path.dirname(os.path.realpath(__file__)) + "/ValuesDatabase") as file:
+            with open(self.makeBroaderPath(os.path.dirname(os.path.realpath(__file__))) + "/Databases/ValuesDatabase") as file:
                 self.command_values =  json.load(file)
             print(self.command_values)
             return self.command_values
@@ -68,12 +68,21 @@ class FileImporter:
         
     def getCommands(self): #returns the entire file using json
         try:
-            with open(os.path.dirname(os.path.realpath(__file__)) + "/CommandsDatabase") as file:
+            with open(self.makeBroaderPath(os.path.dirname(os.path.realpath(__file__))) + "Databases/CommandsDatabase") as file:
                 self.all_commands =  json.load(file)
             return self.all_commands
 
         except FileNotFoundError:
+            print(self.makeBroaderPath(os.path.dirname(os.path.realpath(__file__))))
             print("Command Database file not found.")
+
+    def makeBroaderPath(self, file_path):
+        dash_index = 0
+        for index in range ((len(file_path)-1), 0, -1):
+            if file_path[index] == "/" or file_path[index] == "\\":
+                dash_index = index
+        file_path = file_path[0:index]
+        return file_path
     def encodedCommands(self, big_list):
         command = ""
         current_action = ""
@@ -82,6 +91,7 @@ class FileImporter:
             current_action = small_list[0]
             current_num = small_list[1]
             command += self.all_commands[current_action] + current_num
+        print(command)
         return command
     def parseImportedString(self, stringToParse): #goes through every character in a given string and separates command with their associated numbers
         self.actions = []
@@ -111,3 +121,4 @@ class FileImporter:
 FileImporter = FileImporter()
 #FileImporter.parseImportedString("Z2O86G6O1")
 #print(FileImporter.checkValue(["R", 150]))
+print(FileImporter.makeBroaderPath(r"C:\Users\Aniket\Documents\GitHub\Precision-Syringe-Automator\Programs"))
