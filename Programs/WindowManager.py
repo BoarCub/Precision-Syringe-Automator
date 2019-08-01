@@ -170,7 +170,7 @@ class SaveFileWindow(Screen):
             listToSend.append([list[1], list[2]])
         
         with open(os.path.join(path, filename), 'w') as stream:
-            stream.write('\"' + FileImporter.encodedCommands(listToSend) + '\"')#########################################################################################################################################################
+            stream.write('\"' + FileImporter.encodedCommands(listToSend) + '\"')
 
     def getPath(self):
         return FileImporter.makeBroaderPath(os.path.dirname(os.path.realpath(__file__))) + "/Routines" #sets default folder to FileChooser interface
