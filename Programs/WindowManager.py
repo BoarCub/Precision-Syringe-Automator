@@ -13,6 +13,7 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.spinner import Spinner
 from kivy.uix.textinput import TextInput
 
+from serialManager import *
 
 #each class is a window that is being called via the kv file
 
@@ -154,11 +155,11 @@ class LineByLineWindow(Screen):
 class ExecuteFileWindow(Screen):
 
     def startLoop(self):
-        serial_object.startQueryUpdate(self.ids.queryLabel)
+        #serial_object.startQueryUpdate(self.ids.queryLabel)
 
         pass
     def stopLoop(self):
-        serial_object.stopQueryUpdate()
+        #serial_object.stopQueryUpdate()
         pass
 
 class SaveFileWindow(Screen):
