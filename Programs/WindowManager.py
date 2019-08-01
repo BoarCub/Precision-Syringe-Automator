@@ -22,7 +22,9 @@ class MainWindow(Screen):
 class NewRoutineWindow(Screen):
     pass
 
-class NewTaskWindow(Screen):
+class NewNewTaskWindow(Screen):
+    pass
+class OldNewTaskWindow(Screen):
         
     def addEmptyTask(self):
         taskcreator_object.actions.append([str(len(taskcreator_object.actions) + 1), 'Empty', 'Empty'])
