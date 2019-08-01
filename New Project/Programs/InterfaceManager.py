@@ -21,6 +21,11 @@ class StartScreen(Screen):
     pass
 
 
+# The container for the RoutineCreator Screen
+class RoutineCreatorScreen(Screen):
+    pass
+
+
 # Loads the .kv file needed
 kv = Builder.load_file("Interface.kv")
 
@@ -34,4 +39,5 @@ class MainApp(App):
 
 # Main Function which runs the app
 if __name__ == "__main__":
+    
     MainApp().run()

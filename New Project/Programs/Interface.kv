@@ -1,13 +1,36 @@
 # InterfaceManager acts as a container for all of the Screens in the app
 InterfaceManager:
     StartScreen:
+    RoutineCreatorScreen:
     
 # The first menu that
 <StartScreen>:
     name: "Start Screen"
+    Label:
+        text: "Precision Syringe\nAutomator"
+        pos_hint: {'center_x': .5, 'center_y': 0.8}
+        text_size: self.size
+        halign: 'center'
+        valign: 'middle'
+        font_size: '60sp'
+        font_name: 'Corbel'
+        
     BoxLayout:
         size_hint: .5, None
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
         Button: #Create New Routine Button
             text: "Create New Routine"
+            on_release: app.root.current = "Routine Creator Screen"
+
+# This screen allows a user to create a new routine
+<RoutineCreatorScreen>:
+    name: "Routine Creator Screen"
+    BoxLayout:
+        size_hint: .5, None
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button: #Goes Back to StartScreen
+            text: "Back"
+            on_release: app.root.current = "Start Screen"
+    
