@@ -22,7 +22,6 @@ class FileImporter:
         try:
             with open(self.makeBroaderPath(os.path.dirname(os.path.realpath(__file__))) + "/Databases/ValuesDatabase") as file:
                 self.command_values =  json.load(file)
-            print(self.command_values)
             return self.command_values
         except FileNotFoundError:
             print("Value Database file not found.")
@@ -59,8 +58,6 @@ class FileImporter:
             with open(self.filePath) as file:
                 selectedRoutine = json.load(file)
                 print("able to read file")
-                print(self.filePath)
-                print(selectedRoutine)
                 return selectedRoutine
         except:
             print("file not compatible")
@@ -68,7 +65,7 @@ class FileImporter:
         
     def getCommands(self): #returns the entire file using json
         try: #self.makeBroaderPath(os.path.dirname(os.path.realpath(__file__))) +
-            with open(self.makeBroaderPath(os.path.dirname(os.path.realpath(__file__)))+ "\Databases\CommandsDatabase") as file:
+            with open(self.makeBroaderPath(os.path.dirname(os.path.realpath(__file__)))+ "/Databases/CommandsDatabase") as file:
                 self.all_commands =  json.load(file)
             return self.all_commands
 

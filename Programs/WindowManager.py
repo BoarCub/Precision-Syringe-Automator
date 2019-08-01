@@ -163,8 +163,14 @@ class ExecuteFileWindow(Screen):
 
 class SaveFileWindow(Screen):
     def save(self, path, filename):
+        
+        listToSend = []
+        
+        for list in taskcreator_object.actions:
+            listToSend.append([list[1], list[2]])
+        
         with open(os.path.join(path, filename), 'w') as stream:
-            stream.write("hi")
+            stream.write('\"' + FileImporter.encodedCommands(listToSend) + '\"')#########################################################################################################################################################
 
     def getPath(self):
         return FileImporter.makeBroaderPath(os.path.dirname(os.path.realpath(__file__))) + "/Routines" #sets default folder to FileChooser interface
