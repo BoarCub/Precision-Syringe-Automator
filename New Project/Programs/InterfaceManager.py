@@ -34,16 +34,40 @@ class RoutineCreatorScreen(Screen):
         self.updateScreen()
                 
     def updateScreen(self):
-        if( len(TaskManager.newTaskActions) < len(self.ids.actions_box.children) ):
+        if( len(TaskManager.newTaskActions) <= len(self.ids.actions_box.children) ):
              print("Available Space")
-             self.removeAllWidgets()
+             
+             for index in range(1, len(TaskManager.newTaskActions)+1):
+                 print(index)
+                 self.displayAction(index, index, TaskManager.newTaskActions[str(index)])
              
         else:
             print("No available space")
     
-    def displayAction(index, list):
-        pass
-    
+    def displayAction(self, position, index, list):
+        
+        layout = self.ids.actions_box.children[len(self.ids.actions_box.children) - position]
+        
+        for widget in TaskManager.previousWidgets[position-1]:
+            layout.remove_widget(widget)
+        
+        TaskManager.previousWidgets[position-1] = []
+        
+        indexLabel = Label(text = str(index))
+        inputSpinner = self.formatSpinner(self.generateValveSpinner(True), list[0])
+        outputSpinner = self.formatSpinner(self.generateValveSpinner(False), list[1])
+        modeSpinner = self.formatSpinner(self.generateModeSpinner(), list[2])
+        
+        layout.add_widget(indexLabel)
+        layout.add_widget(inputSpinner)
+        layout.add_widget(outputSpinner)
+        layout.add_widget(modeSpinner)
+        
+        TaskManager.previousWidgets[position-1].append(indexLabel)
+        TaskManager.previousWidgets[position-1].append(inputSpinner)
+        TaskManager.previousWidgets[position-1].append(outputSpinner)
+        TaskManager.previousWidgets[position-1].append(modeSpinner)
+        
     def generateValveSpinner(self, isInput):
         spinner = Spinner(
             text = 'Empty',
@@ -71,14 +95,13 @@ class RoutineCreatorScreen(Screen):
         
         return spinner
     
-    def updateSpinnerValue(self, spinner, text):
-        print("Spinner: " + spinner + " Text: " + text)
-        
-    def removeAllWidgets(self):
-        for actionLayout in self.ids.actions_box.children:
-                 for child in actionLayout.children:
-                     actionLayout.remove_widget(child)
-
+    def formatSpinner(self, spinner, value):
+        if(value != None):
+            spinner.text = str(value)
+        return spinner
+    
+    def updateSpinnerValues(self, spinner, text):
+        print("Text: " + text + " " + spinner.id)
 
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
