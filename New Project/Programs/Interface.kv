@@ -26,6 +26,36 @@ InterfaceManager:
 # This screen allows a user to create a new routine
 <RoutineCreatorScreen>:
     name: "Routine Creator Screen"
+    
+    BoxLayout:
+        orientation: 'horizontal'
+        pos_hint: {'center_x': .5, 'center_y': .95}
+        Label:
+            text: "[u]Input Valve:[/u]"
+            markup: True
+            halign: 'left'
+            font_size: '20sp'
+        Label:
+            text: "[u]Output Valve:[/u]"
+            markup: True
+            halign: 'left'
+            font_size: '20sp'
+        Label:
+            text: "[u]Mode:[/u]"
+            markup: True
+            halign: 'left'
+            font_size: '20sp'
+        Label:
+            text: "[u]Value:[/u]"
+            markup: True
+            halign: 'left'
+            font_size: '20sp'
+        Label:
+            text: "[u]Speed:[/u]"
+            markup: True
+            halign: 'left'
+            font_size: '20sp'
+    
     BoxLayout:
         size_hint: .5, None
         pos_hint: {'center_x': .5}
@@ -33,4 +63,3 @@ InterfaceManager:
         Button: #Goes Back to StartScreen
             text: "Back"
             on_release: app.root.current = "Start Screen"
-    
