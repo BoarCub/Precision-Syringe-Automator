@@ -10,6 +10,8 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.spinner import Spinner
 from kivy.uix.textinput import TextInput
 
+from TaskManager import TaskManager
+
 
 # InterfaceManager acts as a container for all of the Screens in the app
 class InterfaceManager(ScreenManager):
@@ -23,8 +25,59 @@ class StartScreen(Screen):
 
 # The container for the RoutineCreator Screen
 class RoutineCreatorScreen(Screen):
-    pass
-
+    
+    def addAction(self):
+        index = len(TaskManager.newTaskActions) + 1
+        TaskManager.newTaskActions.update( {str(index): [None, None, None, None, None]} )
+        
+        print(TaskManager.newTaskActions)
+        self.updateScreen()
+                
+    def updateScreen(self):
+        if( len(TaskManager.newTaskActions) < len(self.ids.actions_box.children) ):
+             print("Available Space")
+             self.removeAllWidgets()
+             
+        else:
+            print("No available space")
+    
+    def displayAction(index, list):
+        
+    
+    def generateValveSpinner(self, isInput:)
+        spinner = Spinner(
+            text = 'Empty',
+            values = ('1', '2', '3', '4', '5', '6', '7', '8')
+            )
+        
+        if isInput:
+            spinner.id = 'input'
+        else:
+            spinner.id = 'output'
+        
+        spinner.bind(text = self.updateSpinnerValues)
+        
+        return spinner
+    
+    def generateModeSpinner(self):
+        spinner = Spinner(
+            text = 'Empty',
+            values = ('Time', 'Volume')
+            )
+        
+        spinner.id = 'mode'
+        
+        spinner.bind(text = self.updateSpinnerValues)
+        
+        return spinner
+    
+    def updateSpinnerValue(self, spinner, text):
+        print("Spinner: " + spinner + " Text: " + text)
+        
+    def removeAllWidgets(self):
+        for actionLayout in self.ids.actions_box.children:
+                 for child in actionLayout.children:
+                     actionLayout.remove_widget(child)
 
 # Loads the .kv file needed
 kv = Builder.load_file("Interface.kv")

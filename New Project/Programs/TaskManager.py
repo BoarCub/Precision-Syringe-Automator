@@ -3,4 +3,9 @@ class TaskManager(object):
     
     def __init__ (self):
         
-        self.newTask = {}
+        # Holds all of the actions in a newly created task
+        # Follows this format {"# of Task Starting from 1": [# of Input Valve, # of Output Valve, "Mode (Time or Volume)", # of Value, # of Speed]
+        self.newTaskActions = {}
+        
+# Creates a TaskManager object which can be used when the class is imported
+TaskManager = TaskManager()

@@ -2,6 +2,7 @@
 InterfaceManager:
     StartScreen:
     RoutineCreatorScreen:
+        id: routine_creator_screen
     
 # The first menu that
 <StartScreen>:
@@ -27,9 +28,15 @@ InterfaceManager:
 <RoutineCreatorScreen>:
     name: "Routine Creator Screen"
     
+    # Static Layout Showing the Titles of Each Column
     BoxLayout:
         orientation: 'horizontal'
         pos_hint: {'center_x': .5, 'center_y': .95}
+        Label:
+            text: "[u]Task Number:[/u]"
+            markup: True
+            halign: 'left'
+            font_size: '20sp'
         Label:
             text: "[u]Input Valve:[/u]"
             markup: True
@@ -55,11 +62,55 @@ InterfaceManager:
             markup: True
             halign: 'left'
             font_size: '20sp'
-    
+            
     BoxLayout:
-        size_hint: .5, None
+        id: actions_box
+        orientation: 'vertical'
+        size_hint: 1, 0.7
+        pos_hint: {'center_x': .5, 'center_y': .55}
+        
+        BoxLayout:
+            orientation: 'horizontal'
+            id: 1
+            Button:
+        BoxLayout:
+            orientation: 'horizontal'
+            id: 2
+        BoxLayout:
+            orientation: 'horizontal'
+            id: 3
+        BoxLayout:
+            orientation: 'horizontal'
+            id: 4
+        BoxLayout:
+            orientation: 'horizontal'
+            id: 5
+        BoxLayout:
+            orientation: 'horizontal'
+            id: 6
+        BoxLayout:
+            orientation: 'horizontal'
+            id: 7
+        BoxLayout:
+            orientation: 'horizontal'
+            id: 8
+        BoxLayout:
+            orientation: 'horizontal'
+            id: 9
+        BoxLayout:
+            orientation: 'horizontal'
+            id: 10
+        BoxLayout:
+            orientation: 'horizontal'
+            id: position_11
+
+    BoxLayout:
+        size_hint: .5, .1
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
+        Button:
+            text: "Add Action"
+            on_release: root.addAction()            
         Button: #Goes Back to StartScreen
             text: "Back"
             on_release: app.root.current = "Start Screen"
