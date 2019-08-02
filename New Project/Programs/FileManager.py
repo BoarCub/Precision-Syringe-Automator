@@ -39,19 +39,12 @@ class FileManager(object):
             print("No File Given")
             return None
         
-        try:
-            with open(file_path) as file:
-                selectedFile = json.load(file)
-                print(self.file_name, "Loaded Succesfully @ ", file_path)
-                return selectedFile
-            
-        except FileNotFoundError:
-            print("File Not Found @ ", file_path)
-            return None
-
-        except:
-            print("File Not Imported @ ", file_path)
-            return None
+        with open(file_path) as file:
+            selectedFile = json.load(file)
+            print(self.file_name, "Loaded Succesfully @ ", file_path)
+            return selectedFile
+        
+        
     
     #goes through an encoded list of strings and numbers (ex:Z1R) to produce a list readable in the interface
     def parseString(self, input_string):
