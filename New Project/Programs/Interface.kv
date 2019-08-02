@@ -165,25 +165,12 @@ InterfaceManager:
         valign: 'middle'
         font_size: '40sp'
         font_name: 'Corbel'
-    ScrollView:
+    BoxLayout:
         id: display_box
-        do_scroll_x: False
-        do_scroll_y: True
-        Label:
-            size_hint_y: None
-            height: self.texture_size[1]
-            
-            padding: 10, 10
-            text:
-                'really some amazing text\n' * 100 
-            #BoxLayout:
-            #padding: 10, 10
-            #id: display_box
-            #size_hint: .5, None
-            #height: self.height
-            #pos_hint: {'top': .9, 'center_x': 0.5}
-            #orientation: 'vertical'
-            #halign: 'right''''
+        size_hint: .5, None
+        pos_hint: {'center_x': .5, 'center_y':.6}
+        height: 300
+        orientation: 'vertical'
     BoxLayout: #Layout Containing Navigational Buttons
         size_hint: .5, None
         height: 100
