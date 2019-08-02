@@ -101,7 +101,29 @@ class RoutineCreatorScreen(Screen):
         return spinner
     
     def updateSpinnerValues(self, spinner, text):
-        print("Text: " + text + " " + spinner.id)
+        
+        try:
+            text = int(text)
+        except:
+            pass
+        
+        if(spinner.id == 'input'):
+            index = 0
+        elif(spinner.id == 'output'):
+            index = 1
+        else:
+            index = 2
+        try:
+            TaskManager.newTaskActions[ str(self.widgetIndexToTaskIndex(self.findIndexOfParent(spinner))) ][index] = text
+        except:
+            pass
+        
+    def findIndexOfParent(self, widget):
+        return self.ids.actions_box.children.index(widget.parent)
+    
+    def widgetIndexToTaskIndex(self, index):
+        return len(self.ids.actions_box.children)-index
+        
 
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
