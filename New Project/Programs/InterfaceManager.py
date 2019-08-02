@@ -92,25 +92,30 @@ class PreviousFileScreen(Screen):
     #signals the widgets to update based on the selected file
     def updateDisplay(self, object):
         print("file being imported", FileManager.importFile())
-        self.updateWidgets(FileManager.parseString(FileManager.importFile()))
+        self.updateWidgets(FileManager.parseString(FileManager.importFile()), object)
     
     #updates widgets based on a list of commands and their values to display
     def updateWidgets(self, actions_list, object):
-        
+        #only works nothing has previously been displayed on the screen
         if(FileManager.displayed_actions != None):
             for action in FileManager.displayed_actions:
                 object.ids.display_box.remove_widget(action)
         
+        #after displaying, it clears the cache to prepare for the nexy display
         FileManager.displayed_actions = []
         
-        for smallList in actions_list:
+        #for every action in the list of actions
+        for small_list in actions_list:
             placeholderLayout = BoxLayout()
             
-            for element in smallList:
+            #for every item in each action (ex: Execute Command Buffer, or 83)
+            for element in small_list:
                 placeholderLayout.add_widget(Label(text=element))
             
+            #add it to the list of displayed_actions just so we know what the last thing displayed was at any given time
             FileManager.displayed_actions.append(placeholderLayout)
             
+            #add the widget to the displayfilescreen's box layout (id: display_box)
             object.ids.display_box.add_widget(placeholderLayout)
     
     
@@ -118,6 +123,10 @@ class PreviousFileScreen(Screen):
 class DisplayFileScreen(Screen):
     pass
 
+
+#Processes the execution visuals for the user
+class ExecuteFileScreen(Screen):
+    pass
 # Loads the .kv file needed
 kv = Builder.load_file("Interface.kv")
 

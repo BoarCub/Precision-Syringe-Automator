@@ -26,7 +26,7 @@ class FileManager(object):
     
     #import the current self.file_path
     def importFile(self): 
-        self.importFilePath(self.file_path)
+        return self.importFilePath(self.file_path)
         
     #imports file using json
     def importFilePath(self, file_path):
