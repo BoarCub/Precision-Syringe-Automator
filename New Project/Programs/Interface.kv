@@ -139,7 +139,7 @@ InterfaceManager:
         orientation: 'vertical'
         #The File Chooser Widget
         FileChooserIconView
-            path: r'C:\Users\Aniket\Documents\GitHub\Precision-Syringe-Automator\New Project\Routines'
+            path: root.getPath()
             on_selection: root.selectedFile = root.selectFile(*args) #args contains the file object path ([0]) and the file path in a list ([1][0])
     BoxLayout: #Layout Containing Navigational Buttons
         size_hint: .5, None
