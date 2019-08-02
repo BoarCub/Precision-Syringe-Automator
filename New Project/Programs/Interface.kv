@@ -2,7 +2,13 @@
 InterfaceManager:
     StartScreen:
     RoutineCreatorScreen:
+<<<<<<< HEAD
         id: routine_creator_screen
+=======
+    PreviousFileScreen:
+    DisplayFileScreen:
+        id: display_file_screen
+>>>>>>> bc1da6a28d5b95c50c2d0461682d3cb911f0a4df
     
 # The first menu that
 <StartScreen>:
@@ -17,12 +23,15 @@ InterfaceManager:
         font_name: 'Corbel'
         
     BoxLayout:
-        size_hint: .5, None
+        size_hint: .4, .2
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
         Button: #Create New Routine Button
             text: "Create New Routine"
             on_release: app.root.current = "Routine Creator Screen"
+        Button: #Show Previous File Button
+            text: "Load File"
+            on_release: app.root.current = "Previous File Screen"
 
 # This screen allows a user to create a new routine
 <RoutineCreatorScreen>:
@@ -114,3 +123,48 @@ InterfaceManager:
         Button: #Goes Back to StartScreen
             text: "Back"
             on_release: app.root.current = "Start Screen"
+
+#allows the reader to view previously saved files and execute them
+<PreviousFileScreen>:
+    name: "Previous File Screen"
+    Label:
+        text: "Load File"
+        pos_hint: {'center_x': .5, 'center_y': 0.9}
+        text_size: self.size
+        halign: 'center'
+        valign: 'middle'
+        font_size: '40sp'
+        font_name: 'Corbel'
+        
+    
+    BoxLayout:
+        pos_hint: {'center_x': .5, 'top': .85}
+        orientation: 'vertical'
+        #The File Chooser Widget
+        FileChooserIconView
+            path: r'C:\Users\Aniket\Documents\GitHub\Precision-Syringe-Automator\New Project\Routines'
+            on_selection: root.selectedFile = root.selectFile(*args) #args contains the file object path ([0]) and the file path in a list ([1][0])
+    BoxLayout: #Layout Containing Navigational Buttons
+        size_hint: .5, None
+        height: 100
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button: #Choose File Button
+            text: "Choose File"
+            on_release: root.updateDisplay(app.root.ids.display_file_screen) #Updates the table of Actions in File/Routine
+            #on_release: app.root.current = "Display File Screen" #Switches screen to Display File Screen
+        Button: #Cancel Button, Returns to Main Menu
+            text: "Cancel"
+            on_release: app.root.current = "Start Screen"
+
+#displays the contents on the currently loaded file from <PreviousFileScreen>
+<DisplayFileScreen>:
+    name: "Display File Screen"
+    Label:
+        text: "Display File"
+        pos_hint: {'center_x': .5, 'center_y': 0.9}
+        text_size: self.size
+        halign: 'center'
+        valign: 'middle'
+        font_size: '40sp'
+        font_name: 'Corbel'
