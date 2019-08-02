@@ -25,7 +25,7 @@ class StartScreen(Screen):
 
 # The container for the RoutineCreator Screen
 class RoutineCreatorScreen(Screen):
-    
+    '''
     def addAction(self):
         index = len(TaskManager.newTaskActions) + 1
         TaskManager.newTaskActions.update( {str(index): [None, None, None, None, None]} )
@@ -78,7 +78,8 @@ class RoutineCreatorScreen(Screen):
         for actionLayout in self.ids.actions_box.children:
                  for child in actionLayout.children:
                      actionLayout.remove_widget(child)
-
+    '''
+    pass
 
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
