@@ -78,14 +78,10 @@ class RoutineCreatorScreen(Screen):
         for actionLayout in self.ids.actions_box.children:
                  for child in actionLayout.children:
                      actionLayout.remove_widget(child)
-    
-    pass
+
 
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
-    #sets the default file path for looking for routines
-    def getPath(self):
-        return FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__)))+ "/Routines"
     #recieves the file path from the file chooser
     def selectFile(self, *args):
         print("File selected: ", args[1][0])
