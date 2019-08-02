@@ -6,6 +6,7 @@ InterfaceManager:
     PreviousFileScreen:
     DisplayFileScreen:
         id: display_file_screen
+
     
 # The first menu that
 <StartScreen>:
@@ -20,15 +21,12 @@ InterfaceManager:
         font_name: 'Corbel'
         
     BoxLayout:
-        size_hint: .4, .2
+        size_hint: .5, None
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
         Button: #Create New Routine Button
             text: "Create New Routine"
             on_release: app.root.current = "Routine Creator Screen"
-        Button: #Show Previous File Button
-            text: "Load File"
-            on_release: app.root.current = "Previous File Screen"
 
 # This screen allows a user to create a new routine
 <RoutineCreatorScreen>:
@@ -139,7 +137,7 @@ InterfaceManager:
         orientation: 'vertical'
         #The File Chooser Widget
         FileChooserIconView
-            path: r'C:\Users\Aniket\Documents\GitHub\Precision-Syringe-Automator\New Project\Routines'
+            path: root.getPath()
             on_selection: root.selectedFile = root.selectFile(*args) #args contains the file object path ([0]) and the file path in a list ([1][0])
     BoxLayout: #Layout Containing Navigational Buttons
         size_hint: .5, None
@@ -165,3 +163,4 @@ InterfaceManager:
         valign: 'middle'
         font_size: '40sp'
         font_name: 'Corbel'
+
