@@ -69,47 +69,34 @@ InterfaceManager:
             markup: True
             halign: 'left'
             font_size: '20sp'
-            
+     
     BoxLayout:
-        id: actions_box
-        orientation: 'vertical'
-        size_hint: 1, 0.7
-        pos_hint: {'center_x': .5, 'center_y': .55}
-        
-        BoxLayout:
-            orientation: 'horizontal'
-            id: 1
-        BoxLayout:
-            orientation: 'horizontal'
-            id: 2
-        BoxLayout:
-            orientation: 'horizontal'
-            id: 3
-        BoxLayout:
-            orientation: 'horizontal'
-            id: 4
-        BoxLayout:
-            orientation: 'horizontal'
-            id: 5
-        BoxLayout:
-            orientation: 'horizontal'
-            id: 6
-        BoxLayout:
-            orientation: 'horizontal'
-            id: 7
-        BoxLayout:
-            orientation: 'horizontal'
-            id: 8
-        BoxLayout:
-            orientation: 'horizontal'
-            id: 9
-        BoxLayout:
-            orientation: 'horizontal'
-            id: 10
-        BoxLayout:
-            orientation: 'horizontal'
-            id: 11
+        size_hint: .5, .5
+        ScrollView:
+            GridLayout:
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height  #<<<<<<<<<<<<<<<<<<<<
+                row_default_height: 60
+                cols:1
 
+                Button:
+                Button:
+                Button:
+                Button:
+                Button:
+                Button:
+                Button:
+                Button:
+                Button:
+                Button:
+                Button:
+                Button:
+                Button:
+                Button:
+                Button:
+                Button:
+            
     BoxLayout:
         size_hint: .5, .1
         pos_hint: {'center_x': .5}
