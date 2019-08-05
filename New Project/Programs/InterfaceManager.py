@@ -27,7 +27,31 @@ class StartScreen(Screen):
 
 # The container for the RoutineCreator Screen
 class RoutineCreatorScreen(Screen):
-    pass
+    
+    def addEmptyAction(self):
+        
+        layout = FloatLayout(
+            )
+        
+        taskLabel = Label(
+            text = str(len(TaskManager.newTaskActions)+1),
+            size_hint = (0.1, 1)
+            )
+        
+        spinner = Spinner(text = "Mode",
+                          size_hint = (0.3, 1),
+                          pos_hint = {'center_x': 0.5, 'center_y': 0.5}
+                          )
+        
+        descriptionLabel = Label()
+        
+        layout.add_widget(taskLabel)
+        layout.add_widget(spinner)
+        layout.add_widget(descriptionLabel)
+        
+        TaskManager.taskRows.append(layout)
+        
+        self.actions_layout.add_widget(layout)
 
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
