@@ -35,15 +35,20 @@ class RoutineCreatorScreen(Screen):
         
         taskLabel = Label(
             text = str(len(TaskManager.newTaskActions)+1),
-            size_hint = (0.1, 1)
+            size_hint = (0.15, 1),
+            pos_hint = {'center_x': 0.08, 'center_y': 0.5}
             )
         
-        spinner = Spinner(text = "Mode",
+        spinner = Spinner(text = "Choose Mode",
                           size_hint = (0.3, 1),
-                          pos_hint = {'center_x': 0.5, 'center_y': 0.5}
+                          pos_hint = {'center_x': 0.3, 'center_y': 0.5}
                           )
         
-        descriptionLabel = Label()
+        descriptionLabel = Label(
+            text = "None",
+            size_hint = (0.8, 0.1),
+            pos_hint = {'center_x': 0.775, 'top': 0.5}
+            )
         
         layout.add_widget(taskLabel)
         layout.add_widget(spinner)

@@ -37,26 +37,25 @@ InterfaceManager:
     actions_layout: actions_layout
     
     # Static Layout Showing the Titles of Each Column
-    BoxLayout:
-        orientation: 'horizontal'
-        pos_hint: {'center_x': .5, 'center_y': .95}
+    FloatLayout:
         Label:
-            text: "[u]Task Number:[/u]"
+            size_hint: 0.8, 0.1
+            pos_hint: {'center_x': 0.08, 'top': 1}
+            text: "[u]Task #:[/u]"
             markup: True
-            halign: 'left'
             font_size: '20sp'
         Label:
+            size_hint: 0.8, 0.1
+            pos_hint: {'center_x': 0.3, 'top': 1}
             text: "[u]Mode:[/u]"
             markup: True
-            halign: 'left'
             font_size: '20sp'
         Label:
-        Label:
+            size_hint: 0.8, 0.1
+            pos_hint: {'center_x': 0.6, 'top': 1}
             text: "[u]Description:[/u]"
             markup: True
-            halign: 'left'
             font_size: '20sp'
-        Label:
      
     BoxLayout:
         size_hint: 1, .78
