@@ -44,19 +44,21 @@ class RoutineCreatorScreen(Screen):
                           pos_hint = {'center_x': 0.3, 'center_y': 0.5}
                           )
         
-        descriptionLabel = Label(
+        descriptionButton = Button(
             text = "None",
-            size_hint = (0.8, 0.1),
-            pos_hint = {'center_x': 0.775, 'top': 0.5}
+            size_hint = (0.5, 1),
+            pos_hint = {'center_x': 0.725, 'center_y': 0.5}
             )
         
         layout.add_widget(taskLabel)
         layout.add_widget(spinner)
-        layout.add_widget(descriptionLabel)
+        layout.add_widget(descriptionButton)
         
         TaskManager.taskRows.append(layout)
         
         self.actions_layout.add_widget(layout)
+        
+        TaskManager.newTaskActions.update({str(len(TaskManager.newTaskActions)+1): [None, None]})
 
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
