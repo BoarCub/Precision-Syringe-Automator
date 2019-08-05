@@ -26,13 +26,15 @@ class StartScreen(Screen):
 # The container for the RoutineCreator Screen
 class RoutineCreatorScreen(Screen):
     
+    # Adds am empty action to the task
     def addAction(self):
         index = len(TaskManager.newTaskActions) + 1
         TaskManager.newTaskActions.update( {str(index): [None, None, None, None, None]} )
         
         print(TaskManager.newTaskActions)
         self.updateScreen()
-                
+    
+    # Updates the widgets on the screen with any changes to the task
     def updateScreen(self):
         if( len(TaskManager.newTaskActions) <= len(self.ids.actions_box.children) ):
              print("Available Space")
@@ -44,6 +46,10 @@ class RoutineCreatorScreen(Screen):
         else:
             print("No available space")
     
+    # Displays an action on the screen
+    # position represents the position on the screen that the action is to be displayed, starting with 1
+    # index represents the step number of the action in the task, starting with 1
+    # list is a list represents the different properties of the task: [input valve, output valve, mode, value, speed]. This follows the same format as in TaskManager.newTaskActions
     def displayAction(self, position, index, list):
         
         layout = self.ids.actions_box.children[len(self.ids.actions_box.children) - position]
@@ -57,17 +63,24 @@ class RoutineCreatorScreen(Screen):
         inputSpinner = self.formatSpinner(self.generateValveSpinner(True), list[0])
         outputSpinner = self.formatSpinner(self.generateValveSpinner(False), list[1])
         modeSpinner = self.formatSpinner(self.generateModeSpinner(), list[2])
+        valueInput = self.formatTextInput(self.generateValueText(), list[3])
+        speedInput = self.formatTextInput(self.generateSpeedText(), list[4])
         
         layout.add_widget(indexLabel)
         layout.add_widget(inputSpinner)
         layout.add_widget(outputSpinner)
         layout.add_widget(modeSpinner)
+        layout.add_widget(valueInput)
+        layout.add_widget(speedInput)
         
         TaskManager.previousWidgets[position-1].append(indexLabel)
         TaskManager.previousWidgets[position-1].append(inputSpinner)
         TaskManager.previousWidgets[position-1].append(outputSpinner)
         TaskManager.previousWidgets[position-1].append(modeSpinner)
+        TaskManager.previousWidgets[position-1].append(valueInput)
+        TaskManager.previousWidgets[position-1].append(speedInput)
         
+    # Returns a new Spinner, representing the valve chosen. isInput is a boolean representing whether the valve is an input valve. Otherwise, the valve is an output valve
     def generateValveSpinner(self, isInput):
         spinner = Spinner(
             text = 'Empty',
@@ -82,7 +95,8 @@ class RoutineCreatorScreen(Screen):
         spinner.bind(text = self.updateSpinnerValues)
         
         return spinner
-    
+  
+    # Returns a new Spinner, representing the mode chosen (either time or volume)
     def generateModeSpinner(self):
         spinner = Spinner(
             text = 'Empty',
@@ -95,11 +109,57 @@ class RoutineCreatorScreen(Screen):
         
         return spinner
     
+    # Returns a new TextInput, representing the value chosen (time or volume)
+    def generateValueText(self):
+        text = TextInput(
+            id = 'value_text',
+            hint_text = 'Value',
+            multiline = False,
+            input_filter = 'int'
+            )
+        
+        text.bind(text = self.updateTextValues)
+        
+        return text
+    
+    # Returns a new TextInput, representing the speed chosen
+    def generateSpeedText(self):
+        text = TextInput(
+            id = 'speed_text',
+            hint_text = 'Speed',
+            multiline = False,
+            input_filter = 'int'
+            )
+        
+        text.bind(text = self.updateTextValues)
+        
+        return text
+    
+    # Sets the text of the spinner based on a value given
     def formatSpinner(self, spinner, value):
         if(value != None):
             spinner.text = str(value)
         return spinner
     
+    # Sets the text of the TextInput based on a value given
+    def formatTextInput(self, textInput, value):
+        if(value != None):
+            textInput.text = value
+        return textInput
+    
+    def updateTextValues(self, textbox, text):
+        
+        if(textbox.id == 'value_text'):
+            index = 3
+        else:
+            index = 4
+            
+        try:
+            TaskManager.newTaskActions[ str(self.widgetIndexToTaskIndex(self.findIndexOfParent(textbox))) ][index] = text
+        except:
+            pass
+    
+    # This function updates newTaskActions with any new values in the spinners
     def updateSpinnerValues(self, spinner, text):
         
         try:
