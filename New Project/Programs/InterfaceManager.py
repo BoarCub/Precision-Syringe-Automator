@@ -91,7 +91,7 @@ class RoutineCreatorScreen(Screen):
             spinner.id = 'input'
         else:
             spinner.id = 'output'
-        
+            
         spinner.bind(text = self.updateSpinnerValues)
         
         return spinner
@@ -115,7 +115,8 @@ class RoutineCreatorScreen(Screen):
             id = 'value_text',
             hint_text = 'Value',
             multiline = False,
-            input_filter = 'int'
+            input_filter = 'int',
+            halign = 'center'
             )
         
         text.bind(text = self.updateTextValues)
@@ -126,9 +127,10 @@ class RoutineCreatorScreen(Screen):
     def generateSpeedText(self):
         text = TextInput(
             id = 'speed_text',
-            hint_text = 'Speed',
+            hint_text = 'Speed (1-40)',
             multiline = False,
-            input_filter = 'int'
+            input_filter = 'int',
+            halign = 'center'
             )
         
         text.bind(text = self.updateTextValues)
