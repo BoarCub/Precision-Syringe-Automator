@@ -25,41 +25,60 @@ class StartScreen(Screen):
     pass
 
 
-# The container for the RoutineCreator Screen
+#The container for the RoutineCreator Screen
 class RoutineCreatorScreen(Screen):
     
+    #Creates an empty action and adds it to the task and screen
     def addEmptyAction(self):
         
         layout = FloatLayout(
             )
         
         taskLabel = Label(
+            id = "task_label",
             text = str(len(TaskManager.newTaskActions)+1),
             size_hint = (0.15, 1),
             pos_hint = {'center_x': 0.08, 'center_y': 0.5}
             )
         
         spinner = Spinner(text = "Choose Mode",
+                          id = "mode_spinner",
+                          values = ('Dispense', 'Retrieve', 'Back-and-Forth', 'Recycle'),
                           size_hint = (0.3, 1),
                           pos_hint = {'center_x': 0.3, 'center_y': 0.5}
                           )
         
-        descriptionButton = Button(
-            text = "None",
+        spinner.bind(text = self.updateModeSpinner)
+        
+        detailsButton = Button(
+            id = "details_button",
+            text = "Choose a Mode First",
             size_hint = (0.5, 1),
-            pos_hint = {'center_x': 0.725, 'center_y': 0.5}
+            pos_hint = {'center_x': 0.725, 'center_y': 0.5},
+            disabled = True
             )
         
         layout.add_widget(taskLabel)
         layout.add_widget(spinner)
-        layout.add_widget(descriptionButton)
+        layout.add_widget(detailsButton)
         
         TaskManager.taskRows.append(layout)
         
         self.actions_layout.add_widget(layout)
         
         TaskManager.newTaskActions.update({str(len(TaskManager.newTaskActions)+1): [None, None]})
-
+        
+    #A callback function that is called when the text value of a mode spinner changes
+    def updateModeSpinner(self, spinner, value):
+        
+        TaskManager.newTaskActions[str(TaskManager.taskRows.index(spinner.parent)+1)][0] = value
+        
+        for widget in spinner.parent.children:
+            if widget.id == "details_button":
+                widget.disabled = False
+                widget.text = "Add Details"
+                return
+        
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
     def getPath(self):
