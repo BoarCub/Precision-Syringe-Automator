@@ -77,8 +77,8 @@ class FileImporter:
         dash_index = 0
         for index in range ((len(file_path)-1), 0, -1):
                 if file_path[index] == "/" or file_path[index] == "\\":
-                dash_index = index
-                break
+                    dash_index = index
+                    break
         file_path = file_path[0:index]
         return file_path
     def encodedCommands(self, big_list):

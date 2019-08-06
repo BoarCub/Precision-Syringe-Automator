@@ -58,6 +58,8 @@ class RoutineCreatorScreen(Screen):
             disabled = True
             )
         
+        detailsButton.bind(on_press = self.editButtonCallback)
+        
         layout.add_widget(taskLabel)
         layout.add_widget(spinner)
         layout.add_widget(detailsButton)
@@ -78,6 +80,24 @@ class RoutineCreatorScreen(Screen):
                 widget.disabled = False
                 widget.text = "Add Details"
                 return
+            
+    #A callback function that is called when the edit button is pressed
+    def editButtonCallback(self, button):
+        
+        self.popup = self.getPopup(TaskManager.newTaskActions[str(TaskManager.taskRows.index(button.parent)+1)][0])
+            
+    #Returns a popup depending on what mode is given
+    def getPopup(self, mode):
+        
+        if mode == "Dispense":
+            
+            popup = Popup(title = mode,
+                          content = FloatLayout(),
+                          size_hint = (0.8, 0.8))
+            
+            popup.open()
+            
+            return popup
         
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
