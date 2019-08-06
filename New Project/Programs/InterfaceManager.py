@@ -88,15 +88,17 @@ class RoutineCreatorScreen(Screen):
         
         if mode == "Dispense" or mode == "Retrieve" or mode == "Back-and-Forth":
             self.popup = self.getSingleValvePopup(mode)
+        elif mode == "Recycle":
+            self.popup = self.getDoubleValvePopup(mode)
             
-    #Returns a popup
+    #Returns a newly generated popup
     def getSingleValvePopup(self, mode):
             
         popup = Popup(title = mode,
                       content = FloatLayout(size = self.size),
                       size_hint = (0.5, 0.8))
         
-        outputValve = Spinner(
+        valve = Spinner(
             size_hint = (0.5, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.75},
             text = "Select Valve",
@@ -125,7 +127,60 @@ class RoutineCreatorScreen(Screen):
             text = "Confirm"
             )
         
+        popup.content.add_widget(valve)
+        popup.content.add_widget(volumeInput)
+        popup.content.add_widget(speedInput)
+        popup.content.add_widget(confirmButton)
+        
+        popup.open()
+        
+        return popup
+    
+        #Returns a newly generated popup
+    def getDoubleValvePopup(self, mode):
+            
+        popup = Popup(title = mode,
+                      content = FloatLayout(size = self.size),
+                      size_hint = (0.5, 0.8))
+        
+        outputValve = Spinner(
+            size_hint = (0.4, 0.1),
+            pos_hint = {'center_x': 0.25, 'center_y': 0.75},
+            text = "Select Output Valve",
+            values = ('1', '2', '3', '4', '5', '6', '7', '8')
+            )
+        
+        bypassValve = Spinner(
+            size_hint = (0.4, 0.1),
+            pos_hint = {'center_x': 0.75, 'center_y': 0.75},
+            text = "Select Bypass Valve",
+            values = ('1', '2', '3', '4', '5', '6', '7', '8')
+            )
+        
+        volumeInput = TextInput(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.6},
+            hint_text = "Volume",
+            multiline = False,
+            input_filter = 'int'
+            )
+        
+        speedInput = TextInput(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.45},
+            hint_text = "Speed",
+            multiline = False,
+            input_filter = 'int'
+            )
+        
+        confirmButton = Button(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+            text = "Confirm"
+            )
+        
         popup.content.add_widget(outputValve)
+        popup.content.add_widget(bypassValve)
         popup.content.add_widget(volumeInput)
         popup.content.add_widget(speedInput)
         popup.content.add_widget(confirmButton)
