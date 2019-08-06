@@ -84,20 +84,55 @@ class RoutineCreatorScreen(Screen):
     #A callback function that is called when the edit button is pressed
     def editButtonCallback(self, button):
         
-        self.popup = self.getPopup(TaskManager.newTaskActions[str(TaskManager.taskRows.index(button.parent)+1)][0])
-            
-    #Returns a popup depending on what mode is given
-    def getPopup(self, mode):
+        mode = TaskManager.newTaskActions[str(TaskManager.taskRows.index(button.parent)+1)][0]
         
-        if mode == "Dispense":
+        if mode == "Dispense" or mode == "Retrieve" or mode == "Back-and-Forth":
+            self.popup = self.getSingleValvePopup(mode)
             
-            popup = Popup(title = mode,
-                          content = FloatLayout(),
-                          size_hint = (0.8, 0.8))
+    #Returns a popup
+    def getSingleValvePopup(self, mode):
             
-            popup.open()
-            
-            return popup
+        popup = Popup(title = mode,
+                      content = FloatLayout(size = self.size),
+                      size_hint = (0.5, 0.8))
+        
+        outputValve = Spinner(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.75},
+            text = "Select Valve",
+            values = ('1', '2', '3', '4', '5', '6', '7', '8')
+            )
+        
+        volumeInput = TextInput(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.6},
+            hint_text = "Volume",
+            multiline = False,
+            input_filter = 'int'
+            )
+        
+        speedInput = TextInput(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.45},
+            hint_text = "Speed",
+            multiline = False,
+            input_filter = 'int'
+            )
+        
+        confirmButton = Button(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+            text = "Confirm"
+            )
+        
+        popup.content.add_widget(outputValve)
+        popup.content.add_widget(volumeInput)
+        popup.content.add_widget(speedInput)
+        popup.content.add_widget(confirmButton)
+        
+        popup.open()
+        
+        return popup
         
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
