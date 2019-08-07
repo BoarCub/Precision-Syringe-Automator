@@ -35,68 +35,41 @@ InterfaceManager:
 # This screen allows a user to create a new routine
 <RoutineCreatorScreen>:
     name: "Routine Creator Screen"
+    actions_layout: actions_layout
     
     # Static Layout Showing the Titles of Each Column
-    BoxLayout:
-        orientation: 'horizontal'
-        pos_hint: {'center_x': .5, 'center_y': .95}
+    FloatLayout:
         Label:
-            text: "[u]Task Number:[/u]"
+            size_hint: 0.8, 0.1
+            pos_hint: {'center_x': 0.08, 'top': 1}
+            text: "[u]Task #:[/u]"
             markup: True
-            halign: 'left'
             font_size: '20sp'
         Label:
-            text: "[u]Input Valve:[/u]"
-            markup: True
-            halign: 'left'
-            font_size: '20sp'
-        Label:
-            text: "[u]Output Valve:[/u]"
-            markup: True
-            halign: 'left'
-            font_size: '20sp'
-        Label:
+            size_hint: 0.8, 0.1
+            pos_hint: {'center_x': 0.3, 'top': 1}
             text: "[u]Mode:[/u]"
             markup: True
-            halign: 'left'
             font_size: '20sp'
         Label:
-            text: "[u]Value:[/u]"
+            size_hint: 0.8, 0.1
+            pos_hint: {'center_x': 0.725, 'top': 1}
+            text: "[u]Details:[/u]"
             markup: True
-            halign: 'left'
-            font_size: '20sp'
-        Label:
-            text: "[u]Speed:[/u]"
-            markup: True
-            halign: 'left'
             font_size: '20sp'
      
     BoxLayout:
-        size_hint: .5, .5
+        size_hint: 1, .78
+        pos_hint: {'center_x': .5, 'center_y': .53}
         ScrollView:
             GridLayout:
+                id: actions_layout
                 orientation: "vertical"
                 size_hint_y: None
-                height: self.minimum_height  #<<<<<<<<<<<<<<<<<<<<
-                row_default_height: 60
-                cols:1
-
-                Button:
-                Button:
-                Button:
-                Button:
-                Button:
-                Button:
-                Button:
-                Button:
-                Button:
-                Button:
-                Button:
-                Button:
-                Button:
-                Button:
-                Button:
-                Button:
+                height: self.minimum_height 
+                row_default_height: 40
+                cols: 1
+                spacing: 10
             
     BoxLayout:
         size_hint: .5, .1
@@ -104,7 +77,7 @@ InterfaceManager:
         orientation: 'vertical'
         Button:
             text: "Add Action"
-            on_release: root.addAction()            
+            on_release: root.addEmptyAction()            
         Button: #Goes Back to StartScreen
             text: "Back"
             on_release: app.root.current = "Start Screen"

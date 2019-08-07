@@ -6,7 +6,7 @@ class TaskManager(object):
         # Holds all of the actions in a newly created task
         # Follows this format {"# of Task Starting from 1": [# of Input Valve, # of Output Valve, "Mode (Time or Volume)", # of Value, # of Speed]
         self.newTaskActions = {}
-        self.previousWidgets = [[], [], [], [], [], [], [], [], [], [], []]
+        self.taskRows = []
         
     def checkNone(self):
         for index in range(1, len(self.newTaskActions)+1):
