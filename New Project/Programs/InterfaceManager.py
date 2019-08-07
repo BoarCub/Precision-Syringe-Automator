@@ -24,17 +24,16 @@ class InterfaceManager(ScreenManager):
 class StartScreen(Screen):
     pass
 
-
-#The container for the RoutineCreator Screen
-class RoutineCreatorScreen(Screen):
-    pass
-
 class SaveFileScreen(Screen):
     def save(self, path, filename):
         FileManager.writeFile(path, filename)
 
     def getPath(self):
-        return FileManagershortenFilePath(os.path.dirname(os.path.realpath(__file__))) + "/Routines"
+        return FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__))) + "/Routines"
+    
+    
+#The container for the RoutineCreator Screen
+class RoutineCreatorScreen(Screen):
     
     #Creates an empty action and adds it to the task and screen
     def addEmptyAction(self):
@@ -138,8 +137,17 @@ class SaveFileScreen(Screen):
         
     #A callback function that is called when the confirm button is pressed on the default popup
     def defaultPopupConfirmCallback(self, instance):
-        TaskManager.newTaskActions[instance.parent.parent.parent.parent.title[13:]][1] = self.currentPopupValues
-        print(TaskManager.newTaskActions)
+        
+        index = instance.parent.parent.parent.parent.title[13:]
+        
+        if(TaskManager.checkParameters([TaskManager.newTaskActions[index][0], self.currentPopupValues])):
+            TaskManager.newTaskActions[index][1] = self.currentPopupValues
+            
+            self.popup.dismiss()
+            
+            for widget in TaskManager.taskRows[int(index)-1].children:
+                if widget.id == "details_button":
+                    widget.text = TaskManager.getDetails(TaskManager.newTaskActions[index])
     
     #Returns a newly generated popup
     def getDefaultPopup(self, mode, index):
@@ -243,7 +251,6 @@ class SaveFileScreen(Screen):
         
         return popup
         
->>>>>>> 87c6f25cb526515edff6cb66362ee4ca6ce7a2f1
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
     def getPath(self):
