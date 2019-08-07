@@ -85,16 +85,58 @@ class RoutineCreatorScreen(Screen):
     def editButtonCallback(self, button):
         
         mode = TaskManager.newTaskActions[str(TaskManager.taskRows.index(button.parent)+1)][0]
+        index = str(TaskManager.taskRows.index(button.parent) + 1)
         
         if mode == "Dispense" or mode == "Retrieve" or mode == "Back-and-Forth":
-            self.popup = self.getSingleValvePopup(mode)
+            self.currentPopupValues = [None, None, None]
+            self.popup = self.getDefaultPopup(mode, index)
         elif mode == "Recycle":
             self.popup = self.getDoubleValvePopup(mode)
             
-    #Returns a newly generated popup
-    def getSingleValvePopup(self, mode):
+    #A callback function that is called when the valve spinner of the popup changes
+    def valveSpinnerCallback(self, instance, value):
+        try:
+            self.currentPopupValues[0] = int(value)
+        except:
+            self.currentPopupValues[0] = None
+        
+    #A callback function that is called when volume textinput of the popup changes value
+    def volumeTextInputCallback(self, instance, value):
+        try:
+            self.currentPopupValues[1] = int(value)
+        except:
+            self.currentPopupValues[1] = None
+        
+    #A callback function that is called when speed textinput of the popup changes value
+    def speedTextInputCallback(self, instance, value):
+        try:
+            self.currentPopupValues[2] = int(value)
+        except:
+            self.currentPopupValues[2] = None
             
-        popup = Popup(title = mode,
+    #A callback function that is called when time textinput of the popup changes value
+    def timeTextInputCallback(self, instance, value):
+        try:
+            self.currentPopupValues[3] = int(value)
+        except:
+            self.currentPopupValues[3] = None
+            
+    #A callback function that is called when the second valve spinner of the popup changes
+    def secondValveSpinnerCallback(self, instance, value):
+        try:
+            self.currentPopupValues[4] = int(value)
+        except:
+            self.currentPopupValues[4] = None
+        
+    #A callback function that is called when the confirm button is pressed on the default popup
+    def defaultPopupConfirmCallback(self, instance):
+        TaskManager.newTaskActions[instance.parent.parent.parent.parent.title[13:]][1] = self.currentPopupValues
+        print(TaskManager.newTaskActions)
+    
+    #Returns a newly generated popup
+    def getDefaultPopup(self, mode, index):
+            
+        popup = Popup(title = "Editing Task " + index,
                       content = FloatLayout(size = self.size),
                       size_hint = (0.5, 0.8))
         
@@ -104,6 +146,7 @@ class RoutineCreatorScreen(Screen):
             text = "Select Valve",
             values = ('1', '2', '3', '4', '5', '6', '7', '8')
             )
+        valve.bind(text = self.valveSpinnerCallback)
         
         volumeInput = TextInput(
             size_hint = (0.5, 0.1),
@@ -112,6 +155,7 @@ class RoutineCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
+        volumeInput.bind(text = self.volumeTextInputCallback)
         
         speedInput = TextInput(
             size_hint = (0.5, 0.1),
@@ -120,12 +164,14 @@ class RoutineCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
+        speedInput.bind(text = self.speedTextInputCallback)
         
         confirmButton = Button(
             size_hint = (0.5, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.3},
             text = "Confirm"
             )
+        confirmButton.bind(on_press = self.defaultPopupConfirmCallback)
         
         popup.content.add_widget(valve)
         popup.content.add_widget(volumeInput)
