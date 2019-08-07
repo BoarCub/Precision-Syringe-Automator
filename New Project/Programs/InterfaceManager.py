@@ -62,7 +62,7 @@ class RoutineCreatorScreen(Screen):
             text = "Choose a Mode First",
             size_hint = (0.5, 1),
             pos_hint = {'center_x': 0.725, 'center_y': 0.5},
-            disabled = True
+            disabled = True,
             )
         
         detailsButton.bind(on_press = self.editButtonCallback)
@@ -94,11 +94,15 @@ class RoutineCreatorScreen(Screen):
         mode = TaskManager.newTaskActions[str(TaskManager.taskRows.index(button.parent)+1)][0]
         index = str(TaskManager.taskRows.index(button.parent) + 1)
         
-        if mode == "Dispense" or mode == "Retrieve" or mode == "Back-and-Forth":
+        if mode == "Dispense" or mode == "Retrieve":
             self.currentPopupValues = [None, None, None]
             self.popup = self.getDefaultPopup(mode, index)
+        elif mode == "Back-and-Forth":
+            self.currentPopupValues = [None, None, None, None]
+            self.popup = self.getTimePopup(mode, index)
         elif mode == "Recycle":
-            self.popup = self.getDoubleValvePopup(mode)
+            self.currentPopupValues = [None, None, None, None, None]
+            self.popup = self.getTimeAndExtraValvePopup(mode, index)
             
     #A callback function that is called when the valve spinner of the popup changes
     def valveSpinnerCallback(self, instance, value):
@@ -134,7 +138,7 @@ class RoutineCreatorScreen(Screen):
             self.currentPopupValues[4] = int(value)
         except:
             self.currentPopupValues[4] = None
-        
+    
     #A callback function that is called when the confirm button is pressed on the default popup
     def defaultPopupConfirmCallback(self, instance):
         
@@ -148,6 +152,34 @@ class RoutineCreatorScreen(Screen):
             for widget in TaskManager.taskRows[int(index)-1].children:
                 if widget.id == "details_button":
                     widget.text = TaskManager.getDetails(TaskManager.newTaskActions[index])
+        else:
+            self.notifyPopup = Popup(title = "Warning",
+                                     content = FloatLayout(size = self.size),
+                                     size_hint = (0.5, 0.8))
+            
+            okayLabel = Label(
+                size_hint = (0.5, 0.1),
+                pos_hint = {'center_x': 0.5, 'center_y': 0.7},
+                text = "Your Input Was\nInvalid",
+                halign = 'center',
+                font_size = "20sp"
+            )
+            
+            okayButton = Button(
+                size_hint = (0.5, 0.1),
+                pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+                text = "Okay"
+            )
+            okayButton.bind(on_press = self.closeNotifyPopup)
+            
+            self.notifyPopup.content.add_widget(okayLabel)
+            self.notifyPopup.content.add_widget(okayButton)
+            
+            self.notifyPopup.open()
+    
+    #Callback function that closes the notify popup
+    def closeNotifyPopup(self, instance):
+        self.notifyPopup.dismiss()
     
     #Returns a newly generated popup
     def getDefaultPopup(self, mode, index):
@@ -198,26 +230,20 @@ class RoutineCreatorScreen(Screen):
         
         return popup
     
-        #Returns a newly generated popup
-    def getDoubleValvePopup(self, mode):
-            
-        popup = Popup(title = mode,
+    #Returns a newly generated popup with an added widget for time
+    def getTimePopup(self, mode, index):
+        
+        popup = Popup(title = "Editing Task " + index,
                       content = FloatLayout(size = self.size),
                       size_hint = (0.5, 0.8))
         
-        outputValve = Spinner(
-            size_hint = (0.4, 0.1),
-            pos_hint = {'center_x': 0.25, 'center_y': 0.75},
-            text = "Select Output Valve",
+        valve = Spinner(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.75},
+            text = "Select Valve",
             values = ('1', '2', '3', '4', '5', '6', '7', '8')
             )
-        
-        bypassValve = Spinner(
-            size_hint = (0.4, 0.1),
-            pos_hint = {'center_x': 0.75, 'center_y': 0.75},
-            text = "Select Bypass Valve",
-            values = ('1', '2', '3', '4', '5', '6', '7', '8')
-            )
+        valve.bind(text = self.valveSpinnerCallback)
         
         volumeInput = TextInput(
             size_hint = (0.5, 0.1),
@@ -226,6 +252,7 @@ class RoutineCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
+        volumeInput.bind(text = self.volumeTextInputCallback)
         
         speedInput = TextInput(
             size_hint = (0.5, 0.1),
@@ -234,22 +261,102 @@ class RoutineCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
+        speedInput.bind(text = self.speedTextInputCallback)
+        
+        timeInput = TextInput(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+            hint_text = "Time",
+            multiline = False,
+            input_filter = 'int'
+            )
+        timeInput.bind(text = self.timeTextInputCallback)
         
         confirmButton = Button(
             size_hint = (0.5, 0.1),
-            pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+            pos_hint = {'center_x': 0.5, 'center_y': 0.15},
             text = "Confirm"
             )
+        confirmButton.bind(on_press = self.defaultPopupConfirmCallback)
         
-        popup.content.add_widget(outputValve)
-        popup.content.add_widget(bypassValve)
+        popup.content.add_widget(valve)
         popup.content.add_widget(volumeInput)
         popup.content.add_widget(speedInput)
+        popup.content.add_widget(timeInput)
         popup.content.add_widget(confirmButton)
         
         popup.open()
         
         return popup
+    
+    #Returns a newly generated popup with an added widget for time
+    def getTimeAndExtraValvePopup(self, mode, index):
+        
+        popup = Popup(title = "Editing Task " + index,
+                      content = FloatLayout(size = self.size),
+                      size_hint = (0.5, 0.8))
+        
+        valve = Spinner(
+            size_hint = (0.45, 0.1),
+            pos_hint = {'center_x': 0.25, 'center_y': 0.75},
+            text = "Main Valve",
+            values = ('1', '2', '3', '4', '5', '6', '7', '8')
+            )
+        valve.bind(text = self.valveSpinnerCallback)
+        
+        extraValve = Spinner(
+            size_hint = (0.45, 0.1),
+            pos_hint = {'center_x': 0.75, 'center_y': 0.75},
+            text = "Bypass Valve",
+            values = ('1', '2', '3', '4', '5', '6', '7', '8')
+            )
+        extraValve.bind(text = self.secondValveSpinnerCallback)
+        
+        volumeInput = TextInput(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.6},
+            hint_text = "Volume",
+            multiline = False,
+            input_filter = 'int'
+            )
+        volumeInput.bind(text = self.volumeTextInputCallback)
+        
+        speedInput = TextInput(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.45},
+            hint_text = "Speed",
+            multiline = False,
+            input_filter = 'int'
+            )
+        speedInput.bind(text = self.speedTextInputCallback)
+        
+        timeInput = TextInput(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+            hint_text = "Time",
+            multiline = False,
+            input_filter = 'int'
+            )
+        timeInput.bind(text = self.timeTextInputCallback)
+        
+        confirmButton = Button(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.15},
+            text = "Confirm"
+            )
+        confirmButton.bind(on_press = self.defaultPopupConfirmCallback)
+        
+        popup.content.add_widget(valve)
+        popup.content.add_widget(extraValve)
+        popup.content.add_widget(volumeInput)
+        popup.content.add_widget(speedInput)
+        popup.content.add_widget(timeInput)
+        popup.content.add_widget(confirmButton)
+        
+        popup.open()
+        
+        return popup
+        
         
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
