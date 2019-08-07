@@ -35,6 +35,34 @@ class SaveFileScreen(Screen):
 #The container for the RoutineCreator Screen
 class RoutineCreatorScreen(Screen):
     
+    def saveFileScreen(self, object, screenName):
+        if TaskManager.checkNone():
+            object = screenName
+        else:
+            self.notifyPopup = Popup(title = "Warning",
+                                     content = FloatLayout(size = self.size),
+                                     size_hint = (0.5, 0.8))
+            
+            okayLabel = Label(
+                size_hint = (0.5, 0.1),
+                pos_hint = {'center_x': 0.5, 'center_y': 0.7},
+                text = "Some Actions Are\nIncomplete",
+                halign = 'center',
+                font_size = "20sp"
+            )
+            
+            okayButton = Button(
+                size_hint = (0.5, 0.1),
+                pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+                text = "Okay"
+            )
+            okayButton.bind(on_press = self.closeNotifyPopup)
+            
+            self.notifyPopup.content.add_widget(okayLabel)
+            self.notifyPopup.content.add_widget(okayButton)
+            
+            self.notifyPopup.open()
+    
     #Creates an empty action and adds it to the task and screen
     def addEmptyAction(self):
         

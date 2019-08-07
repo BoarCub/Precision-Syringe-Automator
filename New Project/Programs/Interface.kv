@@ -76,6 +76,9 @@ InterfaceManager:
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
         Button:
+            text: "Save Routine"
+            on_release: root.saveFileScreen(app.root.current, "Save File Screen")
+        Button:
             text: "Add Action"
             on_release: root.addEmptyAction()            
         Button: #Goes Back to StartScreen
@@ -106,7 +109,7 @@ InterfaceManager:
             height: 30
             Button:
                 text: "Cancel"
-                on_release: app.root.current = "New Routine Screen"
+                on_release: app.root.current = "Routine Creator Screen"
 
             Button:
                 text: "Save"

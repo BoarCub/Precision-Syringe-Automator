@@ -1,5 +1,6 @@
 import os
 import json
+from TaskManager import *
 
 class FileManager(object):
     def __init__(self):
@@ -102,7 +103,8 @@ class FileManager(object):
         return newDict
     
     def writeFile(self, path, filename):
-        with open(os.path.join(path, filename), 'w') as stream:
-            stream.write("hey there")
-            
+        self.dict_to_save = TaskManager.newTaskActions
+        with open(os.path.join(path, filename), 'w') as file:
+            json.dump(self.dict_to_save, file)
+            print("File Successfully Saved: ", self.dict_to_save)
 FileManager = FileManager()

@@ -9,11 +9,19 @@ class TaskManager(object):
         self.taskRows = []
         
     def checkNone(self):
-        for index in range(1, len(self.newTaskActions)+1):
-            current_parameters = self.newTaskActions[str(index)][1]
-            for parameter in current_parameters:
-                if parameter == None:
+        try:
+            for newTaskAction in self.newTaskActions:
+                if newTaskAction == None:
                     return False
+            if self.newTaskActions == None:
+                return False
+            for index in range(1, len(self.newTaskActions)+1):
+                current_parameters = self.newTaskActions[str(index)][1]
+                for parameter in current_parameters:
+                    if parameter == None:
+                        return False
+        except TypeError:
+            return False
         return True
     
     def getDetails(self, action_list):
@@ -21,13 +29,13 @@ class TaskManager(object):
         action = action_list[0]
         parameters = action_list[1]
         if action == "Dispense":
-            message = "Dispensing " + str(parameters[1]) + "steps, at speed " + str(parameters[2]) + "/40,\nout of valve " + str(parameters[0])
+            message = "Dispensing " + str(parameters[1]) + " steps, at speed " + str(parameters[2]) + "/40,\nout of valve " + str(parameters[0])
         if action == "Retrieve":
-            message = "Retrieving " + str(parameters[1]) + "steps, at speed " + str(parameters[2]) + "/40,\ninto valve, " + str(parameters[0])
+            message = "Retrieving " + str(parameters[1]) + " steps, at speed " + str(parameters[2]) + "/40,\ninto valve, " + str(parameters[0])
         if action == "Recycle":
-            message = "Cycling " + str(parameters[1]) + "steps at speed " + str(parameters[2]) + "/40, to valve, " + str(parameters[0]) + "\nand returning through valve, " + str(parameters[4]) + "for " + str(parameters[3]) + "seconds"
+            message = "Cycling " + str(parameters[1]) + " steps at speed " + str(parameters[2]) + "/40, to valve, " + str(parameters[0]) + "\nand returning through valve, " + str(parameters[4]) + "for " + str(parameters[3]) + "seconds"
         if action == "Back-and-Forth":
-            message = "Pulling and pushing " + str(parameters[1]) + "steps at speed " + str(parameters[2]) + "/40\nin valve " + str(parameters[0]) + " for " + str(parameters[3]) + " seconds"
+            message = "Pulling and pushing " + str(parameters[1]) + " steps at speed " + str(parameters[2]) + "/40\nin valve " + str(parameters[0]) + " for " + str(parameters[3]) + " seconds"
         
         return message
     
@@ -77,4 +85,3 @@ class TaskManager(object):
         
 # Creates a TaskManager object which can be used when the class is imported
 TaskManager = TaskManager()
-print(TaskManager.getDetails(["Dispense", [8, 30, 40]]))
