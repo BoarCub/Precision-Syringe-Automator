@@ -1,17 +1,11 @@
-from kivy.app import App
 from kivy.clock import Clock
-from kivy.uix.label import Label
+
 import time
 
-class Time(Label):
+class Time():
     def updateTime(self, *args):
-            self.text = time.asctime()
+            print(time.asctime())
             
-class TimeApp(App):
-    def build(self):
-        t = Time()
-        Clock.schedule_interval(t.updateTime, 1)
-        
-        return t
-    
-TimeApp().run()
+t = Time()
+Clock.schedule_interval(t.updateTime, 1)
+
