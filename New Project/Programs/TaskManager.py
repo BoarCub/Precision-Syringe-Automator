@@ -34,6 +34,11 @@ class TaskManager(object):
     def checkParameters(self, action_list):
         action = action_list[0]
         parameters = action_list[1]
+        
+        for parameter in parameters:
+            if parameter == None:
+                return False
+        
         if action == "Dispense":
             if parameters[0] > 8 or parameters[0] <1:
                 return False
@@ -67,7 +72,7 @@ class TaskManager(object):
             if parameters[2] <=0 or parameters[2] > 40:
                 return False
             if parameters[3] <= 0:
-                reurn False
+                return False
         return True            
         
 # Creates a TaskManager object which can be used when the class is imported
