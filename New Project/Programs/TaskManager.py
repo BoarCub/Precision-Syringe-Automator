@@ -21,13 +21,13 @@ class TaskManager(object):
         action = action_list[0]
         parameters = action_list[1]
         if action == "Dispense":
-            message = "Dispensing " + str(parameters[1]) + "steps, at speed " + str(parameters[2]) + "/40, out of valve " + str(parameters[0])
+            message = "Dispensing " + str(parameters[1]) + " steps, at speed " + str(parameters[2]) + "/40, out of valve " + str(parameters[0])
         if action == "Retrieve":
-            message = "Retrieving " + str(parameters[1]) + "steps, at speed " + str(parameters[2]) + "/40, into valve, " + str(parameters[0])
+            message = "Retrieving " + str(parameters[1]) + " steps, at speed " + str(parameters[2]) + "/40, into valve, " + str(parameters[0])
         if action == "Recycle":
-            message = "Cycling " + str(parameters[1]), "steps at speed " + str(parameters[2]) + "/40, to valve, " + str(parameters[0]) + " and returning through valve, " + str(parameters[4]) + "for " + str(parameters[3]) + "seconds"
-        if action == "Back+Forth":
-            message == "Pulling and pushing " + str(parameters[1]) + "steps at speed " + str(parameters[2]) + "/40 in valve " + str(parameters[0]) + " for " + str(parameters[3]) + " seconds"
+            message = "Cycling " + str(parameters[1]), " steps at speed " + str(parameters[2]) + "/40, to valve, " + str(parameters[0]) + " and returning through valve, " + str(parameters[4]) + "for " + str(parameters[3]) + "seconds"
+        if action == "Back-and-Forth":
+            message == "Pulling and pushing " + str(parameters[1]) + " steps at speed " + str(parameters[2]) + "/40 in valve " + str(parameters[0]) + " for " + str(parameters[3]) + " seconds"
         
         return message
     
@@ -59,7 +59,7 @@ class TaskManager(object):
                 return False
             if parameters[4] > 8 or parameters[0] <1:
                 return False
-        if action == "Back+Forth":
+        if action == "Back-and-Forth":
             if parameters[0] > 8 or parameters[0] <1:
                 return False
             if parameters[1] <= 0 or parameters[1] >3000:
