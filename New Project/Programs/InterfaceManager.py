@@ -35,6 +35,24 @@ class SaveFileScreen(Screen):
 #The container for the RoutineCreator Screen
 class RoutineCreatorScreen(Screen):
     
+    #Super Init
+    def __init__(self, **kwargs):
+        super(RoutineCreatorScreen, self).__init__(**kwargs)
+        self.deleteToggled = False
+    
+    def toggleDelete(self, button):
+        self.deleteToggled = not self.deleteToggled
+        
+        if self.deleteToggled:
+            button.text = "Cancel"
+        else:
+            button.text = "Delete Action"
+    
+    def deleteAction(self, index):
+        layoutToDelete = TaskManager.taskRows[index-1]
+        TaskManager.deleteAction(index)
+        self.actions_layout.remove_widget(layoutToDelete)
+    
     def saveFileScreen(self, object, screenName):
         if TaskManager.checkNone():
             object = screenName
@@ -119,6 +137,13 @@ class RoutineCreatorScreen(Screen):
     #A callback function that is called when the edit button is pressed
     def editButtonCallback(self, button):
         
+        if(self.deleteToggled):
+            self.deleteAction(TaskManager.taskRows.index(button.parent)+1)
+        else:
+            self.openDetailEditor(button)
+            
+    #Called to initialize popup for detail editor
+    def openDetailEditor(self, button):
         mode = TaskManager.newTaskActions[str(TaskManager.taskRows.index(button.parent)+1)][0]
         index = str(TaskManager.taskRows.index(button.parent) + 1)
         

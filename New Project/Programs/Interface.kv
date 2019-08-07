@@ -72,15 +72,18 @@ InterfaceManager:
                 spacing: 10
             
     BoxLayout:
-        size_hint: .5, .1
+        size_hint: .5, .15
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
         Button:
+            text: "Add Action"
+            on_release: root.addEmptyAction()
+        Button:
+            text: "Delete Action"
+            on_release: root.toggleDelete(self)
+        Button:
             text: "Save Routine"
             on_release: root.saveFileScreen(app.root.current, "Save File Screen")
-        Button:
-            text: "Add Action"
-            on_release: root.addEmptyAction()            
         Button: #Goes Back to StartScreen
             text: "Back"
             on_release: app.root.current = "Start Screen"
