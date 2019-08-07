@@ -29,6 +29,12 @@ class StartScreen(Screen):
 class RoutineCreatorScreen(Screen):
     pass
 
+class SaveFileScreen(Screen):
+    def save(self, path, filename):
+        FileManager.writeFile(path, filename)
+
+    def getPath(self):
+        return FileManagershortenFilePath(os.path.dirname(os.path.realpath(__file__))) + "/Routines"
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
     def getPath(self):
@@ -59,7 +65,7 @@ class PreviousFileScreen(Screen):
             
             #for every item in each action (ex: Execute Command Buffer, or 83)
             for element in small_list:
-                placeholderLayout.add_widget(Label(text=element))
+                placeholderLayout.add_widget(Label(text=str(element)))
             
             #add it to the list of displayed_actions just so we know what the last thing displayed was at any given time
             FileManager.displayed_actions.append(placeholderLayout)

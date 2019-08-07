@@ -1,9 +1,13 @@
+from FileManager import *
 class SerialManager(object):
     def __init__(self):
         #contains a dictionary of commands based on step (ex: {1: [IAR]})
         self.command_list = {}
         #contains the action in order of step (ex: {1: "Dispense"}
         self.action_list = {}
+        #contains a list of queries and their potential repsonses
+        self.query_database = FileManager.importFilePath(
+            FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__)))+ "/Databases/QueryDatabase")
     
     #receives input in the format [[title_of_function, value], etc.] and converts it to serial code (ex: Y1R)
     def encodeCommands(self, input_dictionary):
@@ -66,7 +70,185 @@ class SerialManager(object):
     def setCommands(self, commands):
         command_list = command
         
+    def queryToString(self, query, response):
+        message = ""
+    
+        if (query == "?10000"):
+            zero1 = "Syringe intialized "
+            one = "Syringe not initialized. "
+            six = "Syringe stalled. "
+            zero2 = "No syringe stall or overload. "
+            eight = "Syringe intialization error. "
+            zero3 = "No initialization error. "
+            if response == 0:
+                message = zero1 + zero2 + zero3
+            elif response == 1:
+                message = one + zero2 + zero3
+            elif response == 6:
+                message = zero1 + six + zero3
+            elif response == 8:
+                message = zero1 + zero2 + eight
+                
+            elif response == 7:
+                message = one + six + zero3
+            elif response == 9:
+                message = one + zero2 + eight
+            elif response == 14:
+                message = zero1 + six + eight
+            elif response == 15:
+                message = one + six + eight
+            else:
+                print(response, " isn't recognized under query ", query)
+                return None
+        elif (query == "?10001"):
+            if response == 1:
+                message = "Syringe in home region."
+            elif response == 0:
+                message = "Syringe not in home region."
+            else:
+                print(response, " isn't recognized under query ", query)
+                return  None
+        elif (query == "?11000"):
+            zero1 = "Standard mode set. "
+            one = "High resolution mode set. "
+            two = "Syringe overload ignored. "
+            zero2 = "Syringe overload not ignored. "
+            four = "Disable initialization error. "
+            zero3 = "Enable initialization error. "
+            eight = "Disable initialize. "
+            zero4 = "Enable Initialize. "
+            if response == 0:
+                message = zero1 + zero2 + zero3 + zero4
+            elif response == 1:
+                message = one + zero2 + zero3 + zero4
+            elif response == 2:
+                message = zero1 + two + zero3 + zero4
+            elif response == 4:
+                message = zero1 + zero2 + four + zero4
+            elif response == 8:
+                message = zero1 + zero2 + zero3 + eight
+                
+            elif response == 3:
+                message = one + two + zero3 + zero4
+            elif response == 5:
+                message = one + zero2 + four + zero4 
+            elif response == 9:
+                message = one + zero2 + zero3 + eight
+            elif response == 10:
+                message = zero1 + two + zero3 + eight
+            elif response == 12:
+                message == zero1 + zero2 + four + eight
+            elif response == 6:
+                message == zero1 + two + four + zero4
+            
+            elif  response == 11:
+                message = one + two + zero3 + eight
+            elif response == 13:
+                message == one + zero2 + four + eight
+            elif response == 7:
+                message == one + two + four + zero4
+            else:
+                print(response, " isn't recognized under query ", query)
+                return  None
+        elif (query == "?20000"):
+            zero1 = "Valve initialized. "
+            one = "Valve not initialized. "
+            zero2 = "No Valve initialization error. "
+            two = "Valve initialization error. "
+            zero3 = "No valve stall. "
+            four = "Valve stall. "
+            zero4 = "Valve enabled. "
+            sixteen = "Valve not enabled. "
+            zero5 = "Valve is not busy. "
+            thirty_two = "Valve is busy. "
+            if response == 0:
+                message = zero1 + zero2 + zero3 + zero4 + zero5
+            elif response == 1:
+                message == one + zero2 + zero3 + zero4 + zero5
+            elif response == 2:
+                message = zero1 + two + zero3 + zero4 + zero5
+            elif response == 4:
+                message = zero1 + zero2 + four + zero4 + zero5
+            elif response == 16:
+                message  =zero1 + zero2 + zero3 + sixteen + zero5
+            elif response == 32:
+                message = zero1 + zero2 + zero3 + zero4 + thirty_two
+                
+            
+            elif response == 3:
+                message = one + two + zero3 + zero4 + zero5
+            elif response == 5:
+                message == one + zero2 + four + zero4 + zero5
+            elif response == 17:
+                message = one + zero2 + zero3 + sixteen + zero5
+            elif response == 33:
+                message = one + two + four + zero4 + zero5
+                
+            elif response == 6:
+                message = zero1 + two + four + zero4 + zero5
+            elif response == 18:
+                message = zero1 + two + zero3 + sixteen + zero5
+            elif response == 34:
+                message = zero1 + two + zero3 + zero4 + thirty_two
+            elif response == 20:
+                message = zero1 + zero2 + four + sixteen + zero5
+            elif response == 36:
+                message= zero1 + zero2 + four + zero4 + thirty_two
+                
+            elif response == 52:
+                message = zero1 + zero2 + zero3 + sixteen + thirty_two
+                
+                
+            elif response == 7:
+                message = one + two + four + zero4 + zero5
+            elif response == 19:
+                message = one + two + zero3 + sixteen + zero5
+            elif response == 35:
+                message = one + two + zero3 + zero4 + thirty_two
+                
+            elif response == 21:
+                message = one + zero2 + four + sixteen + zero5
+            elif response == 37:
+                message = one + zero2 + four + zero4 + thirty_two
+                
+            elif response == 53:
+                message = one + zero2 + zero3 + sixteen + thirty_two
+                
+                
+            elif response == 22:
+                message = zero1 + two + four + sixteen + zero5
+            elif response == 38:
+                message = zero1 + two + four + zero4 + thirty_two
+                
+            elif response == 54:
+                message = zero1 + two + zero3 + sixteen + thirty_two
+                
+            elif response == 75:
+                message = one + two + four + sixteen + thirty_two
+            else:
+                print(response, " isn't recognized under query " ,query)
+                return  None
+        elif (query == "?23000"):
+            if response == 0:
+                message = "Not at logical position. "
+            elif repsonse == 1:
+                message = "Input"
+            elif response == 2:
+                message = "Output"
+            elif response == 3:
+                message = "Wash"
+            elif response == 4:
+                message = "Return"
+            elif response == 5:
+                message = "Bypass"
+            elif response == 6:
+                message = "Extra"
+            else:
+                print(response, " isn't recognized under query " ,query)
+                return  None    
+        elif (query == "?24000"):
+            message = response
+        elif (query == "?25000"):
+            message = response
+        return message
 SerialManager = SerialManager()
-SerialManager.encodeCommands({1: ["Dispense", [8, 10, 5]], 2: ["Recycle", [8, 1, 300, 4, 5]]})
-print(SerialManager.command_list)
-print(SerialManager.action_list)

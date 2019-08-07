@@ -3,6 +3,7 @@ InterfaceManager:
     StartScreen:
     RoutineCreatorScreen:
         id: routine_creator_screen
+    SaveFileScreen:
     PreviousFileScreen:
     DisplayFileScreen:
         id: display_file_screen
@@ -108,6 +109,36 @@ InterfaceManager:
             text: "Back"
             on_release: app.root.current = "Start Screen"
 
+<SaveFileScreen>:
+    name: "Save File Screen"
+    text_input: text_input
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            path: root.getPath()
+            id: filechooser
+            #on_selection: text_input.text = self.selection and self.selection[0] or ''
+
+        TextInput:
+            id: text_input
+            hint_text: "File Name"
+            size_hint_y: None
+            height: 30
+            multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.root.current = "New Routine Screen"
+
+            Button:
+                text: "Save"
+                on_release: root.save(filechooser.path, text_input.text)
+    
 #allows the reader to view previously saved files and execute them
 <PreviousFileScreen>:
     name: "Previous File Screen"

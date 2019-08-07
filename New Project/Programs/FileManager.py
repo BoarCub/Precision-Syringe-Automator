@@ -18,6 +18,7 @@ class FileManager(object):
         #contains the current files being displayed after "Load File". Checking this variable prevent loading onto a previously displayed file
         self.displayed_actions = []
         
+        self.dict_to_save = {}
         
     #sets the default file path used in importFile   
     def setPath(self, file_path):
@@ -35,49 +36,52 @@ class FileManager(object):
                 self.file_name = file_path[index+1:len(file_path)]
                 break
                 
-        if file_path == None:
+        if file_path == None or file_path == "":
             print("No File Given")
             return None
-        
-        with open(file_path) as file:
-            selectedFile = json.load(file)
-            print(self.file_name, "Loaded Succesfully @ ", file_path)
-            return selectedFile
-        
-        
+        try:
+            with open(file_path) as file:
+                selectedFile = json.load(file)
+                print(self.file_name, "Loaded Succesfully @ ", file_path)
+                return selectedFile
+        except FileNotFoundError:
+            print("File Not Found @ ", file_path)
+            return None
     
     #goes through an encoded list of strings and numbers (ex:Z1R) to produce a list readable in the interface
     def parseString(self, input_string):
-        #the list of all commands after they're converted into readable format
+        #the dictionary of all commands after they're converted into readable format
         actions = []
         #a running variable that stores all numbers following a letter command
         current_int = ""
         print("String to parse: ", input_string)
-        for char_index in range(len(input_string)):
-            #if the current highlighted character is a letter
-            if (input_string[char_index].isalpha()):
-                #the current action is the command corresponding the letter in the reverse commands dictionary (ex: "R": "Execute Command Buffer)
-                current_action = self.rev_commands[input_string[char_index]]
-                #clear the running number variable because we're about to recieve a new one corresponding to a command
-                current_int = ""
-                
-            #if the current character is a number, add it to the current runnnig variable (current_int)
-            elif (input_string[char_index].isdigit()):
-                current_int += input_string[char_index]
-                
-            else: print("Command is in incorrect format.")
-            
-            #if the next character in the list is a letter, that indicates that the current command's details are over
+        list_of_lists = []
+        
+        for index in range(1, len(input_string)+1):
+    
             try:
-                if(input_string[char_index+1].isalpha()):
-                    actions.append([current_action, current_int])
-            
-            #The Try and Except exists because the current character may be the last one; in that case, add the current action to list 'actions'
+                x = input_string[str(index)][1][3]
             except IndexError:
-                actions.append([current_action, current_int])
+                input_string[str(index)][1].append(0)
+            
+            try:
+                x = input_string[str(index)][1][4]
+            except IndexError:
+                input_string[str(index)][1].append(0)
                 
-
-        return actions
+            if input_string[str(index)][0] == "Retrieve":
+                param = "I Valve: " + str(input_string[str(index)][1][0]) + " Vol: " + str(input_string[str(index)][1][1]) + " Speed: " + str(input_string[str(index)][1][2])
+            elif input_string[str(index)][0] == "Dispense":
+                param = "O Valve: " + str(input_string[str(index)][1][0]) + "Vol: " + str(input_string[str(index)][1][1]) + " Speed: " + str(input_string[str(index)][1][2])
+            elif input_string[str(index)][0] == "Recycle":
+                param = "O Valve: " + str(input_string[str(index)][1][0]) + " Vol: " + str(input_string[str(index)][1][1]) + " Speed: " + str(input_string[str(index)][1][2]) + " Time: " + str(input_string[str(index)][1][3]) + "Bypass: " + str(input_string[str(index)][1][4])
+            elif input_string[str(index)][0] == "Back+Forth":
+                param = "Valve: " + str(input_string[str(index)][1][0]) + " Time: " + str(input_string[str(index)][1][1]) + " Vol: " + str(input_string[str(index)][1][2]) + " Speed: " + str(input_string[str(index)][1][3])
+ 
+            list_of_lists.append([(str(index) + ": " + input_string[str(index)][0]), param])
+        
+        
+        return list_of_lists
     
     #deletes the last location in a file path (ex: C:/Users/Aniket -> C:/Users/)
     def shortenFilePath(self, file_path):
@@ -96,5 +100,9 @@ class FileManager(object):
             newDict.update({inputlist[key]: key})
             
         return newDict
+    
+    def writeFile(self, path, filename):
+        with open(os.path.join(path, filename), 'w') as stream:
+            stream.write("hey there")
             
 FileManager = FileManager()
