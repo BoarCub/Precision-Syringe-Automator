@@ -45,8 +45,17 @@ class RoutineCreatorScreen(Screen):
         
         if self.deleteToggled:
             button.text = "Cancel"
+            self.setDetailsButtonColor((1, 0, 0, 1))
         else:
             button.text = "Delete Action"
+            self.setDetailsButtonColor((1, 1, 1, 1))
+    
+    def setDetailsButtonColor(self, color):
+        for layout in TaskManager.taskRows:
+            for widget in layout.children:
+                if widget.id == "details_button":
+                    widget.background_color = color
+                    break
     
     def deleteAction(self, index):
         layoutToDelete = TaskManager.taskRows[index-1]
@@ -108,7 +117,7 @@ class RoutineCreatorScreen(Screen):
             text = "Choose a Mode First",
             size_hint = (0.5, 1),
             pos_hint = {'center_x': 0.725, 'center_y': 0.5},
-            disabled = True,
+            disabled = True
             )
         
         detailsButton.bind(on_press = self.editButtonCallback)
