@@ -61,6 +61,7 @@ class RoutineCreatorScreen(Screen):
         layoutToDelete = TaskManager.taskRows[index-1]
         TaskManager.deleteAction(index)
         self.actions_layout.remove_widget(layoutToDelete)
+        self.toggleDelete(self.delete_button)
     
     def saveFileScreen(self, object, screenName):
         if TaskManager.checkNone():
@@ -89,6 +90,9 @@ class RoutineCreatorScreen(Screen):
             self.notifyPopup.content.add_widget(okayButton)
             
             self.notifyPopup.open()
+            
+    def updateWidgetText(self, widget, parameterIndex):
+        widget.text = str(self.currentPopupValues[parameterIndex])
     
     #Creates an empty action and adds it to the task and screen
     def addEmptyAction(self):
@@ -136,6 +140,7 @@ class RoutineCreatorScreen(Screen):
     def updateModeSpinner(self, spinner, value):
         
         TaskManager.newTaskActions[str(TaskManager.taskRows.index(spinner.parent)+1)][0] = value
+        TaskManager.newTaskActions[str(TaskManager.taskRows.index(spinner.parent)+1)][1] = None
         
         for widget in spinner.parent.children:
             if widget.id == "details_button":
@@ -157,14 +162,20 @@ class RoutineCreatorScreen(Screen):
         index = str(TaskManager.taskRows.index(button.parent) + 1)
         
         if mode == "Dispense" or mode == "Retrieve":
-            self.currentPopupValues = [None, None, None]
+            self.currentPopupValues = self.getCurrentValues([None, None, None], index)
             self.popup = self.getDefaultPopup(mode, index)
         elif mode == "Back-and-Forth":
-            self.currentPopupValues = [None, None, None, None]
+            self.currentPopupValues = self.getCurrentValues([None, None, None, None], index)
             self.popup = self.getTimePopup(mode, index)
         elif mode == "Recycle":
-            self.currentPopupValues = [None, None, None, None, None]
+            self.currentPopupValues = self.getCurrentValues([None, None, None, None, None], index)
             self.popup = self.getTimeAndExtraValvePopup(mode, index)
+            
+    def getCurrentValues(self, alternateValues, index):
+        if TaskManager.newTaskActions[str(index)][1] == None:
+            return alternateValues
+        else:
+            return TaskManager.newTaskActions[str(index)][1]
             
     #A callback function that is called when the valve spinner of the popup changes
     def valveSpinnerCallback(self, instance, value):
@@ -245,7 +256,12 @@ class RoutineCreatorScreen(Screen):
     
     #Returns a newly generated popup
     def getDefaultPopup(self, mode, index):
-            
+        
+        currentPopupValuesIsEmpty = True
+        for value in self.currentPopupValues:
+            if value != None:
+                currentPopupValuesIsEmpty = False
+        
         popup = Popup(title = "Editing Task " + index,
                       content = FloatLayout(size = self.size),
                       size_hint = (0.5, 0.8))
@@ -256,7 +272,15 @@ class RoutineCreatorScreen(Screen):
             text = "Select Valve",
             values = ('1', '2', '3', '4', '5', '6', '7', '8')
             )
+        if not currentPopupValuesIsEmpty:
+            self.updateWidgetText(valve, 0)
         valve.bind(text = self.valveSpinnerCallback)
+        
+        valveLabel = Label(
+            pos_hint = {"center_x": 0.5, "center_y": 0.85},
+            text = "Valve:",
+            halign = "center"
+            )
         
         volumeInput = TextInput(
             size_hint = (0.5, 0.1),
@@ -265,6 +289,8 @@ class RoutineCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
+        if not currentPopupValuesIsEmpty:
+            self.updateWidgetText(volumeInput, 1)
         volumeInput.bind(text = self.volumeTextInputCallback)
         
         speedInput = TextInput(
@@ -274,6 +300,8 @@ class RoutineCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
+        if not currentPopupValuesIsEmpty:
+            self.updateWidgetText(speedInput, 2)
         speedInput.bind(text = self.speedTextInputCallback)
         
         confirmButton = Button(
@@ -283,6 +311,7 @@ class RoutineCreatorScreen(Screen):
             )
         confirmButton.bind(on_press = self.defaultPopupConfirmCallback)
         
+        popup.content.add_widget(valveLabel)
         popup.content.add_widget(valve)
         popup.content.add_widget(volumeInput)
         popup.content.add_widget(speedInput)
@@ -295,6 +324,11 @@ class RoutineCreatorScreen(Screen):
     #Returns a newly generated popup with an added widget for time
     def getTimePopup(self, mode, index):
         
+        currentPopupValuesIsEmpty = True
+        for value in self.currentPopupValues:
+            if value != None:
+                currentPopupValuesIsEmpty = False
+        
         popup = Popup(title = "Editing Task " + index,
                       content = FloatLayout(size = self.size),
                       size_hint = (0.5, 0.8))
@@ -305,7 +339,15 @@ class RoutineCreatorScreen(Screen):
             text = "Select Valve",
             values = ('1', '2', '3', '4', '5', '6', '7', '8')
             )
+        if not currentPopupValuesIsEmpty:
+            self.updateWidgetText(valve, 0)
         valve.bind(text = self.valveSpinnerCallback)
+        
+        valveLabel = Label(
+            pos_hint = {"center_x": 0.5, "center_y": 0.85},
+            text = "Valve:",
+            halign = "center"
+            )
         
         volumeInput = TextInput(
             size_hint = (0.5, 0.1),
@@ -314,6 +356,8 @@ class RoutineCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
+        if not currentPopupValuesIsEmpty:
+            self.updateWidgetText(volumeInput, 1)
         volumeInput.bind(text = self.volumeTextInputCallback)
         
         speedInput = TextInput(
@@ -323,6 +367,8 @@ class RoutineCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
+        if not currentPopupValuesIsEmpty:
+            self.updateWidgetText(speedInput, 2)
         speedInput.bind(text = self.speedTextInputCallback)
         
         timeInput = TextInput(
@@ -332,6 +378,8 @@ class RoutineCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
+        if not currentPopupValuesIsEmpty:
+            self.updateWidgetText(timeInput, 3)
         timeInput.bind(text = self.timeTextInputCallback)
         
         confirmButton = Button(
@@ -341,6 +389,7 @@ class RoutineCreatorScreen(Screen):
             )
         confirmButton.bind(on_press = self.defaultPopupConfirmCallback)
         
+        popup.content.add_widget(valveLabel)
         popup.content.add_widget(valve)
         popup.content.add_widget(volumeInput)
         popup.content.add_widget(speedInput)
@@ -354,6 +403,11 @@ class RoutineCreatorScreen(Screen):
     #Returns a newly generated popup with an added widget for time
     def getTimeAndExtraValvePopup(self, mode, index):
         
+        currentPopupValuesIsEmpty = True
+        for value in self.currentPopupValues:
+            if value != None:
+                currentPopupValuesIsEmpty = False
+        
         popup = Popup(title = "Editing Task " + index,
                       content = FloatLayout(size = self.size),
                       size_hint = (0.5, 0.8))
@@ -361,18 +415,34 @@ class RoutineCreatorScreen(Screen):
         valve = Spinner(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.25, 'center_y': 0.75},
-            text = "Main Valve",
+            text = "Select Valve",
             values = ('1', '2', '3', '4', '5', '6', '7', '8')
             )
+        if not currentPopupValuesIsEmpty:
+            self.updateWidgetText(valve, 0)
         valve.bind(text = self.valveSpinnerCallback)
         
         extraValve = Spinner(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.75, 'center_y': 0.75},
-            text = "Bypass Valve",
+            text = "Select Valve",
             values = ('1', '2', '3', '4', '5', '6', '7', '8')
             )
+        if not currentPopupValuesIsEmpty:
+            self.updateWidgetText(extraValve, 4)
         extraValve.bind(text = self.secondValveSpinnerCallback)
+        
+        valveLabel = Label(
+            pos_hint = {"center_x": 0.25, "center_y": 0.85},
+            text = "Main Valve:",
+            halign = "center"
+            )
+        
+        extraValveLabel = Label(
+            pos_hint = {"center_x": 0.75, "center_y": 0.85},
+            text = "Bypass Valve:",
+            halign = "center"
+            )
         
         volumeInput = TextInput(
             size_hint = (0.5, 0.1),
@@ -381,6 +451,8 @@ class RoutineCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
+        if not currentPopupValuesIsEmpty:
+            self.updateWidgetText(volumeInput, 1)
         volumeInput.bind(text = self.volumeTextInputCallback)
         
         speedInput = TextInput(
@@ -390,6 +462,8 @@ class RoutineCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
+        if not currentPopupValuesIsEmpty:
+            self.updateWidgetText(speedInput, 2)
         speedInput.bind(text = self.speedTextInputCallback)
         
         timeInput = TextInput(
@@ -399,6 +473,8 @@ class RoutineCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
+        if not currentPopupValuesIsEmpty:
+            self.updateWidgetText(timeInput, 3)
         timeInput.bind(text = self.timeTextInputCallback)
         
         confirmButton = Button(
@@ -408,6 +484,8 @@ class RoutineCreatorScreen(Screen):
             )
         confirmButton.bind(on_press = self.defaultPopupConfirmCallback)
         
+        popup.content.add_widget(valveLabel)
+        popup.content.add_widget(extraValveLabel)
         popup.content.add_widget(valve)
         popup.content.add_widget(extraValve)
         popup.content.add_widget(volumeInput)

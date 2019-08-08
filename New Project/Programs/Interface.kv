@@ -36,6 +36,7 @@ InterfaceManager:
 <RoutineCreatorScreen>:
     name: "Routine Creator Screen"
     actions_layout: actions_layout
+    delete_button: delete_button
     
     # Static Layout Showing the Titles of Each Column
     FloatLayout:
@@ -79,6 +80,7 @@ InterfaceManager:
             text: "Add Action"
             on_release: root.addEmptyAction()
         Button:
+            id: delete_button
             text: "Delete Action"
             on_release: root.toggleDelete(self)
         Button:
