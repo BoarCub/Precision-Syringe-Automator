@@ -5,8 +5,6 @@ InterfaceManager:
         id: routine_creator_screen
     SaveFileScreen:
     PreviousFileScreen:
-    DisplayFileScreen:
-        id: display_file_screen
     ExecuteFileScreen:
         
 # The first menu that the user sees
@@ -88,7 +86,7 @@ InterfaceManager:
             on_release: root.resetTask()
         Button:
             text: "Save Routine"
-            on_release: root.saveFileScreen(app.root.current, "Save File Screen")
+            on_release: app.root.current = root.saveFileScreen("Save File Screen", "Routine Creator Screen")
         Button: #Goes Back to StartScreen
             text: "Back"
             on_release: app.root.current = "Start Screen"
@@ -150,41 +148,11 @@ InterfaceManager:
         orientation: 'vertical'
         Button: #Choose File Button
             text: "Choose File"
-            on_release: root.updateDisplay(app.root.ids.display_file_screen) #Updates the table of Actions in File/Routine
-            on_release: app.root.current = "Display File Screen" #Switches screen to Display File Screen
+            on_release: root.updateDisplay(app.root.ids.routine_creator_screen)  #Updates the table of Actions in File/Routine
+            on_release: app.root.current = "Routine Creator Screen" #Switches screen to Display File Screen
         Button: #Cancel Button, Returns to Main Menu
             text: "Cancel"
             on_release: app.root.current = "Start Screen"
-
-#displays the contents on the currently loaded file from <PreviousFileScreen>
-<DisplayFileScreen>:
-    name: "Display File Screen"
-    Label:
-        text: "Display File"
-        pos_hint: {'center_x': .5, 'center_y': .95}
-        text_size: self.size
-        halign: 'center'
-        valign: 'middle'
-        font_size: '40sp'
-        font_name: 'Corbel'
-    BoxLayout:
-        id: display_box
-        size_hint: .5, None
-        pos_hint: {'center_x': .5, 'center_y':.6}
-        height: 300
-        orientation: 'vertical'
-    BoxLayout: #Layout Containing Navigational Buttons
-        size_hint: .5, None
-        height: 100
-        pos_hint: {'center_x': .5}
-        orientation: 'vertical'
-        Button: #Button Returns to File Chooser Window
-            text: "Choose other file"
-            on_release: app.root.current = "Previous File Screen"
-        Button:
-            text: "Execute File"
-            on_release: app.root.current = "Execute File Screen"
-            #on_release: app.root.ids.execute_file_window.startLoop()
 
 <ExecuteFileScreen>:
     name: "Execute File Screen"

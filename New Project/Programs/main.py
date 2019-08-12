@@ -83,10 +83,12 @@ class RoutineCreatorScreen(Screen):
             for widget in layout.children:
                 if widget.id == "details_button":
                     widget.text = TaskManager.getDetails(taskDictionary[str(i)])
+                    
+            TaskManager.newTaskActions[str(i)][1] = taskDictionary[str(i)][1] 
     
-    def saveFileScreen(self, object, screenName):
+    def saveFileScreen(self, nextScreen, currentScreen):
         if TaskManager.checkNone():
-            object = screenName
+            return nextScreen
         else:
             self.notifyPopup = Popup(title = "Warning",
                                      content = FloatLayout(size = self.size),
@@ -111,6 +113,8 @@ class RoutineCreatorScreen(Screen):
             self.notifyPopup.content.add_widget(okayButton)
             
             self.notifyPopup.open()
+            
+            return currentScreen
             
     def updateWidgetText(self, widget, parameterIndex):
         widget.text = str(self.currentPopupValues[parameterIndex])
@@ -526,42 +530,18 @@ class PreviousFileScreen(Screen):
         return  FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__)))+ "/Routines"
     #recieves the file path from the file chooser
     def selectFile(self, *args):
-        print("File selected: ", args[1][0])
-        FileManager.setPath(args[1][0])
+        try:
+            print("File selected: ", args[1][0])
+            FileManager.setPath(args[1][0])
+        except:
+            pass
     
     #signals the widgets to update based on the selected file
     def updateDisplay(self, object):
         print("file being imported", FileManager.importFile())
-        self.updateWidgets(FileManager.parseString(FileManager.importFile()), object)
-    
-    #updates widgets based on a list of commands and their values to display
-    def updateWidgets(self, actions_list, object):
-        #only works nothing has previously been displayed on the screen
-        if(FileManager.displayed_actions != None):
-            for action in FileManager.displayed_actions:
-                object.ids.display_box.remove_widget(action)
-        
-        #after displaying, it clears the cache to prepare for the nexy display
-        FileManager.displayed_actions = []
-        
-        #for every action in the list of actions
-        for small_list in actions_list:
-            placeholderLayout = BoxLayout()
-            
-            #for every item in each action (ex: Execute Command Buffer, or 83)
-            for element in small_list:
-                placeholderLayout.add_widget(Label(text=str(element)))
-            
-            #add it to the list of displayed_actions just so we know what the last thing displayed was at any given time
-            FileManager.displayed_actions.append(placeholderLayout)
-            
-            #add the widget to the displayfilescreen's box layout (id: display_box)
-            object.ids.display_box.add_widget(placeholderLayout)
-    
-    
-#displays a file based on what is loaded from previous file screen   
-class DisplayFileScreen(Screen):
-    pass
+        current_dict = FileManager.importFile()
+        if current_dict!= None:
+            object.replaceTask(current_dict)
 
 
 #Processes the execution visuals for the user

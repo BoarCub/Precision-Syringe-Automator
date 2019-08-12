@@ -48,7 +48,9 @@ class FileManager(object):
         except FileNotFoundError:
             print("File Not Found @ ", file_path)
             return None
-    
+        except:
+            print("File not in correct format.")
+            return None
     #goes through an encoded list of strings and numbers (ex:Z1R) to produce a list readable in the interface
     def parseString(self, input_string):
         #the dictionary of all commands after they're converted into readable format
