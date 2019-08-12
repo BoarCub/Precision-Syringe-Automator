@@ -24,6 +24,7 @@ class InterfaceManager(ScreenManager):
 class StartScreen(Screen):
     pass
 
+
 class SaveFileScreen(Screen):
     def save(self, path, filename):
         FileManager.writeFile(path, filename)
@@ -35,21 +36,23 @@ class SaveFileScreen(Screen):
 #The container for the RoutineCreator Screen
 class RoutineCreatorScreen(Screen):
     
-    #Super Init
+    #Super Init (Allows for the initialization of class variables
     def __init__(self, **kwargs):
         super(RoutineCreatorScreen, self).__init__(**kwargs)
         self.deleteToggled = False
     
-    def toggleDelete(self, button):
+    #Toggles whether "deleteToggled" is toggled. This value determines whether the detail buttons are in edit mode or delete mode.
+    def toggleDelete(self):
         self.deleteToggled = not self.deleteToggled
         
         if self.deleteToggled:
-            button.text = "Cancel"
+            self.delete_button.text = "Cancel"
             self.setDetailsButtonColor((1, 0, 0, 1))
         else:
-            button.text = "Delete Action"
+            self.delete_button.text = "Delete Action"
             self.setDetailsButtonColor((1, 1, 1, 1))
     
+    #Sets the color of all detail buttons to the color given in the parameter, which is a tuple in the following format: (R, G, B, A)
     def setDetailsButtonColor(self, color):
         for layout in TaskManager.taskRows:
             for widget in layout.children:
@@ -57,19 +60,22 @@ class RoutineCreatorScreen(Screen):
                     widget.background_color = color
                     break
     
+    #Resets the task by deleting all actions in the task
     def resetTask(self):
         while len(TaskManager.newTaskActions) > 0:
             self.deleteAction(1)
             
         if self.deleteToggled:
-            self.toggleDelete(self.delete_button)
+            self.toggleDelete()
     
+    #Deletes the action at the given index corresponding to TaskManager.newTaskActions, starting at 1
     def deleteAction(self, index):
         layoutToDelete = TaskManager.taskRows[index-1]
         TaskManager.deleteAction(index)
         self.actions_layout.remove_widget(layoutToDelete)
-        self.toggleDelete(self.delete_button)
+        self.toggleDelete()
     
+    #Replaces all the actions in the task with those in the parameter, given as a dictionary in the same format as TaskManager.newTaskActions
     def replaceTask(self, taskDictionary):
         self.resetTask()
         
@@ -86,6 +92,9 @@ class RoutineCreatorScreen(Screen):
                     
             TaskManager.newTaskActions[str(i)][1] = taskDictionary[str(i)][1] 
     
+    #Checks if the task is ready to save
+    #If the task is ready to save, the next screen is opened
+    #Otherwise, a popup is opened that tells the user "Some Actions are Incomplete"
     def saveFileScreen(self, nextScreen, currentScreen):
         if TaskManager.checkNone():
             return nextScreen
@@ -116,6 +125,7 @@ class RoutineCreatorScreen(Screen):
             
             return currentScreen
             
+    #Updates the text of the widget when given the index of the parameter in self.currentPopupValues, which is a list of the current values of the parameters of the action
     def updateWidgetText(self, widget, parameterIndex):
         widget.text = str(self.currentPopupValues[parameterIndex])
     
@@ -164,6 +174,7 @@ class RoutineCreatorScreen(Screen):
         return layout
         
     #A callback function that is called when the text value of a mode spinner changes
+    #This updates the value of the Task Dictionary and the text of widgets on the screen
     def updateModeSpinner(self, spinner, value):
         TaskManager.newTaskActions[str(TaskManager.taskRows.index(spinner.parent)+1)][0] = value
         TaskManager.newTaskActions[str(TaskManager.taskRows.index(spinner.parent)+1)][1] = None
@@ -175,6 +186,8 @@ class RoutineCreatorScreen(Screen):
                 return
             
     #A callback function that is called when the edit button is pressed
+    #If "deletedToggled" is true, the action associated with the button is deleted
+    #Otherwise, the detail editor is opened
     def editButtonCallback(self, button):
         
         if(self.deleteToggled):
@@ -183,6 +196,8 @@ class RoutineCreatorScreen(Screen):
             self.openDetailEditor(button)
             
     #Called to initialize popup for detail editor
+    #Initializes the values in self.currentPopupValues depending on the mode of the associated action
+    #self.currentPopupValues keeps track of the values inputed by the user
     def openDetailEditor(self, button):
         mode = TaskManager.newTaskActions[str(TaskManager.taskRows.index(button.parent)+1)][0]
         index = str(TaskManager.taskRows.index(button.parent) + 1)
@@ -197,6 +212,7 @@ class RoutineCreatorScreen(Screen):
             self.currentPopupValues = self.getCurrentValues([None, None, None, None, None], index)
             self.popup = self.getTimeAndExtraValvePopup(mode, index)
             
+    #Returns the text to be displayed on a widget given its index in a taskDictionary
     def getCurrentValues(self, alternateValues, index):
         if TaskManager.newTaskActions[str(index)][1] == None:
             return alternateValues
@@ -204,6 +220,7 @@ class RoutineCreatorScreen(Screen):
             return TaskManager.newTaskActions[str(index)][1]
             
     #A callback function that is called when the valve spinner of the popup changes
+    #Changes values in self.currentPopupValues based on what the value of the text of the widget is
     def valveSpinnerCallback(self, instance, value):
         try:
             self.currentPopupValues[0] = int(value)
@@ -211,6 +228,7 @@ class RoutineCreatorScreen(Screen):
             self.currentPopupValues[0] = None
         
     #A callback function that is called when volume textinput of the popup changes value
+    #Changes values in self.currentPopupValues based on what the value of the text of the widget is
     def volumeTextInputCallback(self, instance, value):
         try:
             self.currentPopupValues[1] = int(value)
@@ -218,6 +236,7 @@ class RoutineCreatorScreen(Screen):
             self.currentPopupValues[1] = None
         
     #A callback function that is called when speed textinput of the popup changes value
+    #Changes values in self.currentPopupValues based on what the value of the text of the widget is
     def speedTextInputCallback(self, instance, value):
         try:
             self.currentPopupValues[2] = int(value)
@@ -225,6 +244,7 @@ class RoutineCreatorScreen(Screen):
             self.currentPopupValues[2] = None
             
     #A callback function that is called when time textinput of the popup changes value
+    #Changes values in self.currentPopupValues based on what the value of the text of the widget is
     def timeTextInputCallback(self, instance, value):
         try:
             self.currentPopupValues[3] = int(value)
@@ -232,6 +252,7 @@ class RoutineCreatorScreen(Screen):
             self.currentPopupValues[3] = None
             
     #A callback function that is called when the second valve spinner of the popup changes
+    #Changes values in self.currentPopupValues based on what the value of the text of the widget is
     def secondValveSpinnerCallback(self, instance, value):
         try:
             self.currentPopupValues[4] = int(value)
@@ -239,6 +260,8 @@ class RoutineCreatorScreen(Screen):
             self.currentPopupValues[4] = None
     
     #A callback function that is called when the confirm button is pressed on the default popup
+    #If the inputed values are invalid, a new popup is opened to warn the user about it.
+    #Otherwise, the values are accepeted into the TaskManager.newTaskActions dictionary
     def defaultPopupConfirmCallback(self, instance):
         
         index = instance.parent.parent.parent.parent.title[13:]
@@ -281,6 +304,10 @@ class RoutineCreatorScreen(Screen):
         self.notifyPopup.dismiss()
     
     #Returns a newly generated popup
+    #Contains the following widgets:
+        #Valve Spinner
+        #Volume Text Input
+        #Speed Text Input
     def getDefaultPopup(self, mode, index):
         
         currentPopupValuesIsEmpty = True
@@ -348,6 +375,11 @@ class RoutineCreatorScreen(Screen):
         return popup
     
     #Returns a newly generated popup with an added widget for time
+    #Contains the following widgets:
+        #Valve Spinner
+        #Volume Text Input
+        #Speed Text Input
+        #Time Text Input
     def getTimePopup(self, mode, index):
         
         currentPopupValuesIsEmpty = True
@@ -427,6 +459,12 @@ class RoutineCreatorScreen(Screen):
         return popup
     
     #Returns a newly generated popup with an added widget for time
+    #Contains the following widgets:
+        #Main Valve Spinner
+        #Bypass Valve Spinner
+        #Volume Text Input
+        #Speed Text Input
+        #Time Text Input
     def getTimeAndExtraValvePopup(self, mode, index):
         
         currentPopupValuesIsEmpty = True
