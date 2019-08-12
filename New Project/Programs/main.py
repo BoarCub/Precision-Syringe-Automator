@@ -57,6 +57,13 @@ class RoutineCreatorScreen(Screen):
                     widget.background_color = color
                     break
     
+    def resetTask(self):
+        while len(TaskManager.newTaskActions) > 0:
+            self.deleteAction(1)
+            
+        if self.deleteToggled:
+            self.toggleDelete(self.delete_button)
+    
     def deleteAction(self, index):
         layoutToDelete = TaskManager.taskRows[index-1]
         TaskManager.deleteAction(index)

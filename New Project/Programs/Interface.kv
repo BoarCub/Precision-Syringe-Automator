@@ -84,6 +84,9 @@ InterfaceManager:
             text: "Delete Action"
             on_release: root.toggleDelete(self)
         Button:
+            text: "Reset Routine"
+            on_release: root.resetTask()
+        Button:
             text: "Save Routine"
             on_release: root.saveFileScreen(app.root.current, "Save File Screen")
         Button: #Goes Back to StartScreen
