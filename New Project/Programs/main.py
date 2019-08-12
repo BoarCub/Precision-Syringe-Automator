@@ -70,6 +70,20 @@ class RoutineCreatorScreen(Screen):
         self.actions_layout.remove_widget(layoutToDelete)
         self.toggleDelete(self.delete_button)
     
+    def replaceTask(self, taskDictionary):
+        self.resetTask()
+        
+        for i in range (1, len(taskDictionary) + 1):
+            layout = self.addEmptyAction()
+            
+            for widget in layout.children:
+                if widget.id == "mode_spinner":
+                    widget.text = taskDictionary[str(i)][0]
+                    
+            for widget in layout.children:
+                if widget.id == "details_button":
+                    widget.text = TaskManager.getDetails(taskDictionary[str(i)])
+    
     def saveFileScreen(self, object, screenName):
         if TaskManager.checkNone():
             object = screenName
@@ -142,6 +156,8 @@ class RoutineCreatorScreen(Screen):
         self.actions_layout.add_widget(layout)
         
         TaskManager.newTaskActions.update({str(len(TaskManager.newTaskActions)+1): [None, None]})
+        
+        return layout
         
     #A callback function that is called when the text value of a mode spinner changes
     def updateModeSpinner(self, spinner, value):
