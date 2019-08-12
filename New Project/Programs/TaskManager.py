@@ -29,7 +29,7 @@ class TaskManager(object):
         try:
             for i in range(index, len(self.newTaskActions)):
                 self.newTaskActions[str(i)] = self.newTaskActions[str(i+1)]
-            del self.newTaskActions[str(index)]
+            del self.newTaskActions[str(len(self.newTaskActions))]
             del self.taskRows[index-1]
             
             for i in range(index-1, len(self.taskRows)):

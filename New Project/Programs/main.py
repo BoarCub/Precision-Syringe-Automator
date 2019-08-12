@@ -138,7 +138,6 @@ class RoutineCreatorScreen(Screen):
         
     #A callback function that is called when the text value of a mode spinner changes
     def updateModeSpinner(self, spinner, value):
-        
         TaskManager.newTaskActions[str(TaskManager.taskRows.index(spinner.parent)+1)][0] = value
         TaskManager.newTaskActions[str(TaskManager.taskRows.index(spinner.parent)+1)][1] = None
         
