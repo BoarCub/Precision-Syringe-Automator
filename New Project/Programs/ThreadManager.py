@@ -23,3 +23,14 @@ class ThreadUpdater(threading.Thread):
     def stop(self):
         self.event.set()
         
+datetime = time.time()
+initialTime = 0
+
+def update():
+    if datetime > initialTime + 10:
+        updater.stop()
+        
+updater = ThreadUpdater(update, 1)
+intialTime = datetime
+
+updater.run()

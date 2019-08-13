@@ -1,5 +1,7 @@
 from kivy.clock import Clock
 from FileManager import *
+from ThreadManager import *
+import time
 
 class SerialManager(object):
     def __init__(self):
@@ -10,7 +12,26 @@ class SerialManager(object):
         #contains a list of queries and their potential repsonses
         self.query_database = FileManager.importFilePath(
             FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__)))+ "/Databases/QueryDatabase")
-    
+        
+        self.datetime = time.time()
+        self.initialTime = self.datetime
+        self.ThreadManager = ThreadUpdater(self.timeIt, 1)
+        self.length = 0
+        self.current_index = 0
+        
+    def timeIt(self):
+        print(time.time())
+        self.writeToLine(self.commands_dict[self.current_index])
+        if (time.time() > self.initialTime + int(self.length)):
+            self.ThreadManager.stop()
+    def timeActions(self):
+        for index in range(1, len(self.commands_dict)+1):
+            if (self.actions_dict[index] == 0):
+                self.writeToLine(self.commands_dict[index])
+            else:
+                self.current_index = index
+                self.length = self.actions_dict[index]
+                self.ThreadManager.run()
     def writeToLine(self, command):
         print("serial: ", command)
     #receives input in the format [[title_of_function, value], etc.] and converts it to serial code (ex: Y1R)
@@ -42,14 +63,14 @@ class SerialManager(object):
                 volume = current_param_list[2]
                 speed = current_param_list[3]
                 current_step = "S" + str(speed) + "O" + str(output_valve) + "D" + str(volume)
-                self.actions_dict[index+1] = ["Dispense", time]
+                self.actions_dict[index+1] = time
                 
             elif (input_dictionary[index+1][0] == "Retrieve"):
                 input_valve = current_param_list[0]
                 volume = current_param_list[1]
                 speed = current_param_list[2]
                 current_step = "S" + str(speed) + "I" + str(input_valve) + "P" + str(volume)
-                self.actions_dict[index+1] = ["Retrieve", time]
+                self.actions_dict[index+1] = time
                 
             elif (input_dictionary[index+1][0] == "Recycle"):
                 output_valve = current_param_list[0]
@@ -57,7 +78,7 @@ class SerialManager(object):
                 volume = current_param_list[2]
                 time = current_param_list[3]
                 speed = current_param_list[4]
-                self.actions_dict[index+1] = ["Recycle", time]
+                self.actions_dict[index+1] = time
                 current_step = "S" + str(speed) + "O" + str(output_valve) + "D" + str(volume) + "P" + str(return_valve)
                 
             elif (input_dictionary[index+1][0] == "Back-and-Forth"):
@@ -65,7 +86,7 @@ class SerialManager(object):
                 time = current_param_list[1]
                 volume = current_param_list[2]
                 speed = current_param_list[3]
-                self.actions_dict[index+1] = ["Back-and-Forth", time]
+                self.actions_dict[index+1] = time
                 current_step = "S" + str(speed) + "O" + str(valve) + "D" + str(volume) + "I" + str(valve) + "P" + str(volume)
                  
             output_dictionary[index+1] = current_step
@@ -258,3 +279,5 @@ class SerialManager(object):
             message = response
         return message
 SerialManager = SerialManager()
+SerialManager.encodeCommands({1: ["Recycle", [1, 1, 1, 5,1]], 2: ["Back and Forth", [2, 2, 2, 6]]})
+SerialManager.timeActions()
