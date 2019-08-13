@@ -1,0 +1,169 @@
+# InterfaceManager acts as a container for all of the Screens in the app
+InterfaceManager:
+    StartScreen:
+    RoutineCreatorScreen:
+        id: routine_creator_screen
+    SaveFileScreen:
+    PreviousFileScreen:
+    ExecuteFileScreen:
+        
+# The first menu that the user sees
+<StartScreen>:
+    name: "Start Screen"
+    Label:
+        text: "Precision Syringe\nAutomator"
+        pos_hint: {'center_x': .5, 'center_y': 0.8}
+        text_size: self.size
+        halign: 'center'
+        valign: 'middle'
+        font_size: '60sp'
+        font_name: 'Corbel'
+        
+    BoxLayout:
+        size_hint: .4, .2
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button: #Create New Routine Button
+            text: "Create New Routine"
+            on_release: app.root.current = "Routine Creator Screen"
+        Button: #Show Previous File Button
+            text: "Load File"
+            on_release: app.root.current = "Previous File Screen"
+
+# This screen allows a user to create a new routine
+<RoutineCreatorScreen>:
+    name: "Routine Creator Screen"
+    actions_layout: actions_layout
+    delete_button: delete_button
+    
+    # Static Layout Showing the Titles of Each Column
+    FloatLayout:
+        Label:
+            size_hint: 0.8, 0.1
+            pos_hint: {'center_x': 0.08, 'top': 1}
+            text: "[u]Task #:[/u]"
+            markup: True
+            font_size: '20sp'
+        Label:
+            size_hint: 0.8, 0.1
+            pos_hint: {'center_x': 0.3, 'top': 1}
+            text: "[u]Mode:[/u]"
+            markup: True
+            font_size: '20sp'
+        Label:
+            size_hint: 0.8, 0.1
+            pos_hint: {'center_x': 0.725, 'top': 1}
+            text: "[u]Details:[/u]"
+            markup: True
+            font_size: '20sp'
+     
+    BoxLayout:
+        size_hint: 1, .78
+        pos_hint: {'center_x': .5, 'center_y': .53}
+        ScrollView:
+            GridLayout:
+                id: actions_layout
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height 
+                row_default_height: 40
+                cols: 1
+                spacing: 10
+            
+    BoxLayout:
+        size_hint: .5, .15
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button:
+            text: "Add Action"
+            on_release: root.addEmptyAction()
+        Button:
+            id: delete_button
+            text: "Delete Action"
+            on_release: root.toggleDelete()
+        Button:
+            text: "Reset Routine"
+            on_release: root.resetTask()
+        Button:
+            text: "Save Routine"
+            on_release: app.root.current = root.saveFileScreen("Save File Screen", "Routine Creator Screen")
+        Button: #Goes Back to StartScreen
+            text: "Back"
+            on_release: app.root.current = "Start Screen"
+
+<SaveFileScreen>:
+    name: "Save File Screen"
+    text_input: text_input
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            path: root.getPath()
+            id: filechooser
+            #on_selection: text_input.text = self.selection and self.selection[0] or ''
+
+        TextInput:
+            id: text_input
+            hint_text: "File Name"
+            size_hint_y: None
+            height: 30
+            multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.root.current = "Routine Creator Screen"
+
+            Button:
+                text: "Save"
+                on_release: root.save(filechooser.path, text_input.text)
+    
+#allows the reader to view previously saved files and execute them
+<PreviousFileScreen>:
+    name: "Previous File Screen"
+    Label:
+        text: "Load File"
+        pos_hint: {'center_x': .5, 'center_y': 0.9}
+        text_size: self.size
+        halign: 'center'
+        valign: 'middle'
+        font_size: '40sp'
+        font_name: 'Corbel'
+        
+    
+    BoxLayout:
+        pos_hint: {'center_x': .5, 'top': .85}
+        orientation: 'vertical'
+        #The File Chooser Widget
+        FileChooserIconView
+            path: root.getPath()
+            on_selection: root.selectedFile = root.selectFile(*args) #args contains the file object path ([0]) and the file path in a list ([1][0])
+    BoxLayout: #Layout Containing Navigational Buttons
+        size_hint: .5, None
+        height: 100
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
+        Button: #Choose File Button
+            text: "Choose File"
+            on_release: root.updateDisplay(app.root.ids.routine_creator_screen)  #Updates the table of Actions in File/Routine
+            on_release: app.root.current = "Routine Creator Screen" #Switches screen to Display File Screen
+        Button: #Cancel Button, Returns to Main Menu
+            text: "Cancel"
+            on_release: app.root.current = "Start Screen"
+
+<ExecuteFileScreen>:
+    name: "Execute File Screen"
+    ScrollView:
+        do_scroll_x: False
+        do_scroll_y: True
+
+        Label:
+            size_hint_y: None
+            height: self.texture_size[1]
+            
+            padding: 10, 10
+            text:
+                'really some amazing text\n' * 100
