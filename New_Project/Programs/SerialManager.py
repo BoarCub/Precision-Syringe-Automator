@@ -11,6 +11,44 @@ class SerialManager(object):
         self.query_database = FileManager.importFilePath(
             FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__)))+ "/Databases/QueryDatabase")
     
+    # Turns a string of ascii characters into a list of bits
+    def tobits(self, string):
+    result = []
+    for c in string:
+        bits = bin(ord(c))[2:]
+        bits = '00000000'[len(bits):] + bits
+        result.extend([int(b) for b in bits])
+    
+    return result
+
+    # Turns a list of bits into a string of ascii characters
+    def frombits(bits):
+        chars = []
+        for b in range(int(len(bits) / 8)):
+            byte = bits[b*8:(b+1)*8]
+            chars.append(chr(int(''.join([str(bit) for bit in byte]), 2)))
+    
+        return ''.join(chars)
+
+    # Returns a checksum as a single ascii character given a list of ascii characters, representing the command
+    def calculateChecksum(commandsList):
+        
+        bitsList = []
+        
+        for command in commandsList:
+            bitsList.append(tobits(command))
+            
+        sum = bitsList[0]
+
+        for pos in range (0, 8):
+            for i in range(1, len(commandsList)):
+                sum[pos] += bitsList[i][pos]
+                
+        for i in range (0, 8):
+            sum[i] = sum[i] % 2
+            
+        return frombits(sum)
+    
     def writeToLine(self, command):
         print("serial: ", command)
     #receives input in the format [[title_of_function, value], etc.] and converts it to serial code (ex: Y1R)
