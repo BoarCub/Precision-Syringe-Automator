@@ -11,7 +11,7 @@ class SerialManager(object):
         self.query_database = FileManager.importFilePath(
             FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__)))+ "/Databases/QueryDatabase")
     
-    # Turns a string of ascii characters into a list of bits
+    # Turns a string of ascii characters into a list of bitsb
     def tobits(self, string):
     result = []
     for c in string:
