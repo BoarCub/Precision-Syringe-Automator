@@ -1,5 +1,7 @@
 from kivy.clock import Clock
 from FileManager import *
+from ThreadManager import *
+import time
 
 class SerialManager(object):
     def __init__(self):
@@ -10,9 +12,57 @@ class SerialManager(object):
         #contains a list of queries and their potential repsonses
         self.query_database = FileManager.importFilePath(
             FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__)))+ "/Databases/QueryDatabase")
+        
+        self.updater = ThreadUpdater(self.run, 1)
+        self.updater.run()
+        
+        self.index = 0
+    
+    def run(self):
+        if self.checkReady():
+            self.writeToLine(
+    
+    def statusMessage(self, status):
+        message = ""
+        error_code = status[1]
+        if status[0] == 1:
+            message += "Ready; "
+        else:
+            message += "Busy; "
+        if str(error_code) == "@" or str(error_code)== "‘":
+            message =+ "No error."
+        elif lower(str(error_code)) == "a":
+            message =+ "Initialization error."
+        elif lower(str(error_code)) == "b":
+            message =+ "Invalid command."
+        elif lower(str(error_code)) == "c":
+            message =+ "Invalid operand/parameter."
+        elif lower(str(error_code)) == "d":
+            message =+ "Invalid command sequence."
+        elif lower(str(error_code)) == "g":
+            message =+ "Syringe not initialized."
+        elif lower(str(error_code)) == "i":
+            message =+ "Syringe Pressure Overload."
+        elif lower(str(error_code)) == "j":
+            message =+ "Valve Pressure Overload."
+        elif lower(str(error_code)) == "k":
+            message =+ "Syringe move not allowed (valve in bypass or throughput)."
+        elif lower(str(error_code)) == "o":
+            message =+ "Pump is busy."
+        
+    def checkReady(self, status):
+        self.writeToLine("Q")
+        if str(readLine()) == "01X00000":
+            return True
+        return False
+    
+    def readLine(self):
+        print("readLine: 0")
+        return 0
     
     def writeToLine(self, command):
-        print("serial: ", command)
+        print("writeLine: ", command)
+    
     #receives input in the format [[title_of_function, value], etc.] and converts it to serial code (ex: Y1R)
     def encodeCommands(self, input_dictionary):
         print("input: ", input_dictionary)
