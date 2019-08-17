@@ -4,7 +4,7 @@ from TaskManager import *
 
 class FileManager(object):
     def __init__(self):
-        #contains the name (ex: CommandsDatabas) of the current file being imported
+        #contains the name (ex: CommandsDatabase) of the current file being imported
         self.file_name = ""
         
         #contains all of the commands with their corresponding 'one letter' ids

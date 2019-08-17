@@ -1,5 +1,9 @@
 # Precision Syringe Automator
 
+Dictionary in File Format: 
+{1: ["Retrieve", [Input, Volume, Speed]], 2: ["Dispense", [Output, Volume, Speed]], 3: ["Recycle", [Output, Volume, Speed, Time, Bypass]], 4: ["Back-and-Forth", [Output, Volume, Speed, Time]]}
+
+
 The Precision Syringe Automator program creates a User Interface where communicaton with Hamilton's Precision Syringe Drive/4 is possible.
 It allows the user to have full control of the pump's functionality (dispensing, retrieving, etc.), and can create routines that can be 
 edited and loaded after the first use.

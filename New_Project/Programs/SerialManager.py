@@ -1,7 +1,8 @@
-from kivy.clock import Clock
 from FileManager import *
 from ThreadManager import *
-import time
+from time import sleep
+import serial
+from TaskManager import *
 
 class SerialManager(object):
     def __init__(self):
@@ -14,13 +15,26 @@ class SerialManager(object):
             FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__)))+ "/Databases/QueryDatabase")
         
         self.updater = ThreadUpdater(self.run, 1)
-        self.updater.run()
+        #self.updater.run()
         
         self.index = 0
-    
+        
+        self.ser = serial.Serial('COM9', 9600, timeout =5)
+        self.shouldRepeat = True
+        self.response = ""
+        
+    def sendMessage(self, message):
+        print(TaskManager.newTaskActions)
+        self.ser.write(b'/1Z' + message.encode() + b'R\r')
+        sleep(0)
+        
+        while True:
+            self.response = self.ser.readline().decode()      
+            print("response: ", self.response)
+            if self.response != "":
+                break
     def run(self):
-        if self.checkReady():
-            self.writeToLine(
+        pass
     
     def statusMessage(self, status):
         message = ""
@@ -50,10 +64,12 @@ class SerialManager(object):
         elif lower(str(error_code)) == "o":
             message =+ "Pump is busy."
         
-    def checkReady(self, status):
-        self.writeToLine("Q")
-        if str(readLine()) == "01X00000":
+    def checkReady(self):
+        self.sendMessage("Q")
+        if self.response[2] == "`":
+            print("Ready")
             return True
+        print("Not Ready")
         return False
     
     def readLine(self):
@@ -62,13 +78,13 @@ class SerialManager(object):
     
     # Turns a string of ascii characters into a list of bitsb
     def tobits(self, string):
-    result = []
-    for c in string:
-        bits = bin(ord(c))[2:]
-        bits = '00000000'[len(bits):] + bits
-        result.extend([int(b) for b in bits])
-    
-    return result
+        result = []
+        for c in string:
+            bits = bin(ord(c))[2:]
+            bits = '00000000'[len(bits):] + bits
+            result.extend([int(b) for b in bits])
+        
+        return result
 
     # Turns a list of bits into a string of ascii characters
     def frombits(bits):
@@ -346,3 +362,4 @@ class SerialManager(object):
             message = response
         return message
 SerialManager = SerialManager()
+SerialManager.checkReady()
