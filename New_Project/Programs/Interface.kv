@@ -71,7 +71,7 @@ InterfaceManager:
                 spacing: 10
             
     BoxLayout:
-        size_hint: .5, .15
+        size_hint: .5, .18
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
         Button:
@@ -87,6 +87,8 @@ InterfaceManager:
         Button:
             text: "Save Routine"
             on_release: app.root.current = root.saveFileScreen("Save File Screen", "Routine Creator Screen")
+        Button:
+            text: "Execute Routine"
         Button: #Goes Back to StartScreen
             text: "Back"
             on_release: app.root.current = "Start Screen"

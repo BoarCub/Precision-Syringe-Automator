@@ -2,6 +2,7 @@ from FileManager import *
 from ThreadManager import *
 from time import sleep
 import serial
+import serial.tools.list_ports
 from TaskManager import *
 
 class SerialManager(object):
@@ -19,9 +20,21 @@ class SerialManager(object):
         
         self.index = 0
         
-        self.ser = serial.Serial('COM9', 9600, timeout =5)
+        #The below VID (Vendor ID) and PID (Product ID) constants are set by the manufacturer and are used to identify the USB Device
+        self.VID = 1659
+        self.PID = 8963
+        
+        self.ser = serial.Serial(self.getPortOfDevice(self.VID, self.PID), 9600, timeout =5)
         self.shouldRepeat = True
         self.response = ""
+        
+    #Returns the port/device name of the USB Device with the VID and PID given as the parameters
+    def getPortOfDevice(self, vid, pid):
+        ports = serial.tools.list_ports.comports()
+        for port in ports:
+            if port.vid == vid and port.pid == pid:
+                return port.device
+        raise EnvironmentError('No supported USB device available') 
         
     def sendMessage(self, message):
         print(TaskManager.newTaskActions)
@@ -361,5 +374,6 @@ class SerialManager(object):
         elif (query == "?25000"):
             message = response
         return message
+    
 SerialManager = SerialManager()
 SerialManager.checkReady()

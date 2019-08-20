@@ -327,7 +327,7 @@ class RoutineCreatorScreen(Screen):
             size_hint = (0.5, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.75},
             text = "Select Valve",
-            values = ('1', '2', '3', '4', '5', '6', '7', '8')
+            values = ('1', '2', '3', '4', '5', '6')
             )
         if not currentPopupValuesIsEmpty:
             self.updateWidgetText(valve, 0)
@@ -342,7 +342,7 @@ class RoutineCreatorScreen(Screen):
         volumeInput = TextInput(
             size_hint = (0.5, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
-            hint_text = "Volume",
+            hint_text = "Volume (μm)",
             multiline = False,
             input_filter = 'int'
             )
@@ -407,7 +407,7 @@ class RoutineCreatorScreen(Screen):
             size_hint = (0.5, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.75},
             text = "Select Valve",
-            values = ('1', '2', '3', '4', '5', '6', '7', '8')
+            values = ('1', '2', '3', '4', '5', '6')
             )
         if not currentPopupValuesIsEmpty:
             self.updateWidgetText(valve, 0)
@@ -422,7 +422,7 @@ class RoutineCreatorScreen(Screen):
         volumeInput = TextInput(
             size_hint = (0.5, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
-            hint_text = "Volume",
+            hint_text = "Volume (μm)",
             multiline = False,
             input_filter = 'int'
             )
@@ -500,7 +500,7 @@ class RoutineCreatorScreen(Screen):
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.25, 'center_y': 0.75},
             text = "Select Valve",
-            values = ('1', '2', '3', '4', '5', '6', '7', '8')
+            values = ('1', '2', '3', '4', '5', '6')
             )
         if not currentPopupValuesIsEmpty:
             self.updateWidgetText(valve, 0)
@@ -510,7 +510,7 @@ class RoutineCreatorScreen(Screen):
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.75, 'center_y': 0.75},
             text = "Select Valve",
-            values = ('1', '2', '3', '4', '5', '6', '7', '8')
+            values = ('1', '2', '3', '4', '5', '6')
             )
         if not currentPopupValuesIsEmpty:
             self.updateWidgetText(extraValve, 4)
@@ -531,7 +531,7 @@ class RoutineCreatorScreen(Screen):
         volumeInput = TextInput(
             size_hint = (0.5, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
-            hint_text = "Volume",
+            hint_text = "Volume (μm)",
             multiline = False,
             input_filter = 'int'
             )
@@ -613,6 +613,8 @@ class PreviousFileScreen(Screen):
 #Processes the execution visuals for the user
 class ExecuteFileScreen(Screen):
     pass
+
+
 # Loads the .kv file needed
 kv = Builder.load_file("Interface.kv")
 
