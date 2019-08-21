@@ -15,6 +15,8 @@ from kivy.properties import ObjectProperty
 from TaskManager import TaskManager
 from FileManager import *
 
+from SerialManager import *
+
 # InterfaceManager acts as a container for all of the Screens in the app
 class InterfaceManager(ScreenManager):
     pass
@@ -124,6 +126,35 @@ class RoutineCreatorScreen(Screen):
             self.notifyPopup.open()
             
             return currentScreen
+        
+    def executeTask(self):
+        if TaskManager.checkNone():
+            SerialManager.executeTask(TaskManager.newTaskActions)
+        else:
+            self.notifyPopup = Popup(title = "Warning",
+                                     content = FloatLayout(size = self.size),
+                                     size_hint = (0.5, 0.8))
+            
+            okayLabel = Label(
+                size_hint = (0.5, 0.1),
+                pos_hint = {'center_x': 0.5, 'center_y': 0.7},
+                text = "Some Actions Are\nIncomplete",
+                halign = 'center',
+                font_size = "20sp"
+            )
+            
+            okayButton = Button(
+                size_hint = (0.5, 0.1),
+                pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+                text = "Okay"
+            )
+            okayButton.bind(on_press = self.closeNotifyPopup)
+            
+            self.notifyPopup.content.add_widget(okayLabel)
+            self.notifyPopup.content.add_widget(okayButton)
+            
+            self.notifyPopup.open()
+            
             
     #Updates the text of the widget when given the index of the parameter in self.currentPopupValues, which is a list of the current values of the parameters of the action
     def updateWidgetText(self, widget, parameterIndex):
@@ -324,7 +355,7 @@ class RoutineCreatorScreen(Screen):
                       size_hint = (0.5, 0.8))
         
         valve = Spinner(
-            size_hint = (0.5, 0.1),
+            size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.75},
             text = "Select Valve",
             values = ('1', '2', '3', '4', '5', '6')
@@ -340,7 +371,7 @@ class RoutineCreatorScreen(Screen):
             )
         
         volumeInput = TextInput(
-            size_hint = (0.5, 0.1),
+            size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
             hint_text = "Volume (μm)",
             multiline = False,
@@ -351,9 +382,9 @@ class RoutineCreatorScreen(Screen):
         volumeInput.bind(text = self.volumeTextInputCallback)
         
         speedInput = TextInput(
-            size_hint = (0.5, 0.1),
+            size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.45},
-            hint_text = "Speed",
+            hint_text = "Speed (1 Fastest, 40 Slowest)",
             multiline = False,
             input_filter = 'int'
             )
@@ -404,7 +435,7 @@ class RoutineCreatorScreen(Screen):
                       size_hint = (0.5, 0.8))
         
         valve = Spinner(
-            size_hint = (0.5, 0.1),
+            size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.75},
             text = "Select Valve",
             values = ('1', '2', '3', '4', '5', '6')
@@ -420,7 +451,7 @@ class RoutineCreatorScreen(Screen):
             )
         
         volumeInput = TextInput(
-            size_hint = (0.5, 0.1),
+            size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
             hint_text = "Volume (μm)",
             multiline = False,
@@ -431,9 +462,9 @@ class RoutineCreatorScreen(Screen):
         volumeInput.bind(text = self.volumeTextInputCallback)
         
         speedInput = TextInput(
-            size_hint = (0.5, 0.1),
+            size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.45},
-            hint_text = "Speed",
+            hint_text = "Speed (1 Fastest, 40 Slowest)",
             multiline = False,
             input_filter = 'int'
             )
@@ -442,7 +473,7 @@ class RoutineCreatorScreen(Screen):
         speedInput.bind(text = self.speedTextInputCallback)
         
         timeInput = TextInput(
-            size_hint = (0.5, 0.1),
+            size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.3},
             hint_text = "Time",
             multiline = False,
@@ -529,7 +560,7 @@ class RoutineCreatorScreen(Screen):
             )
         
         volumeInput = TextInput(
-            size_hint = (0.5, 0.1),
+            size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
             hint_text = "Volume (μm)",
             multiline = False,
@@ -540,9 +571,9 @@ class RoutineCreatorScreen(Screen):
         volumeInput.bind(text = self.volumeTextInputCallback)
         
         speedInput = TextInput(
-            size_hint = (0.5, 0.1),
+            size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.45},
-            hint_text = "Speed",
+            hint_text = "Speed (1 Fastest, 40 Slowest)",
             multiline = False,
             input_filter = 'int'
             )
@@ -551,7 +582,7 @@ class RoutineCreatorScreen(Screen):
         speedInput.bind(text = self.speedTextInputCallback)
         
         timeInput = TextInput(
-            size_hint = (0.5, 0.1),
+            size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.3},
             hint_text = "Time",
             multiline = False,

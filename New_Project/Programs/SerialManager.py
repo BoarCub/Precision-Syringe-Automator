@@ -4,9 +4,6 @@ from time import sleep
 from time import time
 import serial
 import serial.tools.list_ports
-from TaskManager import *
-from ClockManager import *
-
 
 class SerialManager(object):
     def __init__(self):
@@ -27,11 +24,17 @@ class SerialManager(object):
         self.VID = 1659
         self.PID = 8963
         
+        #A boolean used to track whether a time-based task is active
+        self.actionActive = False
+        
         #Initial time used for time-based actions to know when the action started
         self.initialTime = None
         
         #Used in time-based actions, represents the number of seconds that should pass before the action stops
         self.actionLength = None
+        
+        #The index of the action currently being executed in the task
+        self.actionIndex = None
     
     # Creates a new serial connection and returns a boolean indicating whether the connection was successfully made
     def makeConnection(self):
@@ -48,7 +51,40 @@ class SerialManager(object):
             if port.vid == vid and port.pid == pid:
                 return port.device
         raise EnvironmentError('No supported USB device available') 
+    
+    def executeTask(self, taskDictionary):
         
+        self.makeConnection()
+        
+        self.task = taskDictionary
+        self.actionIndex = 0
+        
+        self.runInitialization()
+        
+        self.looper = ThreadUpdater(self.taskLoop, 1)
+        self.looper.start()
+        
+    def taskLoop(self):
+        if not self.actionActive:
+            if self.actionIndex == len(self.task):
+                self.looper.stop()
+                self.taskCompleted()
+            else:
+                self.actionIndex += 1
+                print("Executing Step " + str(self.actionIndex))
+                actionInfo = self.task[str(self.actionIndex)]
+                if actionInfo[0] == "Retrieve":
+                    self.runRetrieve(actionInfo[1][0], actionInfo[1][1], actionInfo[1][2])
+                elif actionInfo[0] == "Dispense":
+                    self.runDispense(actionInfo[1][0], actionInfo[1][1], actionInfo[1][2])
+                elif actionInfo[0] == "Back-and-Forth":
+                    self.runBackAndForth(actionInfo[1][0], actionInfo[1][1], actionInfo[1][2], actionInfo[1][3])
+                else:
+                    self.runBypass(actionInfo[1][0], actionInfo[1][1], actionInfo[1][2], actionInfo[1][3], actionInfo[1][4])
+                
+    def taskCompleted(self):
+        print("Task Completed")
+    
     def sendMessage(self, message):
         print(TaskManager.newTaskActions)
         self.ser.write(b'/1Z' + message.encode() + b'R\r')
@@ -143,27 +179,58 @@ class SerialManager(object):
     def writeToLine(self, command):
         print("writeLine: ", command)
     
+    def runInitialization(self):
+        self.ser.write('/1ZR\r'.encode())
+        self.ser.readline()
+        
+        self.actionActive = True
+        self.updater = ThreadUpdater(self.basicActionUpdate, 0.1)
+        self.updater.start()
+        
     def runRetrieve(self, valve, volume, speed):
         command = '/1S' + str(speed) + 'I' + str(valve) + 'P' + str(volume) + 'R\r'
         self.ser.write(command.encode())
         self.ser.readline()
         
+        self.actionActive = True
+        self.updater = ThreadUpdater(self.basicActionUpdate, 0.1)
+        self.updater.start()
+        
     def runDispense(self, valve, volume, speed):
         command = '/1S' + str(speed) + 'O' + str(valve) + 'D' + str(volume) + 'R\r'
         self.ser.write(command.encode())
         self.ser.readline()
+        
+        self.actionActive = True
+        self.updater = ThreadUpdater(self.basicActionUpdate, 0.1)
+        self.updater.start()
+        
+    def basicActionUpdate(self):
+        self.ser.write('/1Q\r'.encode())
+        query = self.ser.readline()
+        try:
+            query = query.decode()[2]
+        except:
+            query = '@'
+        
+        if query != '@':
+            self.updater.stop()
+            self.actionActive = False
     
     def runBackAndForth(self, valve, volume, speed, length):
-        self.initialTime = time.time()
+        self.initialTime = time()
         self.actionLength = length
         self.actionParameters = [valve, volume, speed]
+        self.actionActive = True
         
         self.updater = ThreadUpdater(self.backAndForthUpdate, 0.1)
         self.updater.start()
         
     def backAndForthUpdate(self):
-        if(time.time() > self.initialTime + self.actionLength):
+        if(time() > self.initialTime + self.actionLength):
             self.updater.stop()
+            self.updater = ThreadUpdater(self.basicActionUpdate, 0.1)
+            self.updater.start()
         else:
             self.ser.write('/1Q\r'.encode())
             query = self.ser.readline()
@@ -182,16 +249,19 @@ class SerialManager(object):
                 self.ser.readline()
         
     def runBypass(self, valve, volume, speed, length, bypassValve):
-        self.initialTime = time.time()
+        self.initialTime = time()
         self.actionLength = length
         self.actionParameters = [valve, volume, speed, bypassValve]
+        self.actionActive = True
         
         self.updater = ThreadUpdater(self.bypassUpdate, 0.1)
         self.updater.start()
         
     def bypassUpdate(self):
-        if(time.time() > self.initialTime + self.actionLength):
+        if(time() > self.initialTime + self.actionLength):
             self.updater.stop()
+            self.updater = ThreadUpdater(self.basicActionUpdate, 0.1)
+            self.updater.start()
         else:
             self.ser.write('/1Q\r'.encode())
             query = self.ser.readline()
@@ -456,5 +526,5 @@ class SerialManager(object):
         return message
     
 SerialManager = SerialManager()
-SerialManager.makeConnection()
-SerialManager.runBypass(6, 3000, 15, 60, 1)
+#SerialManager.makeConnection()
+#SerialManager.runBypass(6, 3000, 15, 60, 1)

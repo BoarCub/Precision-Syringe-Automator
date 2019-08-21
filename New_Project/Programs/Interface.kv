@@ -89,6 +89,7 @@ InterfaceManager:
             on_release: app.root.current = root.saveFileScreen("Save File Screen", "Routine Creator Screen")
         Button:
             text: "Execute Routine"
+            on_release: root.executeTask()
         Button: #Goes Back to StartScreen
             text: "Back"
             on_release: app.root.current = "Start Screen"
