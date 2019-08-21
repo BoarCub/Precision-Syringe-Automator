@@ -1,9 +1,12 @@
 from FileManager import *
 from ThreadManager import *
 from time import sleep
+from time import time
 import serial
 import serial.tools.list_ports
 from TaskManager import *
+from ClockManager import *
+
 
 class SerialManager(object):
     def __init__(self):
@@ -24,10 +27,20 @@ class SerialManager(object):
         self.VID = 1659
         self.PID = 8963
         
-        self.ser = serial.Serial(self.getPortOfDevice(self.VID, self.PID), 9600, timeout =5)
-        self.shouldRepeat = True
-        self.response = ""
+        #Initial time used for time-based actions to know when the action started
+        self.initialTime = None
         
+        #Used in time-based actions, represents the number of seconds that should pass before the action stops
+        self.actionLength = None
+    
+    # Creates a new serial connection and returns a boolean indicating whether the connection was successfully made
+    def makeConnection(self):
+        try:
+            self.ser = serial.Serial(self.getPortOfDevice(self.VID, self.PID), 9600, timeout =5)
+            return True
+        except:
+            return False
+    
     #Returns the port/device name of the USB Device with the VID and PID given as the parameters
     def getPortOfDevice(self, vid, pid):
         ports = serial.tools.list_ports.comports()
@@ -129,6 +142,73 @@ class SerialManager(object):
     
     def writeToLine(self, command):
         print("writeLine: ", command)
+    
+    def runRetrieve(self, valve, volume, speed):
+        command = '/1S' + str(speed) + 'I' + str(valve) + 'P' + str(volume) + 'R\r'
+        self.ser.write(command.encode())
+        self.ser.readline()
+        
+    def runDispense(self, valve, volume, speed):
+        command = '/1S' + str(speed) + 'O' + str(valve) + 'D' + str(volume) + 'R\r'
+        self.ser.write(command.encode())
+        self.ser.readline()
+    
+    def runBackAndForth(self, valve, volume, speed, length):
+        self.initialTime = time.time()
+        self.actionLength = length
+        self.actionParameters = [valve, volume, speed]
+        
+        self.updater = ThreadUpdater(self.backAndForthUpdate, 0.1)
+        self.updater.start()
+        
+    def backAndForthUpdate(self):
+        if(time.time() > self.initialTime + self.actionLength):
+            self.updater.stop()
+        else:
+            self.ser.write('/1Q\r'.encode())
+            query = self.ser.readline()
+            try:
+                query = query.decode()[2]
+            except:
+                query = '@'
+        
+            if query != '@':        
+                valve  = self.actionParameters[0]
+                volume = self.actionParameters[1]
+                speed = self.actionParameters[2]
+                
+                command = '/1S' + str(speed) + 'O' + str(valve) + 'D' + str(volume) + 'P' + str(volume) + 'R\r'
+                self.ser.write(command.encode())
+                self.ser.readline()
+        
+    def runBypass(self, valve, volume, speed, length, bypassValve):
+        self.initialTime = time.time()
+        self.actionLength = length
+        self.actionParameters = [valve, volume, speed, bypassValve]
+        
+        self.updater = ThreadUpdater(self.bypassUpdate, 0.1)
+        self.updater.start()
+        
+    def bypassUpdate(self):
+        if(time.time() > self.initialTime + self.actionLength):
+            self.updater.stop()
+        else:
+            self.ser.write('/1Q\r'.encode())
+            query = self.ser.readline()
+            try:
+                query = query.decode()[2]
+            except:
+                query = '@'
+                
+            if query != '@':
+                valve = self.actionParameters[0]
+                volume = self.actionParameters[1]
+                speed = self.actionParameters[2]
+                bypassValve = self.actionParameters[3]
+        
+                command = '/1S' + str(speed) + 'O' + str(valve) + 'D' + str(volume) + 'I' + str(bypassValve) + 'P' + str(volume) + 'R\r'
+                self.ser.write(command.encode())
+                self.ser.readline()
     
     #receives input in the format [[title_of_function, value], etc.] and converts it to serial code (ex: Y1R)
     def encodeCommands(self, input_dictionary):
@@ -376,4 +456,5 @@ class SerialManager(object):
         return message
     
 SerialManager = SerialManager()
-SerialManager.checkReady()
+SerialManager.makeConnection()
+SerialManager.runBypass(6, 3000, 15, 60, 1)

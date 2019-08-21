@@ -74,6 +74,19 @@ class Pump:
             self.ser.write('/1A2675A3000R\r'.encode())
             self.ser.readline()
             
+        self.ser.write('/1Q\r'.encode())
+        query = self.ser.readline()
+        try:
+            query = query.decode()[2]
+        except:
+            query = '@'
+        while query == '@':
+            time.sleep(0.5)
+            self.ser.write('/1Q\r'.encode())
+            query = self.ser.readline().decode()[2]
+        self.ser.write('/1A3000I1A0O6A1000I1A0R\r'.encode())
+        self.ser.readline()
+            
     def interruptCycle(self):
         self.ser.write('/1T\r'.encode())
         self.ser.readline()
@@ -85,7 +98,13 @@ class Pump:
         for port in ports:
             if port.vid == vid and port.pid == pid:
                 return port.device
-        raise EnvironmentError('No supported devices available') 
+        raise EnvironmentError('No supported devices available')
+    
+    def getPositionTest(self):
+        self.ser.write('/1?\r'.encode())
+        rawPosition = self.ser.readline().decode()[3:-3]
+        print(rawPosition)
         
 obj = Pump()
+obj.getPositionTest()
 obj.backAndForthUpdated()
