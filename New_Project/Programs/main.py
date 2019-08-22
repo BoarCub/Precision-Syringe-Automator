@@ -669,8 +669,13 @@ class TaskCreatorScreen(Screen):
         popup.open()
         
         return popup
-        
-        
+     
+     
+#Acts as a container for the Debug Screen
+class DebugScreen(Screen):
+    pass
+     
+     
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
     def getPath(self):

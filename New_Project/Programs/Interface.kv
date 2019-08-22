@@ -3,6 +3,7 @@ InterfaceManager:
     StartScreen:
     TaskCreatorScreen:
         id: task_creator_screen
+    DebugScreen:
     SaveFileScreen:
     PreviousFileScreen:
     ExecuteFileScreen:
@@ -29,6 +30,9 @@ InterfaceManager:
         Button: #Show Previous File Button
             text: "Load File"
             on_release: app.root.current = "Previous File Screen"
+        Button:
+            text: "Debug Mode"
+            on_release: app.root.current = "Debug Screen"
 
 # This screen allows a user to create a new task
 <TaskCreatorScreen>:
@@ -90,6 +94,17 @@ InterfaceManager:
         Button:
             text: "Execute Task"
             on_release: root.executeTask()
+        Button: #Goes Back to StartScreen
+            text: "Back"
+            on_release: app.root.current = "Start Screen"
+            
+<DebugScreen>:
+    name: "Debug Screen"
+                
+    BoxLayout:
+        size_hint: .5, .18
+        pos_hint: {'center_x': .5}
+        orientation: 'vertical'
         Button: #Goes Back to StartScreen
             text: "Back"
             on_release: app.root.current = "Start Screen"
