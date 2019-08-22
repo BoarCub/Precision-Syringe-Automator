@@ -32,15 +32,15 @@ class SaveFileScreen(Screen):
         FileManager.writeFile(path, filename)
 
     def getPath(self):
-        return FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__))) + "/Routines"
+        return FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__))) + "/Tasks"
     
     
-#The container for the RoutineCreator Screen
-class RoutineCreatorScreen(Screen):
+#The container for the TaskCreator Screen
+class TaskCreatorScreen(Screen):
     
     #Super Init (Allows for the initialization of class variables
     def __init__(self, **kwargs):
-        super(RoutineCreatorScreen, self).__init__(**kwargs)
+        super(TaskCreatorScreen, self).__init__(**kwargs)
         self.deleteToggled = False
     
     #Toggles whether "deleteToggled" is toggled. This value determines whether the detail buttons are in edit mode or delete mode.
@@ -118,7 +118,7 @@ class RoutineCreatorScreen(Screen):
                 pos_hint = {'center_x': 0.5, 'center_y': 0.3},
                 text = "Okay"
             )
-            okayButton.bind(on_press = self.closeNotifyPopup)
+            okayButton.bind(on_release = self.closeNotifyPopup)
             
             self.notifyPopup.content.add_widget(okayLabel)
             self.notifyPopup.content.add_widget(okayButton)
@@ -127,35 +127,86 @@ class RoutineCreatorScreen(Screen):
             
             return currentScreen
         
+    # Called by pressing the Execute Task button
+    # Checks if it's possible to execute the task (device is connected/the task is applicable)
+    # Opens the appropriate popups
     def executeTask(self):
         if TaskManager.checkNone():
-            SerialManager.executeTask(TaskManager.newTaskActions)
+            if SerialManager.makeConnection():
+                self.makeExecutionPopup()
+                SerialManager.executeTask(TaskManager.newTaskActions)
+            else:
+                self.makeNotificationPopup("No Connected\nDevice Found")
         else:
-            self.notifyPopup = Popup(title = "Warning",
-                                     content = FloatLayout(size = self.size),
-                                     size_hint = (0.5, 0.8))
+            self.makeNotificationPopup("Some Actions Are\nIncomplete")
             
-            okayLabel = Label(
-                size_hint = (0.5, 0.1),
-                pos_hint = {'center_x': 0.5, 'center_y': 0.7},
-                text = "Some Actions Are\nIncomplete",
-                halign = 'center',
-                font_size = "20sp"
+    # Generates a notification popup with the text given in the parameter
+    def makeNotificationPopup(self, textParameter):
+        self.notifyPopup = Popup(title = "Warning",
+                                 content = FloatLayout(size = self.size),
+                                 size_hint = (0.5, 0.8))
+        
+        okayLabel = Label(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.7},
+            text = textParameter,
+            halign = 'center',
+            font_size = "20sp"
+        )
+        
+        okayButton = Button(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+            text = "Okay"
+        )
+        okayButton.bind(on_release = self.closeNotifyPopup)
+        
+        self.notifyPopup.content.add_widget(okayLabel)
+        self.notifyPopup.content.add_widget(okayButton)
+        
+        self.notifyPopup.open()
+        
+    def makeExecutionPopup(self):
+        self.executionPopup = Popup(title = "Executing Task",
+                                    content = FloatLayout(size = self.size),
+                                    size_hint = (0.5, 0.8),
+                                    auto_dismiss = False)
+        
+        messageLabel = Label(size_hint = (0.5, 0.1),
+                             id = "message_label",
+                             pos_hint = {'center_x': 0.5, 'center_y': 0.7},
+                             text = "Initializing...",
+                             halign = 'center',
+                             font_size = "20sp",            
+        )
+        
+        messageLabel.bind(text = self.messageLabelCallback)
+        
+        SerialManager.setExecutionTextObject(messageLabel)
+        
+        stopButton = Button(id = "stop_button",
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+            text = "Stop Task"
             )
-            
-            okayButton = Button(
-                size_hint = (0.5, 0.1),
-                pos_hint = {'center_x': 0.5, 'center_y': 0.3},
-                text = "Okay"
-            )
-            okayButton.bind(on_press = self.closeNotifyPopup)
-            
-            self.notifyPopup.content.add_widget(okayLabel)
-            self.notifyPopup.content.add_widget(okayButton)
-            
-            self.notifyPopup.open()
-            
-            
+        
+        stopButton.bind(on_release = self.stopTaskButton)
+        
+        self.executionPopup.content.add_widget(messageLabel)
+        self.executionPopup.content.add_widget(stopButton)
+        
+        self.executionPopup.open()
+        
+    def messageLabelCallback(self, instance, text):
+        if text == "Task Completed" or text == "Task Stopped":
+            for widget in instance.parent.children:
+                if widget.id == "stop_button":
+                    widget.bind(on_release = self.executionPopup.dismiss)
+                    widget.text = "Close Window"
+        
+    def stopTaskButton(self, instance):
+        SerialManager.stopTask()
+        
     #Updates the text of the widget when given the index of the parameter in self.currentPopupValues, which is a list of the current values of the parameters of the action
     def updateWidgetText(self, widget, parameterIndex):
         widget.text = str(self.currentPopupValues[parameterIndex])
@@ -190,7 +241,7 @@ class RoutineCreatorScreen(Screen):
             disabled = True
             )
         
-        detailsButton.bind(on_press = self.editButtonCallback)
+        detailsButton.bind(on_release = self.editButtonCallback)
         
         layout.add_widget(taskLabel)
         layout.add_widget(spinner)
@@ -220,7 +271,6 @@ class RoutineCreatorScreen(Screen):
     #If "deletedToggled" is true, the action associated with the button is deleted
     #Otherwise, the detail editor is opened
     def editButtonCallback(self, button):
-        
         if(self.deleteToggled):
             self.deleteAction(TaskManager.taskRows.index(button.parent)+1)
         else:
@@ -323,7 +373,7 @@ class RoutineCreatorScreen(Screen):
                 pos_hint = {'center_x': 0.5, 'center_y': 0.3},
                 text = "Okay"
             )
-            okayButton.bind(on_press = self.closeNotifyPopup)
+            okayButton.bind(on_release = self.closeNotifyPopup)
             
             self.notifyPopup.content.add_widget(okayLabel)
             self.notifyPopup.content.add_widget(okayButton)
@@ -397,14 +447,14 @@ class RoutineCreatorScreen(Screen):
             pos_hint = {'center_x': 0.25, 'center_y': 0.3},
             text = "Confirm"
             )
-        confirmButton.bind(on_press = self.defaultPopupConfirmCallback)
+        confirmButton.bind(on_release = self.defaultPopupConfirmCallback)
         
         cancelButton = Button(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.75, 'center_y': 0.3},
             text = "Cancel"
             )
-        cancelButton.bind(on_press = self.defaultPopupCancelCallback)
+        cancelButton.bind(on_release = self.defaultPopupCancelCallback)
         
         popup.content.add_widget(valveLabel)
         popup.content.add_widget(valve)
@@ -488,14 +538,14 @@ class RoutineCreatorScreen(Screen):
             pos_hint = {'center_x': 0.25, 'center_y': 0.15},
             text = "Confirm"
             )
-        confirmButton.bind(on_press = self.defaultPopupConfirmCallback)
+        confirmButton.bind(on_release = self.defaultPopupConfirmCallback)
         
         cancelButton = Button(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.75, 'center_y': 0.15},
             text = "Cancel"
             )
-        cancelButton.bind(on_press = self.defaultPopupCancelCallback)
+        cancelButton.bind(on_release = self.defaultPopupCancelCallback)
         
         popup.content.add_widget(valveLabel)
         popup.content.add_widget(valve)
@@ -597,14 +647,14 @@ class RoutineCreatorScreen(Screen):
             pos_hint = {'center_x': 0.25, 'center_y': 0.15},
             text = "Confirm"
             )
-        confirmButton.bind(on_press = self.defaultPopupConfirmCallback)
+        confirmButton.bind(on_release = self.defaultPopupConfirmCallback)
         
         cancelButton = Button(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.75, 'center_y': 0.15},
             text = "Cancel"
             )
-        cancelButton.bind(on_press = self.defaultPopupCancelCallback)
+        cancelButton.bind(on_release = self.defaultPopupCancelCallback)
         
         popup.content.add_widget(valveLabel)
         popup.content.add_widget(extraValveLabel)
@@ -624,7 +674,7 @@ class RoutineCreatorScreen(Screen):
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):
     def getPath(self):
-        return  FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__)))+ "/Routines"
+        return  FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__)))+ "/Tasks"
     #recieves the file path from the file chooser
     def selectFile(self, *args):
         try:

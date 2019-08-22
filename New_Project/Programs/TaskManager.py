@@ -9,6 +9,10 @@ class TaskManager(object):
         self.taskRows = []
         
     def checkNone(self):
+        
+        if len(self.newTaskActions) == 0:
+            return False
+        
         try:
             for newTaskAction in self.newTaskActions:
                 if newTaskAction == None:
@@ -46,18 +50,18 @@ class TaskManager(object):
         parameters = action_list[1]
         try:
             if action == "Back-and-Forth":
-                message = "Pulling and pushing " + str(parameters[1]) + " steps at speed " + str(parameters[2]) + "/40\nin valve " + str(parameters[0]) + " for " + str(parameters[3]) + " seconds"
+                message = "Pulling and pushing " + str(parameters[1]) + " μm at speed " + str(parameters[2]) + "/40\nin valve " + str(parameters[0]) + " for " + str(parameters[3]) + " seconds"
         except IndexError:
             pass
         try:
             if action == "Recycle":
-                message = "Cycling " + str(parameters[1]) + " steps at speed " + str(parameters[2]) + "/40, to valve, " + str(parameters[0]) + "\nand returning through valve, " + str(parameters[4]) + " for " + str(parameters[3]) + " seconds"
+                message = "Cycling " + str(parameters[1]) + " μm at speed " + str(parameters[2]) + "/40, to valve, " + str(parameters[0]) + "\nand returning through valve, " + str(parameters[4]) + " for " + str(parameters[3]) + " seconds"
         except IndexError:            
             pass
         if action == "Dispense":
-            message = "Dispensing " + str(parameters[1]) + " steps, at speed " + str(parameters[2]) + "/40,\nout of valve " + str(parameters[0])
+            message = "Dispensing " + str(parameters[1]) + " μm at speed " + str(parameters[2]) + "/40,\nout of valve " + str(parameters[0])
         if action == "Retrieve":
-            message = "Retrieving " + str(parameters[1]) + " steps, at speed " + str(parameters[2]) + "/40,\ninto valve, " + str(parameters[0])
+            message = "Retrieving " + str(parameters[1]) + " μm at speed " + str(parameters[2]) + "/40,\ninto valve, " + str(parameters[0])
         return message
     
     def checkParameters(self, action_list):

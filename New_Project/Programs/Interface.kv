@@ -1,8 +1,8 @@
 # InterfaceManager acts as a container for all of the Screens in the app
 InterfaceManager:
     StartScreen:
-    RoutineCreatorScreen:
-        id: routine_creator_screen
+    TaskCreatorScreen:
+        id: task_creator_screen
     SaveFileScreen:
     PreviousFileScreen:
     ExecuteFileScreen:
@@ -23,16 +23,16 @@ InterfaceManager:
         size_hint: .4, .2
         pos_hint: {'center_x': .5}
         orientation: 'vertical'
-        Button: #Create New Routine Button
-            text: "Create New Routine"
-            on_release: app.root.current = "Routine Creator Screen"
+        Button: #Create New Task Button
+            text: "Create New Task"
+            on_release: app.root.current = "Task Creator Screen"
         Button: #Show Previous File Button
             text: "Load File"
             on_release: app.root.current = "Previous File Screen"
 
-# This screen allows a user to create a new routine
-<RoutineCreatorScreen>:
-    name: "Routine Creator Screen"
+# This screen allows a user to create a new task
+<TaskCreatorScreen>:
+    name: "Task Creator Screen"
     actions_layout: actions_layout
     delete_button: delete_button
     
@@ -82,13 +82,13 @@ InterfaceManager:
             text: "Delete Action"
             on_release: root.toggleDelete()
         Button:
-            text: "Reset Routine"
+            text: "Reset Task"
             on_release: root.resetTask()
         Button:
-            text: "Save Routine"
-            on_release: app.root.current = root.saveFileScreen("Save File Screen", "Routine Creator Screen")
+            text: "Save Task"
+            on_release: app.root.current = root.saveFileScreen("Save File Screen", "Task Creator Screen")
         Button:
-            text: "Execute Routine"
+            text: "Execute Task"
             on_release: root.executeTask()
         Button: #Goes Back to StartScreen
             text: "Back"
@@ -118,7 +118,7 @@ InterfaceManager:
             height: 30
             Button:
                 text: "Cancel"
-                on_release: app.root.current = "Routine Creator Screen"
+                on_release: app.root.current = "Task Creator Screen"
 
             Button:
                 text: "Save"
@@ -151,8 +151,8 @@ InterfaceManager:
         orientation: 'vertical'
         Button: #Choose File Button
             text: "Choose File"
-            on_release: root.updateDisplay(app.root.ids.routine_creator_screen)  #Updates the table of Actions in File/Routine
-            on_release: app.root.current = "Routine Creator Screen" #Switches screen to Display File Screen
+            on_release: root.updateDisplay(app.root.ids.task_creator_screen)  #Updates the table of Actions in File/Task
+            on_release: app.root.current = "Task Creator Screen" #Switches screen to Display File Screen
         Button: #Cancel Button, Returns to Main Menu
             text: "Cancel"
             on_release: app.root.current = "Start Screen"

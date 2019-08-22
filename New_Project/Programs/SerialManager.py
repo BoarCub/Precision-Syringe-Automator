@@ -15,9 +15,6 @@ class SerialManager(object):
         self.query_database = FileManager.importFilePath(
             FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__)))+ "/Databases/QueryDatabase")
         
-        self.updater = ThreadUpdater(self.run, 1)
-        #self.updater.run()
-        
         self.index = 0
         
         #The below VID (Vendor ID) and PID (Product ID) constants are set by the manufacturer and are used to identify the USB Device
@@ -35,14 +32,30 @@ class SerialManager(object):
         
         #The index of the action currently being executed in the task
         self.actionIndex = None
+        
+        #The text object displayed in the user interface to give information about the task execution
+        self.executionTextObject = None
     
     # Creates a new serial connection and returns a boolean indicating whether the connection was successfully made
     def makeConnection(self):
         try:
-            self.ser = serial.Serial(self.getPortOfDevice(self.VID, self.PID), 9600, timeout =5)
-            return True
+            self.ser = serial.Serial(self.getPortOfDevice(self.VID, self.PID), 9600, timeout = 0.1)
         except:
             return False
+        
+        try:
+            self.ser.write('/1Q\r'.encode())
+            response = self.ser.readline().decode()
+        except:
+            return False
+        
+        if response == "":
+            return False
+        else:
+            return True
+        
+    def setExecutionTextObject(self, obj):
+        self.executionTextObject = obj
     
     #Returns the port/device name of the USB Device with the VID and PID given as the parameters
     def getPortOfDevice(self, vid, pid):
@@ -60,6 +73,7 @@ class SerialManager(object):
         self.actionIndex = 0
         
         self.runInitialization()
+        self.executionTextObject.text = "Initializing..."
         
         self.looper = ThreadUpdater(self.taskLoop, 1)
         self.looper.start()
@@ -71,8 +85,8 @@ class SerialManager(object):
                 self.taskCompleted()
             else:
                 self.actionIndex += 1
-                print("Executing Step " + str(self.actionIndex))
                 actionInfo = self.task[str(self.actionIndex)]
+                self.executionTextObject.text = "Executing Step " + str(self.actionIndex) + ":\n" + actionInfo[0]
                 if actionInfo[0] == "Retrieve":
                     self.runRetrieve(actionInfo[1][0], actionInfo[1][1], actionInfo[1][2])
                 elif actionInfo[0] == "Dispense":
@@ -83,20 +97,19 @@ class SerialManager(object):
                     self.runBypass(actionInfo[1][0], actionInfo[1][1], actionInfo[1][2], actionInfo[1][3], actionInfo[1][4])
                 
     def taskCompleted(self):
-        print("Task Completed")
-    
-    def sendMessage(self, message):
-        print(TaskManager.newTaskActions)
-        self.ser.write(b'/1Z' + message.encode() + b'R\r')
-        sleep(0)
+        self.executionTextObject.text = "Task Completed"
         
-        while True:
-            self.response = self.ser.readline().decode()      
-            print("response: ", self.response)
-            if self.response != "":
-                break
-    def run(self):
-        pass
+    def stopTask(self):
+        self.looper.stop()
+        try:
+            self.updater.stop()
+        except:
+            pass
+        try:
+            self.ser.write("/1T\r".encode())
+        except:
+            pass
+        self.executionTextObject.text = "Task Stopped"
     
     def statusMessage(self, status):
         message = ""
@@ -125,18 +138,6 @@ class SerialManager(object):
             message =+ "Syringe move not allowed (valve in bypass or throughput)."
         elif lower(str(error_code)) == "o":
             message =+ "Pump is busy."
-        
-    def checkReady(self):
-        self.sendMessage("Q")
-        if self.response[2] == "`":
-            print("Ready")
-            return True
-        print("Not Ready")
-        return False
-    
-    def readLine(self):
-        print("readLine: 0")
-        return 0
     
     # Turns a string of ascii characters into a list of bitsb
     def tobits(self, string):
@@ -176,17 +177,16 @@ class SerialManager(object):
             
         return frombits(sum)
     
-    def writeToLine(self, command):
-        print("writeLine: ", command)
-    
+    # Runs Initialization on the Pump 
     def runInitialization(self):
-        self.ser.write('/1ZR\r'.encode())
+        self.ser.write('/1YR\r'.encode())
         self.ser.readline()
         
         self.actionActive = True
         self.updater = ThreadUpdater(self.basicActionUpdate, 0.1)
         self.updater.start()
         
+    # Runs the Retrieve Command on the Pump
     def runRetrieve(self, valve, volume, speed):
         command = '/1S' + str(speed) + 'I' + str(valve) + 'P' + str(volume) + 'R\r'
         self.ser.write(command.encode())
@@ -196,6 +196,7 @@ class SerialManager(object):
         self.updater = ThreadUpdater(self.basicActionUpdate, 0.1)
         self.updater.start()
         
+    # Runs the Dispense Command on the Pump
     def runDispense(self, valve, volume, speed):
         command = '/1S' + str(speed) + 'O' + str(valve) + 'D' + str(volume) + 'R\r'
         self.ser.write(command.encode())
@@ -205,9 +206,14 @@ class SerialManager(object):
         self.updater = ThreadUpdater(self.basicActionUpdate, 0.1)
         self.updater.start()
         
+    # An Update Function Called to Check if a One-Step Action is Completed
     def basicActionUpdate(self):
-        self.ser.write('/1Q\r'.encode())
-        query = self.ser.readline()
+        try:
+            self.ser.write('/1Q\r'.encode())
+            query = self.ser.readline()
+        except:
+            self.stopTask()
+            self.executionTextObject.text = "Could Not Connect\nTo Device"
         try:
             query = query.decode()[2]
         except:
@@ -217,6 +223,7 @@ class SerialManager(object):
             self.updater.stop()
             self.actionActive = False
     
+    # Runs the Back and Forth Action on the Pump
     def runBackAndForth(self, valve, volume, speed, length):
         self.initialTime = time()
         self.actionLength = length
@@ -226,14 +233,19 @@ class SerialManager(object):
         self.updater = ThreadUpdater(self.backAndForthUpdate, 0.1)
         self.updater.start()
         
+    # Update Function that is Called to run the action again when completed, until the full length of time passes
     def backAndForthUpdate(self):
         if(time() > self.initialTime + self.actionLength):
             self.updater.stop()
             self.updater = ThreadUpdater(self.basicActionUpdate, 0.1)
             self.updater.start()
         else:
-            self.ser.write('/1Q\r'.encode())
-            query = self.ser.readline()
+            try:
+                self.ser.write('/1Q\r'.encode())
+                query = self.ser.readline()
+            except:
+                self.stopTask()
+                self.executionTextObject.text = "Could Not Connect\nTo Device"
             try:
                 query = query.decode()[2]
             except:
@@ -247,7 +259,8 @@ class SerialManager(object):
                 command = '/1S' + str(speed) + 'O' + str(valve) + 'D' + str(volume) + 'P' + str(volume) + 'R\r'
                 self.ser.write(command.encode())
                 self.ser.readline()
-        
+    
+    # Runs the Bypass/Recycle Action on the Pump
     def runBypass(self, valve, volume, speed, length, bypassValve):
         self.initialTime = time()
         self.actionLength = length
@@ -257,14 +270,19 @@ class SerialManager(object):
         self.updater = ThreadUpdater(self.bypassUpdate, 0.1)
         self.updater.start()
         
+    # Update Function that is Called to Run the Action Again When Completed, Until the Full Length of Time Passes
     def bypassUpdate(self):
         if(time() > self.initialTime + self.actionLength):
             self.updater.stop()
             self.updater = ThreadUpdater(self.basicActionUpdate, 0.1)
             self.updater.start()
         else:
-            self.ser.write('/1Q\r'.encode())
-            query = self.ser.readline()
+            try:
+                self.ser.write('/1Q\r'.encode())
+                query = self.ser.readline()
+            except:
+                self.stopTask()
+                self.executionTextObject.text = "Could Not Connect\nTo Device"
             try:
                 query = query.decode()[2]
             except:
@@ -279,69 +297,6 @@ class SerialManager(object):
                 command = '/1S' + str(speed) + 'O' + str(valve) + 'D' + str(volume) + 'I' + str(bypassValve) + 'P' + str(volume) + 'R\r'
                 self.ser.write(command.encode())
                 self.ser.readline()
-    
-    #receives input in the format [[title_of_function, value], etc.] and converts it to serial code (ex: Y1R)
-    def encodeCommands(self, input_dictionary):
-        print("input: ", input_dictionary)
-        output_dictionary = {}
-        for index in range(0, len(input_dictionary)):
-            current_step = []
-            time = 0
-            current_param_list = input_dictionary[index+1][1]
-            #avoids IndexError because some commands don't take a 4th index parameter
-            try:
-                if current_param_list[3] != None:
-                    print()
-                
-            except IndexError:
-                current_param_list.append(0)
-                
-            #same thing for 5th index
-            try:
-                if current_param_list[4] != None:
-                    print()
-                
-            except IndexError:
-                current_param_list.append(0)
-            
-            if (input_dictionary[index+1][0] == "Dispense"):
-                output_valve = current_param_list[0]
-                volume = current_param_list[2]
-                speed = current_param_list[3]
-                current_step = "S" + str(speed) + "O" + str(output_valve) + "D" + str(volume)
-                self.actions_dict[index+1] = ["Dispense", time]
-                
-            elif (input_dictionary[index+1][0] == "Retrieve"):
-                input_valve = current_param_list[0]
-                volume = current_param_list[1]
-                speed = current_param_list[2]
-                current_step = "S" + str(speed) + "I" + str(input_valve) + "P" + str(volume)
-                self.actions_dict[index+1] = ["Retrieve", time]
-                
-            elif (input_dictionary[index+1][0] == "Recycle"):
-                output_valve = current_param_list[0]
-                return_valve = current_param_list[1]
-                volume = current_param_list[2]
-                time = current_param_list[3]
-                speed = current_param_list[4]
-                self.actions_dict[index+1] = ["Recycle", time]
-                current_step = "S" + str(speed) + "O" + str(output_valve) + "D" + str(volume) + "P" + str(return_valve)
-                
-            elif (input_dictionary[index+1][0] == "Back-and-Forth"):
-                valve = current_param_list[0]
-                time = current_param_list[1]
-                volume = current_param_list[2]
-                speed = current_param_list[3]
-                self.actions_dict[index+1] = ["Back-and-Forth", time]
-                current_step = "S" + str(speed) + "O" + str(valve) + "D" + str(volume) + "I" + str(valve) + "P" + str(volume)
-                 
-            output_dictionary[index+1] = current_step
-        print("output: ", output_dictionary)
-        self.commands_dict = output_dictionary
-        return output_dictionary
-    
-    def setCommands(self, commands):
-        command_list = command
         
     def queryToString(self, query, response):
         message = ""
@@ -526,5 +481,3 @@ class SerialManager(object):
         return message
     
 SerialManager = SerialManager()
-#SerialManager.makeConnection()
-#SerialManager.runBypass(6, 3000, 15, 60, 1)
