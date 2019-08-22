@@ -423,7 +423,7 @@ class TaskCreatorScreen(Screen):
         volumeInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
-            hint_text = "Volume (μm)",
+            hint_text = "Volume (1 - 3000 μm)",
             multiline = False,
             input_filter = 'int'
             )
@@ -503,7 +503,7 @@ class TaskCreatorScreen(Screen):
         volumeInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
-            hint_text = "Volume (μm)",
+            hint_text = "Volume (1 - 3000 μm)",
             multiline = False,
             input_filter = 'int'
             )
@@ -612,7 +612,7 @@ class TaskCreatorScreen(Screen):
         volumeInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
-            hint_text = "Volume (μm)",
+            hint_text = "Volume (1 - 3000 μm)",
             multiline = False,
             input_filter = 'int'
             )
@@ -694,11 +694,6 @@ class PreviousFileScreen(Screen):
         current_dict = FileManager.importFile()
         if current_dict!= None:
             object.replaceTask(current_dict)
-
-
-#Processes the execution visuals for the user
-class ExecuteFileScreen(Screen):
-    pass
 
 
 # Loads the .kv file needed
