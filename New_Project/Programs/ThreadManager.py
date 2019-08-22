@@ -22,16 +22,3 @@ class ThreadUpdater(threading.Thread):
     #ends the loop
     def stop(self):
         self.event.set()
-    '''    
-datetime = time.time()
-initialTime = datetime
-
-def update():
-    print(time.time())
-    if time.time() > (initialTime) + 10:
-        updater.stop()
-        
-updater = ThreadUpdater(update, 1)
-
-updater.run()
-'''

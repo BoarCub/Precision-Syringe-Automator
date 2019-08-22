@@ -683,14 +683,12 @@ class PreviousFileScreen(Screen):
     #recieves the file path from the file chooser
     def selectFile(self, *args):
         try:
-            print("File selected: ", args[1][0])
             FileManager.setPath(args[1][0])
         except:
             pass
     
     #signals the widgets to update based on the selected file
     def updateDisplay(self, object):
-        print("file being imported", FileManager.importFile())
         current_dict = FileManager.importFile()
         if current_dict!= None:
             object.replaceTask(current_dict)

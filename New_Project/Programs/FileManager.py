@@ -24,7 +24,6 @@ class FileManager(object):
     #sets the default file path used in importFile   
     def setPath(self, file_path):
         self.file_path = file_path
-        print("New Default File Path: ", self.file_path)
     
     #import the current self.file_path
     def importFile(self): 
@@ -38,18 +37,14 @@ class FileManager(object):
                 break
                 
         if file_path == None or file_path == "":
-            print("No File Given")
             return None
         try:
             with open(file_path) as file:
                 selectedFile = json.load(file)
-                print(self.file_name, "Loaded Succesfully @ ", file_path)
                 return selectedFile
         except FileNotFoundError:
-            print("File Not Found @ ", file_path)
             return None
         except:
-            print("File not in correct format.")
             return None
     #goes through an encoded list of strings and numbers (ex:Z1R) to produce a list readable in the interface
     def parseString(self, input_string):
@@ -57,7 +52,6 @@ class FileManager(object):
         actions = []
         #a running variable that stores all numbers following a letter command
         current_int = ""
-        print("String to parse: ", input_string)
         list_of_lists = []
         
         for index in range(1, len(input_string)+1):
@@ -108,5 +102,6 @@ class FileManager(object):
         self.dict_to_save = TaskManager.newTaskActions
         with open(os.path.join(path, filename), 'w') as file:
             json.dump(self.dict_to_save, file)
-            print("File Successfully Saved: ", self.dict_to_save)
+            
+            
 FileManager = FileManager()
