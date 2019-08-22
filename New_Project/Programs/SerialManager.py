@@ -215,11 +215,14 @@ class SerialManager(object):
             self.stopTask()
             self.executionTextObject.text = "Could Not Connect\nTo Device"
         try:
-            query = query.decode()[2]
+            query = query.decode()
         except:
-            query = '@'
+            query = '  @'
         
-        if query != '@':
+        if query == "":
+            self.stopTask()
+            self.executionTextObject.text = "Could Not Connect\nTo Device"
+        elif query[2] != '@':
             self.updater.stop()
             self.actionActive = False
     
@@ -247,11 +250,13 @@ class SerialManager(object):
                 self.stopTask()
                 self.executionTextObject.text = "Could Not Connect\nTo Device"
             try:
-                query = query.decode()[2]
+                query = query.decode()
             except:
-                query = '@'
-        
-            if query != '@':        
+                query = '  @'
+            if query == "":
+                self.stopTask()
+                self.executionTextObject.text = "Could Not Connect\nTo Device"
+            elif query[2] != '@':        
                 valve  = self.actionParameters[0]
                 volume = self.actionParameters[1]
                 speed = self.actionParameters[2]
@@ -284,11 +289,13 @@ class SerialManager(object):
                 self.stopTask()
                 self.executionTextObject.text = "Could Not Connect\nTo Device"
             try:
-                query = query.decode()[2]
+                query = query.decode()
             except:
-                query = '@'
-                
-            if query != '@':
+                query = '  @'
+            if query == "":
+                self.stopTask()
+                self.executionTextObject.text = "Could Not Connect\nTo Device"
+            elif query[2] != '@':
                 valve = self.actionParameters[0]
                 volume = self.actionParameters[1]
                 speed = self.actionParameters[2]
