@@ -62,7 +62,56 @@ Give an example
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+### Deploying to Windows
+
+Make sure the requirements are installed:
+```
+Latest Kivy (installed as described in Installation on Windows).
+PyInstaller 3.1+ (pip install --upgrade pyinstaller).
+```
+
+1. Open your command line shell and ensure that python is on the path (i.e. python works).
+
+2. Create a folder into which the packaged app will be created. For example, create a PrecisionSyringeAutomator folder and change to that directory with e.g. cd PrecisionSyringePump. Then type:
+```
+python -m PyInstaller --name PrecisionSyringePump examples-path\New_Project\Program\main.py
+```
+
+3. The spec file will be PrecisionSyringeAutomator.spec located in PrecisionSyringeAutomator. Now we need to edit the spec file to add the dependencies hooks to correctly build the exe. Open the spec file with your favorite editor and add these lines at the beginning of the spec (assuming sdl2 is used, the default now):
+```
+from kivy_deps import sdl2, glew
+```
+
+To add the dependencies, before the first keyword argument in COLLECT add a Tree object for every path of the dependencies. E.g. *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins)] so it’ll look something like:
+```
+coll = COLLECT(exe,
+               a.binaries,
+               a.zipfiles,
+               a.datas,
+               *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins)],
+               strip=False,
+               upx=True,
+               upx_exclude=[],
+               name='touchtracer')
+```
+
+4. Now we need to make sure hidden dependencies are imported. Add a list containing the directory to the win32timezone file as follows:
+```
+my_hidden_modules = [( 'C:\\Users\\<username>\\AppData\\Local\\Programs\\Python\\<Python Version>\\Lib\\site-packages\\win32\\lib\\win32timezone.py', '.' )]
+```
+
+In ```a = Analysis```: change ```datas=[]``` to ```datas=my_hidden_modules```
+
+5. Now we build the spec file in the PrecisionSyringePump folder with:
+```
+python -m PyInstaller PrecisionSyringePump.spec
+```
+
+6. Finally we have to include the required other required folder/files
+  a. Copy the Tasks and Databases folders from the Project Folder to the dist folder inside of the PrecisionSyringePump folder you    created
+  b. Copy the Interface.kv and Corbel.ttf files from ```ProjectFolder\Programs``` to ```PrecisionSyringeAutomator\dist\PrecisionSyringeAutomator```
+ 
+7. There is an executable inside ```dist\PrecisionSyringeAutomator``` called PrecisionSyringeAutomator that will run the program.
 
 ## Built With
 
