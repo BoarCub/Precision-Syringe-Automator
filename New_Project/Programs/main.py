@@ -35,15 +35,15 @@ class SaveFileScreen(Screen):
         return FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__))) + "/Tasks"
     
     
-#The container for the TaskCreator Screen
+# The container for the TaskCreator Screen
 class TaskCreatorScreen(Screen):
     
-    #Super Init (Allows for the initialization of class variables
+    # Super Init (Allows for the initialization of class variables
     def __init__(self, **kwargs):
         super(TaskCreatorScreen, self).__init__(**kwargs)
-        self.deleteToggled = False
+        self.deleteToggled = False # A boolean representing whether delete mode is toggled
     
-    #Toggles whether "deleteToggled" is toggled. This value determines whether the detail buttons are in edit mode or delete mode.
+    # Toggles whether "deleteToggled" is toggled. This value determines whether the detail buttons are in edit mode or delete mode.
     def toggleDelete(self):
         self.deleteToggled = not self.deleteToggled
         
@@ -54,7 +54,7 @@ class TaskCreatorScreen(Screen):
             self.delete_button.text = "Delete Action"
             self.setDetailsButtonColor((1, 1, 1, 1))
     
-    #Sets the color of all detail buttons to the color given in the parameter, which is a tuple in the following format: (R, G, B, A)
+    # Sets the color of all detail buttons to the color given in the parameter, which is a tuple in the following format: (R, G, B, A)
     def setDetailsButtonColor(self, color):
         for layout in TaskManager.taskRows:
             for widget in layout.children:
@@ -62,7 +62,7 @@ class TaskCreatorScreen(Screen):
                     widget.background_color = color
                     break
     
-    #Resets the task by deleting all actions in the task
+    # Resets the task by deleting all actions in the task
     def resetTask(self):
         while len(TaskManager.newTaskActions) > 0:
             self.deleteAction(1)
@@ -70,7 +70,7 @@ class TaskCreatorScreen(Screen):
         if self.deleteToggled:
             self.toggleDelete()
     
-    #Deletes the action at the given index corresponding to TaskManager.newTaskActions, starting at 1
+    # Deletes the action at the given index corresponding to TaskManager.newTaskActions, starting at 1
     def deleteAction(self, index):
         layoutToDelete = TaskManager.taskRows[index-1]
         TaskManager.deleteAction(index)
@@ -166,6 +166,7 @@ class TaskCreatorScreen(Screen):
         
         self.notifyPopup.open()
         
+    # Creates a popup that is opened when a task is executed
     def makeExecutionPopup(self):
         self.executionPopup = Popup(title = "Executing Task",
                                     content = FloatLayout(size = self.size),
@@ -197,6 +198,7 @@ class TaskCreatorScreen(Screen):
         
         self.executionPopup.open()
         
+    # A callback function that is called whenever the message label in the execution popup changes text
     def messageLabelCallback(self, instance, text):
         if text == "Task Completed" or text == "Task Stopped":
             for widget in instance.parent.children:
@@ -204,14 +206,16 @@ class TaskCreatorScreen(Screen):
                     widget.bind(on_release = self.executionPopup.dismiss)
                     widget.text = "Close Window"
         
+    # A callback function that is called whenever the stop task button is pressed in the execution popup
     def stopTaskButton(self, instance):
         SerialManager.stopTask()
         
-    #Updates the text of the widget when given the index of the parameter in self.currentPopupValues, which is a list of the current values of the parameters of the action
+    # Updates the text of the widget when given the index of the parameter in self.currentPopupValues, which is a list of the current values of the parameters of the action
     def updateWidgetText(self, widget, parameterIndex):
         widget.text = str(self.currentPopupValues[parameterIndex])
     
-    #Creates an empty action and adds it to the task and screen
+    # Creates an empty action and adds it to the task and screen
+    # A new row is added to the Scrollable Layout accordingly
     def addEmptyAction(self):
         
         layout = FloatLayout(
@@ -255,8 +259,8 @@ class TaskCreatorScreen(Screen):
         
         return layout
         
-    #A callback function that is called when the text value of a mode spinner changes
-    #This updates the value of the Task Dictionary and the text of widgets on the screen
+    # A callback function that is called when the text value of a mode spinner changes
+    # This updates the value of the Task Dictionary and the text of widgets on the screen
     def updateModeSpinner(self, spinner, value):
         TaskManager.newTaskActions[str(TaskManager.taskRows.index(spinner.parent)+1)][0] = value
         TaskManager.newTaskActions[str(TaskManager.taskRows.index(spinner.parent)+1)][1] = None
@@ -267,18 +271,18 @@ class TaskCreatorScreen(Screen):
                 widget.text = "Add Details"
                 return
             
-    #A callback function that is called when the edit button is pressed
-    #If "deletedToggled" is true, the action associated with the button is deleted
-    #Otherwise, the detail editor is opened
+    # A callback function that is called when the edit button is pressed
+    # If "deletedToggled" is true, the action associated with the button is deleted
+    # Otherwise, the detail editor is opened
     def editButtonCallback(self, button):
         if(self.deleteToggled):
             self.deleteAction(TaskManager.taskRows.index(button.parent)+1)
         else:
             self.openDetailEditor(button)
             
-    #Called to initialize popup for detail editor
-    #Initializes the values in self.currentPopupValues depending on the mode of the associated action
-    #self.currentPopupValues keeps track of the values inputed by the user
+    # Called to initialize popup for detail editor
+    # Initializes the values in self.currentPopupValues depending on the mode of the associated action
+    # self.currentPopupValues keeps track of the values inputed by the user
     def openDetailEditor(self, button):
         mode = TaskManager.newTaskActions[str(TaskManager.taskRows.index(button.parent)+1)][0]
         index = str(TaskManager.taskRows.index(button.parent) + 1)
@@ -293,56 +297,56 @@ class TaskCreatorScreen(Screen):
             self.currentPopupValues = self.getCurrentValues([None, None, None, None, None], index)
             self.popup = self.getTimeAndExtraValvePopup(mode, index)
             
-    #Returns the text to be displayed on a widget given its index in a taskDictionary
+    # Returns the text to be displayed on a widget given its index in a taskDictionary
     def getCurrentValues(self, alternateValues, index):
         if TaskManager.newTaskActions[str(index)][1] == None:
             return alternateValues
         else:
             return TaskManager.newTaskActions[str(index)][1]
             
-    #A callback function that is called when the valve spinner of the popup changes
-    #Changes values in self.currentPopupValues based on what the value of the text of the widget is
+    # A callback function that is called when the valve spinner of the popup changes
+    # Changes values in self.currentPopupValues based on what the value of the text of the widget is
     def valveSpinnerCallback(self, instance, value):
         try:
             self.currentPopupValues[0] = int(value)
         except:
             self.currentPopupValues[0] = None
         
-    #A callback function that is called when volume textinput of the popup changes value
-    #Changes values in self.currentPopupValues based on what the value of the text of the widget is
+    # A callback function that is called when volume textinput of the popup changes value
+    # Changes values in self.currentPopupValues based on what the value of the text of the widget is
     def volumeTextInputCallback(self, instance, value):
         try:
             self.currentPopupValues[1] = int(value)
         except:
             self.currentPopupValues[1] = None
         
-    #A callback function that is called when speed textinput of the popup changes value
-    #Changes values in self.currentPopupValues based on what the value of the text of the widget is
+    # A callback function that is called when speed textinput of the popup changes value
+    # Changes values in self.currentPopupValues based on what the value of the text of the widget is
     def speedTextInputCallback(self, instance, value):
         try:
             self.currentPopupValues[2] = int(value)
         except:
             self.currentPopupValues[2] = None
             
-    #A callback function that is called when time textinput of the popup changes value
-    #Changes values in self.currentPopupValues based on what the value of the text of the widget is
+    # A callback function that is called when time textinput of the popup changes value
+    # Changes values in self.currentPopupValues based on what the value of the text of the widget is
     def timeTextInputCallback(self, instance, value):
         try:
             self.currentPopupValues[3] = int(value)
         except:
             self.currentPopupValues[3] = None
             
-    #A callback function that is called when the second valve spinner of the popup changes
-    #Changes values in self.currentPopupValues based on what the value of the text of the widget is
+    # A callback function that is called when the second valve spinner of the popup changes
+    # Changes values in self.currentPopupValues based on what the value of the text of the widget is
     def secondValveSpinnerCallback(self, instance, value):
         try:
             self.currentPopupValues[4] = int(value)
         except:
             self.currentPopupValues[4] = None
     
-    #A callback function that is called when the confirm button is pressed on the default popup
-    #If the inputed values are invalid, a new popup is opened to warn the user about it.
-    #Otherwise, the values are accepeted into the TaskManager.newTaskActions dictionary
+    # A callback function that is called when the confirm button is pressed on the default popup
+    # If the inputed values are invalid, a new popup is opened to warn the user about it.
+    # Otherwise, the values are accepeted into the TaskManager.newTaskActions dictionary
     def defaultPopupConfirmCallback(self, instance):
         
         index = instance.parent.parent.parent.parent.title[13:]
@@ -380,16 +384,16 @@ class TaskCreatorScreen(Screen):
             
             self.notifyPopup.open()
     
-    #Callback button the cancels the Edit Popup
+    # Callback button the cancels the Edit Popup
     def defaultPopupCancelCallback(self, instance):
         self.popup.dismiss()
     
-    #Callback function that closes the notify popup
+    # Callback function that closes the notify popup
     def closeNotifyPopup(self, instance):
         self.notifyPopup.dismiss()
     
-    #Returns a newly generated popup
-    #Contains the following widgets:
+    # Returns a newly generated popup
+    # Contains the following widgets:
         #Valve Spinner
         #Volume Text Input
         #Speed Text Input
@@ -707,5 +711,4 @@ class MainApp(App):
 
 # Main Function which runs the app
 if __name__ == "__main__":
-    
     MainApp().run()

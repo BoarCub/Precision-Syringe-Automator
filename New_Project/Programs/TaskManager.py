@@ -3,11 +3,15 @@ class TaskManager(object):
     
     def __init__ (self):
         
-        # Holds all of the actions in a newly created task
-        # Follows this format {"# of Task Starting from 1": [# of Input Valve, # of Output Valve, "Mode (Time or Volume)", # of Value, # of Speed]
+        # Holds all of the actions in a newly created task or imported task
+        # Follows this format {"# of Task Starting from 1": [Mode (Retrieve, Dispense, Back-and-Forth or Recycle), [# of Valve, Volume from 1-3000, Speed from 1-40 (1 fastest, 40 slowest), Time in seconds (only needed for Back-and-Forth and Recycle), Extra Valve (Only Needed for Back-and-Forth)]] }
         self.newTaskActions = {}
+        
+        # A list holding all of the layouts for each action row in the user interface
+        # List is ordered, starting with row 1
         self.taskRows = []
         
+    # Returns a boolean representing whether the current task is completed filled (no empty actions)
     def checkNone(self):
         
         if len(self.newTaskActions) == 0:
@@ -28,7 +32,7 @@ class TaskManager(object):
             return False
         return True
     
-    # Deletes a Task at a specific index and shift everything else down
+    # Deletes an action at a specific index and shift the other actions to fill the gap
     def deleteAction(self, index):
         try:
             for i in range(index, len(self.newTaskActions)):
@@ -44,6 +48,8 @@ class TaskManager(object):
             self.newTaskActions = {}
             self.taskRows = []
     
+    # Returns a short description of an action when given an action list
+    # The action list parameter must be in the same format as the entries in newTaskActions
     def getDetails(self, action_list):
         message = ""
         action = action_list[0]
@@ -64,6 +70,8 @@ class TaskManager(object):
             message = "Retrieving " + str(parameters[1]) + " μm at speed " + str(parameters[2]) + "/40,\ninto valve, " + str(parameters[0])
         return message
     
+    # Checks to see if a given action (as a list) is valid and returns True or False accordingly
+    # The action list parameter must be in the same format as the entries in newTaskActions
     def checkParameters(self, action_list):
         action = action_list[0]
         parameters = action_list[1]
