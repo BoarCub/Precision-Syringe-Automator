@@ -32,6 +32,12 @@ class SerialManager(object):
     
     # Creates a new serial connection and returns a boolean indicating whether the connection was successfully made
     def makeConnection(self):
+    
+        try:
+            self.ser.close()
+        except:
+            pass
+        
         try:
             self.ser = serial.Serial(self.getPortOfDevice(self.VID, self.PID), 9600, timeout = 0.1)
         except:
