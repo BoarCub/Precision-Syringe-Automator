@@ -107,9 +107,11 @@ In ```a = Analysis```: change ```datas=[]``` to ```datas=my_hidden_modules```
 python -m PyInstaller PrecisionSyringePump.spec
 ```
 
-6. Finally we have to include the required other required folder/files
-  a. Copy the Tasks and Databases folders from the Project Folder to the dist folder inside of the PrecisionSyringePump folder you    created
-  b. Copy the Interface.kv and Corbel.ttf files from ```ProjectFolder\Programs``` to ```PrecisionSyringeAutomator\dist\PrecisionSyringeAutomator```
+6. Finally we have to include the other required folders/files with our program. There are two steps to this:
+
+    a. Copy the Tasks and Databases folders from the Project Folder to the dist folder inside of the PrecisionSyringePump folder you    created
+  
+    b. Copy the Interface.kv and Corbel.ttf files from ```ProjectFolder\Programs``` to ```PrecisionSyringeAutomator\dist\PrecisionSyringeAutomator```
  
 7. There is an executable inside ```dist\PrecisionSyringeAutomator``` called PrecisionSyringeAutomator that will run the program.
 
