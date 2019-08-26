@@ -1,14 +1,10 @@
 # Precision Syringe Automator
 
-Dictionary in File Format: 
-{1: ["Retrieve", [Input, Volume, Speed]], 2: ["Dispense", [Output, Volume, Speed]], 3: ["Recycle", [Output, Volume, Speed, Time, Bypass]], 4: ["Back-and-Forth", [Output, Volume, Speed, Time]]}
-
-
 The Precision Syringe Automator program creates a User Interface where communicaton with Hamilton's Precision Syringe Drive/4 is possible.
 It allows the user to have full control of the pump's functionality (dispensing, retrieving, etc.), and can create routines that can be 
 edited and loaded after the first use.
 
-To run program, run main.py
+A packaged executable for Windows is available in the "dist" folder.
 
 ## Getting Started
 
@@ -18,47 +14,27 @@ These instructions will get you a copy of the project up and running on your loc
 
 What things you need to install the software and how to install them
 
+1. You need Python 3.4 or higher. This is the programming language the project uses. This is available on the Python website at https://www.python.org/downloads/ if you don't already have it downloaded.
+
+2. You need Kivy 1.11.0 or higher. Kivy is the Python graphics library used in this project for the user interface. This is available on the Kivy website at https://kivy.org/#download. Follow the installation intructions for your operating system.
+
+3. You need the latest version of pySerial. pySerial allows the program to communicate with device using serial communication, in this case the pump. pySerial can be installed using pip with the following command:
 ```
-The .exe file
+pip install pyserial
 ```
+4. You need a Python IDE of your choice. Make sure it is configured to the correct interpreter. Some of the IDEs used in this project were Thonny, Python IDLE and PyCharm.
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+1. Clone this GitHub repository onto your computer.
 
-Say what the step will be
+2. Navigate to the clone repository.
 
-```
-Give the example
-```
+3. Open the main.py file inside the Programs folder with your Python IDE.
 
-And repeat
+4. Press the run button, and the program should run.
 
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
+5. Edit any of the files in that folder (except .ttf files) to change the code.
 
 ## Deployment
 
@@ -74,7 +50,7 @@ PyInstaller 3.1+ (pip install --upgrade pyinstaller).
 
 2. Create a folder into which the packaged app will be created. For example, create a PrecisionSyringeAutomator folder and change to that directory with e.g. cd PrecisionSyringePump. Then type:
 ```
-python -m PyInstaller --name PrecisionSyringePump examples-path\New_Project\Program\main.py
+python -m PyInstaller --name PrecisionSyringePump INSERT_REPOSITORY_PATH\Program\main.py
 ```
 
 3. The spec file will be PrecisionSyringeAutomator.spec located in PrecisionSyringeAutomator. Now we need to edit the spec file to add the dependencies hooks to correctly build the exe. Open the spec file with your favorite editor and add these lines at the beginning of the spec (assuming sdl2 is used, the default now):
@@ -113,30 +89,17 @@ python -m PyInstaller PrecisionSyringePump.spec
   
     b. Copy the Interface.kv and Corbel.ttf files from ```ProjectFolder\Programs``` to ```PrecisionSyringeAutomator\dist\PrecisionSyringeAutomator```
  
-7. There is an executable inside ```dist\PrecisionSyringeAutomator``` called PrecisionSyringeAutomator that will run the program.
-
-## Built With
-
-* [Kivy 1.11.0](https://kivy.org/#changelog - User Interface Development
-* [Python 3.7.4](https://https://www.python.org/downloads/release/python-374//) - Programming Language
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+7. There is an executable inside ```dist\PrecisionSyringeAutomator``` called PrecisionSyringeAutomator which will run the program.
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Deepayan Sanyal** - *Development* - [BoarCub](https://github.com/BoarCub)
+* **Aniket Das** - *Development* - [s-dasa](https://github.com/s-dasa)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+All rights are reserved to InBios International
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
-
+* The Kivy Documentation was a big help https://kivy.org/doc/stable/
