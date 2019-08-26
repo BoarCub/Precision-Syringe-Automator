@@ -36,6 +36,10 @@ pip install pyserial
 
 5. Edit any of the files in that folder (except .ttf files) to change the code.
 
+### Settings To Be Aware Of
+
+* To connect to the pump, the program searches for the correct USB Device using VID (Vendor ID) and PID (Product ID). These properties are set by the USB Device manufacturer so that each product has a unique ID. You can change the VID and PID of the device to connect to by opening the ```DistributionDatabase``` file inside the ```Databases``` folder and changing the numbers corresponding to each. By default, the VID and PID are ```1659``` and ```8963``` respectively. Make sure to change these properties if you're using a different USB connector than the one originally used.
+
 ## Deployment
 
 ### Deploying to Windows
