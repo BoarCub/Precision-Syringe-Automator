@@ -1,6 +1,5 @@
 from FileManager import *
 from ThreadManager import *
-from time import sleep
 from time import time
 import serial
 import serial.tools.list_ports

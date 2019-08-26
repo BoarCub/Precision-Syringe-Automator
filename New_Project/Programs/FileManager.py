@@ -46,39 +46,6 @@ class FileManager(object):
             return None
         except:
             return None
-    #goes through an encoded list of strings and numbers (ex:Z1R) to produce a list readable in the interface
-    def parseString(self, input_string):
-        #the dictionary of all commands after they're converted into readable format
-        actions = []
-        #a running variable that stores all numbers following a letter command
-        current_int = ""
-        list_of_lists = []
-        
-        for index in range(1, len(input_string)+1):
-    
-            try:
-                x = input_string[str(index)][1][3]
-            except IndexError:
-                input_string[str(index)][1].append(0)
-            
-            try:
-                x = input_string[str(index)][1][4]
-            except IndexError:
-                input_string[str(index)][1].append(0)
-                
-            if input_string[str(index)][0] == "Retrieve":
-                param = "I Valve: " + str(input_string[str(index)][1][0]) + " Vol: " + str(input_string[str(index)][1][1]) + " Speed: " + str(input_string[str(index)][1][2])
-            elif input_string[str(index)][0] == "Dispense":
-                param = "O Valve: " + str(input_string[str(index)][1][0]) + "Vol: " + str(input_string[str(index)][1][1]) + " Speed: " + str(input_string[str(index)][1][2])
-            elif input_string[str(index)][0] == "Recycle":
-                param = "O Valve: " + str(input_string[str(index)][1][0]) + " Vol: " + str(input_string[str(index)][1][1]) + " Speed: " + str(input_string[str(index)][1][2]) + " Time: " + str(input_string[str(index)][1][3]) + "Bypass: " + str(input_string[str(index)][1][4])
-            elif input_string[str(index)][0] == "Back-and-Forth":
-                param = "Valve: " + str(input_string[str(index)][1][0]) + " Time: " + str(input_string[str(index)][1][1]) + " Vol: " + str(input_string[str(index)][1][2]) + " Speed: " + str(input_string[str(index)][1][3])
- 
-            list_of_lists.append([(str(index) + ": " + input_string[str(index)][0]), param])
-        
-        
-        return list_of_lists
     
     #deletes the last location in a file path (ex: C:/Users/Aniket -> C:/Users/)
     def shortenFilePath(self, file_path):

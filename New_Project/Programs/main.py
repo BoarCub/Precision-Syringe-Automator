@@ -2,7 +2,6 @@ import os
 
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
@@ -10,7 +9,6 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.spinner import Spinner
 from kivy.uix.textinput import TextInput
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import ObjectProperty
 
 from TaskManager import TaskManager
 from FileManager import *
@@ -98,17 +96,26 @@ class TaskCreatorScreen(Screen):
     #If the task is ready to save, the next screen is opened
     #Otherwise, a popup is opened that tells the user "Some Actions are Incomplete"
     def saveFileScreen(self, nextScreen, currentScreen):
-        if TaskManager.checkNone():
+        
+        outOfBounds = TaskManager.checkOutOfBounds()
+        checkNone = TaskManager.checkNone()
+        
+        if checkNone and outOfBounds == False:
             return nextScreen
         else:
             self.notifyPopup = Popup(title = "Warning",
                                      content = FloatLayout(size = self.size),
                                      size_hint = (0.5, 0.8))
             
+            if not checkNone:
+                labelText = "Some Actions Are\nIncomplete"
+            else:
+                labelText = outOfBounds
+            
             okayLabel = Label(
                 size_hint = (0.5, 0.1),
                 pos_hint = {'center_x': 0.5, 'center_y': 0.7},
-                text = "Some Actions Are\nIncomplete",
+                text = labelText,
                 halign = 'center',
                 font_size = "20sp"
             )
@@ -132,7 +139,11 @@ class TaskCreatorScreen(Screen):
     # Opens the appropriate popups
     def executeTask(self):
         if TaskManager.checkNone():
-            if SerialManager.makeConnection():
+            
+            outOfBounds = TaskManager.checkOutOfBounds()
+            if not outOfBounds == False:
+                self.makeNotificationPopup(outOfBounds)
+            elif SerialManager.makeConnection():
                 self.makeExecutionPopup()
                 SerialManager.executeTask(TaskManager.newTaskActions)
             else:
@@ -289,13 +300,13 @@ class TaskCreatorScreen(Screen):
         
         if mode == "Dispense" or mode == "Retrieve":
             self.currentPopupValues = self.getCurrentValues([None, None, None], index)
-            self.popup = self.getDefaultPopup(mode, index)
+            self.popup = self.getDefaultPopup(index)
         elif mode == "Back-and-Forth":
             self.currentPopupValues = self.getCurrentValues([None, None, None, None], index)
-            self.popup = self.getTimePopup(mode, index)
+            self.popup = self.getTimePopup(index)
         elif mode == "Recycle":
             self.currentPopupValues = self.getCurrentValues([None, None, None, None, None], index)
-            self.popup = self.getTimeAndExtraValvePopup(mode, index)
+            self.popup = self.getTimeAndExtraValvePopup(index)
             
     # Returns the text to be displayed on a widget given its index in a taskDictionary
     def getCurrentValues(self, alternateValues, index):
@@ -397,7 +408,7 @@ class TaskCreatorScreen(Screen):
         #Valve Spinner
         #Volume Text Input
         #Speed Text Input
-    def getDefaultPopup(self, mode, index):
+    def getDefaultPopup(self, index):
         
         currentPopupValuesIsEmpty = True
         for value in self.currentPopupValues:
@@ -477,7 +488,7 @@ class TaskCreatorScreen(Screen):
         #Volume Text Input
         #Speed Text Input
         #Time Text Input
-    def getTimePopup(self, mode, index):
+    def getTimePopup(self, index):
         
         currentPopupValuesIsEmpty = True
         for value in self.currentPopupValues:
@@ -570,7 +581,7 @@ class TaskCreatorScreen(Screen):
         #Volume Text Input
         #Speed Text Input
         #Time Text Input
-    def getTimeAndExtraValvePopup(self, mode, index):
+    def getTimeAndExtraValvePopup(self, index):
         
         currentPopupValuesIsEmpty = True
         for value in self.currentPopupValues:

@@ -11,6 +11,30 @@ class TaskManager(object):
         # List is ordered, starting with row 1
         self.taskRows = []
         
+    # Checks if any steps in the task extend the syringe too much
+    # Returns False if within bounds
+    # Returns a string with the specific error information otherwise
+    def checkOutOfBounds(self):
+        try:
+            position = 0
+            
+            for i in range(1, len(self.newTaskActions)+1):
+                action = self.newTaskActions[str(i)]
+                
+                if action[0] == "Retrieve":
+                    position += action[1][1]
+                else:
+                    position -= action[1][1]
+                    
+                if position < 0:
+                    return "Not Enough Liquid Retrieved\nTo Execute Step " + str(i)
+                elif position > 3000:
+                    return "Step " + str(i) + " Retrieves More\nKiquid Than Capacity"
+        except:
+            return False
+            
+        return False
+            
     # Returns a boolean representing whether the current task is completed filled (no empty actions)
     def checkNone(self):
         
