@@ -25,6 +25,7 @@ class StartScreen(Screen):
     pass
 
 
+# The container for the SaveFile Screen
 class SaveFileScreen(Screen):
     def save(self, path, filename):
         FileManager.writeFile(path, filename)
@@ -43,53 +44,56 @@ class TaskCreatorScreen(Screen):
     
     # Toggles whether "deleteToggled" is toggled. This value determines whether the detail buttons are in edit mode or delete mode.
     def toggleDelete(self):
-        self.deleteToggled = not self.deleteToggled
+        self.deleteToggled = not self.deleteToggled # Toggles delete
         
-        if self.deleteToggled:
-            self.delete_button.text = "Cancel"
-            self.setDetailsButtonColor((1, 0, 0, 1))
-        else:
-            self.delete_button.text = "Delete Action"
-            self.setDetailsButtonColor((1, 1, 1, 1))
+        if self.deleteToggled: # Delete is active
+            self.delete_button.text = "Cancel" # Changes Delete Button text to Cancel
+            self.setDetailsButtonColor((1, 0, 0, 1)) # Changes Detail Buttons to red in color
+        else: # Delete is inactive
+            self.delete_button.text = "Delete Action" # Changes Delete Button text to Delete Action
+            self.setDetailsButtonColor((1, 1, 1, 1)) # Changes back color of Detail Buttons to white/gray
     
     # Sets the color of all detail buttons to the color given in the parameter, which is a tuple in the following format: (R, G, B, A)
     def setDetailsButtonColor(self, color):
         for layout in TaskManager.taskRows:
-            for widget in layout.children:
+            for widget in layout.children: # Searches for the Detail Button in each layout
                 if widget.id == "details_button":
-                    widget.background_color = color
+                    widget.background_color = color # Sets the color of Details Button to the parameter
                     break
     
     # Resets the task by deleting all actions in the task
     def resetTask(self):
-        while len(TaskManager.newTaskActions) > 0:
+        while len(TaskManager.newTaskActions) > 0: # Deletes actions at the first index of the task until no actions are left
             self.deleteAction(1)
             
-        if self.deleteToggled:
+        if self.deleteToggled: # Makes sure delete is untoggled
             self.toggleDelete()
     
     # Deletes the action at the given index corresponding to TaskManager.newTaskActions, starting at 1
     def deleteAction(self, index):
-        layoutToDelete = TaskManager.taskRows[index-1]
-        TaskManager.deleteAction(index)
-        self.actions_layout.remove_widget(layoutToDelete)
-        self.toggleDelete()
+        layoutToDelete = TaskManager.taskRows[index-1] # Gets the layout representing the action
+        TaskManager.deleteAction(index) # Deletes the action from the task
+        self.actions_layout.remove_widget(layoutToDelete) # Removes the layout representing the action for the scrollable GridLayout
+        self.toggleDelete() # Toggled delete
     
     #Replaces all the actions in the task with those in the parameter, given as a dictionary in the same format as TaskManager.newTaskActions
     def replaceTask(self, taskDictionary):
-        self.resetTask()
+        self.resetTask() # Resets the task so that the task is empty to begin with
         
-        for i in range (1, len(taskDictionary) + 1):
-            layout = self.addEmptyAction()
+        for i in range (1, len(taskDictionary) + 1): # Iterates through each action in the given dictionary
+            layout = self.addEmptyAction() # An empty action is created
             
+            # Sets the value of the mode spinner based on value in the taskDictionary
             for widget in layout.children:
                 if widget.id == "mode_spinner":
                     widget.text = taskDictionary[str(i)][0]
                     
+            # Sets the value of the detail button to description of the action
             for widget in layout.children:
                 if widget.id == "details_button":
                     widget.text = TaskManager.getDetails(taskDictionary[str(i)])
                     
+            # Sets the parameters in the running task dictionary (Valve, Volume, Speed) to the ones in the action in the parameter
             TaskManager.newTaskActions[str(i)][1] = taskDictionary[str(i)][1] 
     
     #Checks if the task is ready to save
@@ -97,19 +101,25 @@ class TaskCreatorScreen(Screen):
     #Otherwise, a popup is opened that tells the user "Some Actions are Incomplete"
     def saveFileScreen(self, nextScreen, currentScreen):
         
+        # Whether the task given extends the syringe out of range (less than 0 or greater than 3000)
+        # Equal to False if within bounds or a string representing the error message if out of bounds
         outOfBounds = TaskManager.checkOutOfBounds()
+        
+        # Returns True if none of actions are empty and none of the parameters of the action are empty
         checkNone = TaskManager.checkNone()
         
+        # No issues, the task and all of its actions are valid
         if checkNone and outOfBounds == False:
-            return nextScreen
-        else:
+            return nextScreen # Returns the nextScreen to continue to
+        else: #There are some issues with the task, displaying error to the user through a notification
             self.notifyPopup = Popup(title = "Warning",
                                      content = FloatLayout(size = self.size),
                                      size_hint = (0.5, 0.8))
             
-            if not checkNone:
+            #labelText is the string that will be displayed to the user
+            if not checkNone: #One or more actions are empty or have empty parameters
                 labelText = "Some Actions Are\nIncomplete"
-            else:
+            else: #Since no actions are empty, the error must be that the pump goes out of bounds
                 labelText = outOfBounds
             
             okayLabel = Label(
@@ -138,17 +148,19 @@ class TaskCreatorScreen(Screen):
     # Checks if it's possible to execute the task (device is connected/the task is applicable)
     # Opens the appropriate popups
     def executeTask(self):
-        if TaskManager.checkNone():
+        if TaskManager.checkNone(): # None of actions are empty or have empty parameters
             
+            # Whether the task given extends the syringe out of range (less than 0 or greater than 3000)
+            # Equal to False if within bounds or a string representing the error message if out of bounds
             outOfBounds = TaskManager.checkOutOfBounds()
-            if not outOfBounds == False:
+            if not outOfBounds == False: # The task causes the pump to go out of bounds and the appropriate error message is displayed
                 self.makeNotificationPopup(outOfBounds)
-            elif SerialManager.makeConnection():
-                self.makeExecutionPopup()
-                SerialManager.executeTask(TaskManager.newTaskActions)
-            else:
-                self.makeNotificationPopup("No Connected\nDevice Found")
-        else:
+            elif SerialManager.makeConnection(): # Since the task is valid, an attempt is made at making a connection
+                self.makeExecutionPopup() # Connection was successful, opening execution popup
+                SerialManager.executeTask(TaskManager.newTaskActions) # Executing task using the task in newTaskActions
+            else: # Connection was unsuccessful
+                self.makeNotificationPopup("No Connected\nDevice Found") 
+        else: # At least on action is empty or has empty parameters
             self.makeNotificationPopup("Some Actions Are\nIncomplete")
             
     # Generates a notification popup with the text given in the parameter
@@ -211,7 +223,7 @@ class TaskCreatorScreen(Screen):
         
     # A callback function that is called whenever the message label in the execution popup changes text
     def messageLabelCallback(self, instance, text):
-        if text == "Task Completed" or text == "Task Stopped":
+        if text == "Task Completed" or text == "Task Stopped": # Activates option to Close Window once the task is either completed or stopped
             for widget in instance.parent.children:
                 if widget.id == "stop_button":
                     widget.bind(on_release = self.executionPopup.dismiss)
