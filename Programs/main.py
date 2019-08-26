@@ -688,8 +688,50 @@ class TaskCreatorScreen(Screen):
      
 #Acts as a container for the Debug Screen
 class DebugScreen(Screen):
-    pass
+
+    # Called by pressing the Execute Task button
+    # Checks if the device is connected
+    # Opens the appropriate popups
+    def executeRawCommands(self):
+        if self.rawCommandText.text != "":
+            
+            if SerialManager.makeConnection():
+                response = SerialManager.executeRawCommand(self.rawCommandText.text)
+                self.rawCommandConsole.text = response
+            else:
+                self.makeNotificationPopup("No Connected\nDevice Found")
+        else:
+            self.makeNotificationPopup("Input is Empty")
+            
+    # Generates a notification popup with the text given in the parameter
+    def makeNotificationPopup(self, textParameter):
+        self.popup = Popup(title = "Warning",
+                                 content = FloatLayout(size = self.size),
+                                 size_hint = (0.5, 0.8))
+        
+        okayLabel = Label(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.7},
+            text = textParameter,
+            halign = 'center',
+            font_size = "20sp"
+        )
+        
+        okayButton = Button(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+            text = "Okay"
+        )
+        okayButton.bind(on_release = self.closePopup)
+        
+        self.popup.content.add_widget(okayLabel)
+        self.popup.content.add_widget(okayButton)
+        
+        self.popup.open()
      
+     # Closes the current open popup
+    def closePopup(self, instance):
+        self.popup.dismiss()
      
 #Allows the reader to load a previously saved file and use that
 class PreviousFileScreen(Screen):

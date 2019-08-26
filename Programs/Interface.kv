@@ -111,7 +111,25 @@ InterfaceManager:
             
 <DebugScreen>:
     name: "Debug Screen"
-                
+    rawCommandConsole: rawCommandConsole
+    rawCommandText: rawCommandText
+        
+    BoxLayout:
+        size_hint: .5, .25
+        pos_hint: {'center_y': .8, 'center_x': .5}
+        orientation: 'vertical'
+        Label:
+            text: "Enter Raw Commands" 
+        TextInput:
+            id: rawCommandText
+            hint_text: "e.g. A1000R"
+        Button:
+            text: "Send to Pump"
+            on_release: root.executeRawCommands()
+        Label:
+            id: rawCommandConsole
+            text: "Response:"
+        
     BoxLayout:
         size_hint: .5, .18
         pos_hint: {'center_x': .5}
