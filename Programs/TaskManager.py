@@ -23,8 +23,11 @@ class TaskManager(object):
                 
                 if action[0] == "Retrieve":
                     position += action[1][1]
-                else:
+                elif action[0] == "Dispense":
                     position -= action[1][1]
+                else:
+                    if position - action[1][1] < 0:
+                        return "Not Enough Liquid Retrieved\nTo Execute Step " + str(i)
                     
                 if position < 0:
                     return "Not Enough Liquid Retrieved\nTo Execute Step " + str(i)
