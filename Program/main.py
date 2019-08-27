@@ -27,9 +27,14 @@ class StartScreen(Screen):
 
 # The container for the SaveFile Screen
 class SaveFileScreen(Screen):
+    
+    # Takes a parameter of path, which is the path the file will be saved to
+    # Takes the parameter filename, which will be the name of the file
+    # Saves the current task to that file
     def save(self, path, filename):
         FileManager.writeFile(path, filename)
 
+    # Returns the path of the Tasks folder, which stores all of the saved Tasks
     def getPath(self):
         return FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__))) + "/Tasks"
     
@@ -112,7 +117,7 @@ class TaskCreatorScreen(Screen):
         if checkNone and outOfBounds == False:
             return nextScreen # Returns the nextScreen to continue to
         else: #There are some issues with the task, displaying error to the user through a notification
-            self.notifyPopup = Popup(title = "Warning",
+            self.customPopup = Popup(title = "Warning",
                                      content = FloatLayout(size = self.size),
                                      size_hint = (0.5, 0.8))
             
@@ -122,7 +127,8 @@ class TaskCreatorScreen(Screen):
             else: #Since no actions are empty, the error must be that the pump goes out of bounds
                 labelText = outOfBounds
             
-            okayLabel = Label(
+            # Creates a label that will display the message to the user
+            messageLabel = Label(
                 size_hint = (0.5, 0.1),
                 pos_hint = {'center_x': 0.5, 'center_y': 0.7},
                 text = labelText,
@@ -130,17 +136,22 @@ class TaskCreatorScreen(Screen):
                 font_size = "20sp"
             )
             
+            # Creates an "Okay" Button
             okayButton = Button(
                 size_hint = (0.5, 0.1),
                 pos_hint = {'center_x': 0.5, 'center_y': 0.3},
                 text = "Okay"
             )
-            okayButton.bind(on_release = self.closeNotifyPopup)
             
-            self.notifyPopup.content.add_widget(okayLabel)
-            self.notifyPopup.content.add_widget(okayButton)
+            # Binds the button to the self.closeCustomPopup function so that pressing the button will close the popup
+            okayButton.bind(on_release = self.closeCustomPopup)
             
-            self.notifyPopup.open()
+            # Adds the button and label widgets to the popup
+            self.customPopup.content.add_widget(messageLabel)
+            self.customPopup.content.add_widget(okayButton)
+            
+            # Opens the popup
+            self.customPopup.open()
             
             return currentScreen
         
@@ -154,22 +165,23 @@ class TaskCreatorScreen(Screen):
             # Equal to False if within bounds or a string representing the error message if out of bounds
             outOfBounds = TaskManager.checkOutOfBounds()
             if not outOfBounds == False: # The task causes the pump to go out of bounds and the appropriate error message is displayed
-                self.makeNotificationPopup(outOfBounds)
+                self.makeCustomPopup(outOfBounds)
             elif SerialManager.makeConnection(): # Since the task is valid, an attempt is made at making a connection
                 self.makeExecutionPopup() # Connection was successful, opening execution popup
                 SerialManager.executeTask(TaskManager.newTaskActions) # Executing task using the task in newTaskActions
             else: # Connection was unsuccessful
-                self.makeNotificationPopup("No Connected\nDevice Found") 
+                self.makeCustomPopup("No Connected\nDevice Found") 
         else: # At least on action is empty or has empty parameters
-            self.makeNotificationPopup("Some Actions Are\nIncomplete")
+            self.makeCustomPopup("Some Actions Are\nIncomplete")
             
-    # Generates a notification popup with the text given in the parameter
-    def makeNotificationPopup(self, textParameter):
-        self.notifyPopup = Popup(title = "Warning",
+    # Generates a custom popup with the text given in the parameter
+    def makeCustomPopup(self, textParameter):
+        self.customPopup = Popup(title = "Warning",
                                  content = FloatLayout(size = self.size),
                                  size_hint = (0.5, 0.8))
         
-        okayLabel = Label(
+        # Creates a label that will display the message in the textParameter to the user
+        messageLabel = Label(
             size_hint = (0.5, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.7},
             text = textParameter,
@@ -177,17 +189,22 @@ class TaskCreatorScreen(Screen):
             font_size = "20sp"
         )
         
+        # Creates an "Okay" button
         okayButton = Button(
             size_hint = (0.5, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.3},
             text = "Okay"
         )
-        okayButton.bind(on_release = self.closeNotifyPopup)
         
-        self.notifyPopup.content.add_widget(okayLabel)
-        self.notifyPopup.content.add_widget(okayButton)
+        # Binds the Okay Button to self.closeCustomPopup which will close the popup
+        okayButton.bind(on_release = self.closeCustomPopup)
         
-        self.notifyPopup.open()
+        # Adds the label and button to the popup
+        self.customPopup.content.add_widget(messageLabel)
+        self.customPopup.content.add_widget(okayButton)
+        
+        # Opens popup
+        self.customPopup.open()
         
     # Creates a popup that is opened when a task is executed
     def makeExecutionPopup(self):
@@ -196,6 +213,7 @@ class TaskCreatorScreen(Screen):
                                     size_hint = (0.5, 0.8),
                                     auto_dismiss = False)
         
+        # Message label, onto which the status of the task execution is displayed
         messageLabel = Label(size_hint = (0.5, 0.1),
                              id = "message_label",
                              pos_hint = {'center_x': 0.5, 'center_y': 0.7},
@@ -204,21 +222,28 @@ class TaskCreatorScreen(Screen):
                              font_size = "20sp",            
         )
         
+        # Binds the messageLabel to self.messageLabelCallback, so that the function is called every time the text changes
+        # This allows that function to respond to changes in the task execution
         messageLabel.bind(text = self.messageLabelCallback)
         
+        # Sets this messageLabel as a class variable in SerialManager so that the label is updated when the execution status changes
         SerialManager.setExecutionTextObject(messageLabel)
         
+        # Creates a Stop Button that will halt the current execution of task
         stopButton = Button(id = "stop_button",
             size_hint = (0.5, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.3},
             text = "Stop Task"
             )
         
+        # Binds the stopButton to self.stopTaskButton so that task can be stopped when the button is pressed
         stopButton.bind(on_release = self.stopTaskButton)
         
+        # Adds the label and the button to the popup
         self.executionPopup.content.add_widget(messageLabel)
         self.executionPopup.content.add_widget(stopButton)
         
+        # Opens the popup
         self.executionPopup.open()
         
     # A callback function that is called whenever the message label in the execution popup changes text
@@ -241,9 +266,11 @@ class TaskCreatorScreen(Screen):
     # A new row is added to the Scrollable Layout accordingly
     def addEmptyAction(self):
         
+        # A row in the Scrollable Layout, which represents the properties of a single task
         layout = FloatLayout(
             )
         
+        # Creates a label to display the position of the task (1, 2, etc...)
         taskLabel = Label(
             id = "task_label",
             text = str(len(TaskManager.newTaskActions)+1),
@@ -251,6 +278,7 @@ class TaskCreatorScreen(Screen):
             pos_hint = {'center_x': 0.08, 'center_y': 0.5}
             )
         
+        # Creates a spinner that allows the user to select a mode
         spinner = Spinner(text = "Choose Mode",
                           id = "mode_spinner",
                           values = ('Dispense', 'Retrieve', 'Back-and-Forth', 'Recycle'),
@@ -258,8 +286,12 @@ class TaskCreatorScreen(Screen):
                           pos_hint = {'center_x': 0.3, 'center_y': 0.5}
                           )
         
+        # Binds the spinner to self.updateModeSpinner so that each time a new mode is selected, the change is recorded
         spinner.bind(text = self.updateModeSpinner)
         
+        # Adds a details button which both opens a popup on press
+        # Allows the user to edit the details of the action (valve, volume, etc...)
+        # After details are set, the popup will display a summary of the details
         detailsButton = Button(
             id = "details_button",
             text = "Choose a Mode First",
@@ -268,16 +300,21 @@ class TaskCreatorScreen(Screen):
             disabled = True
             )
         
+        # Bind the button to self.editButtonCallback so that edit details popup is opened on pressing the button
         detailsButton.bind(on_release = self.editButtonCallback)
         
+        # Adds the label, spinner, and button to the row
         layout.add_widget(taskLabel)
         layout.add_widget(spinner)
         layout.add_widget(detailsButton)
         
+        # Adds the newly created row to the list of rows in TaskManager.taskRows, for easy reference later on
         TaskManager.taskRows.append(layout)
         
+        # Adds the row to the main Scrollable Layout, which stores all of the actions/rows
         self.actions_layout.add_widget(layout)
         
+        # Updates the running task dictionary in TaskManager with a new, empty element
         TaskManager.newTaskActions.update({str(len(TaskManager.newTaskActions)+1): [None, None]})
         
         return layout
@@ -285,9 +322,14 @@ class TaskCreatorScreen(Screen):
     # A callback function that is called when the text value of a mode spinner changes
     # This updates the value of the Task Dictionary and the text of widgets on the screen
     def updateModeSpinner(self, spinner, value):
+        # Sets the mode in the running dictionary at the index of the action to that of the spinner
         TaskManager.newTaskActions[str(TaskManager.taskRows.index(spinner.parent)+1)][0] = value
+        
+        # Sets the second entry in the actions list to None, which represents the parameters like volume, valve, time, speed
         TaskManager.newTaskActions[str(TaskManager.taskRows.index(spinner.parent)+1)][1] = None
         
+        # Iterates through each widget of the row that the spinner is in to the find the details button
+        # The text on the details button is set to "Add Details" to indicate that the details are empty and need to be set
         for widget in spinner.parent.children:
             if widget.id == "details_button":
                 widget.disabled = False
@@ -310,22 +352,26 @@ class TaskCreatorScreen(Screen):
         mode = TaskManager.newTaskActions[str(TaskManager.taskRows.index(button.parent)+1)][0]
         index = str(TaskManager.taskRows.index(button.parent) + 1)
         
+        # Initializes self.currentPopupValues, which stores the user inputs for the details of the popup (valve, volume, etc) when open
+        # self.currentPopup is initialized as a list with the correct number of elements, matching the respective mode
+        # Alternatively, if the running Task Dictionary already has values for details, those are used instead
         if mode == "Dispense" or mode == "Retrieve":
             self.currentPopupValues = self.getCurrentValues([None, None, None], index)
-            self.popup = self.getDefaultPopup(index)
+            self.popup = self.getDefaultPopup(index) # Opens a popup with a Valve Spinner, Volume Input, and Speed Input
         elif mode == "Back-and-Forth":
             self.currentPopupValues = self.getCurrentValues([None, None, None, None], index)
-            self.popup = self.getTimePopup(index)
+            self.popup = self.getTimePopup(index) # Opens a popup with a Valve Spinner, Volume Input, Speed Input, and Time Length Input
         elif mode == "Recycle":
             self.currentPopupValues = self.getCurrentValues([None, None, None, None, None], index)
-            self.popup = self.getTimeAndExtraValvePopup(index)
+            self.popup = self.getTimeAndExtraValvePopup(index) # Opens a popup with a Valve Spinner, Volume Input, Speed Input, Time Length Input and Extra Valve Input
             
     # Returns the text to be displayed on a widget given its index in a taskDictionary
+    # Alternate values are the list to be returned if there are no details for that action (all elements are None)
     def getCurrentValues(self, alternateValues, index):
-        if TaskManager.newTaskActions[str(index)][1] == None:
-            return alternateValues
-        else:
-            return TaskManager.newTaskActions[str(index)][1]
+        if TaskManager.newTaskActions[str(index)][1] == None: # There are no details for that action
+            return alternateValues # Return alternative list e.g. [None, None, None, None]
+        else: # There are details for that action
+            return TaskManager.newTaskActions[str(index)][1] # Returning the list of details/parameters at that index in the running task list
             
     # A callback function that is called when the valve spinner of the popup changes
     # Changes values in self.currentPopupValues based on what the value of the text of the widget is
@@ -369,25 +415,30 @@ class TaskCreatorScreen(Screen):
     
     # A callback function that is called when the confirm button is pressed on the default popup
     # If the inputed values are invalid, a new popup is opened to warn the user about it.
-    # Otherwise, the values are accepeted into the TaskManager.newTaskActions dictionary
+    # Otherwise, the values are accepted into the TaskManager.newTaskActions dictionary
     def defaultPopupConfirmCallback(self, instance):
         
+        # Gets the index of the popup (in terms of its step in the task) by splicing the title of its popup (grandparent widget)
         index = instance.parent.parent.parent.parent.title[13:]
         
-        if(TaskManager.checkParameters([TaskManager.newTaskActions[index][0], self.currentPopupValues])):
-            TaskManager.newTaskActions[index][1] = self.currentPopupValues
+        # Checks if the details/parameters entered by the user are valid
+        if(TaskManager.checkParameters([TaskManager.newTaskActions[index][0], self.currentPopupValues])): # The inputs are valid
+            TaskManager.newTaskActions[index][1] = self.currentPopupValues # The details/parameters in the main task dictionary are set to the ones inputed
             
-            self.popup.dismiss()
+            self.popup.dismiss() # Closes the popup and returns to the main Task Creator
             
+            # Finds the details button matching the action
             for widget in TaskManager.taskRows[int(index)-1].children:
                 if widget.id == "details_button":
-                    widget.text = TaskManager.getDetails(TaskManager.newTaskActions[index])
-        else:
-            self.notifyPopup = Popup(title = "Warning",
+                    widget.text = TaskManager.getDetails(TaskManager.newTaskActions[index]) # Changes the details text to a generated description
+        else: # The user inputs are invalid
+            # A popup is generated to notify the user that the input is invalid
+            self.customPopup = Popup(title = "Warning",
                                      content = FloatLayout(size = self.size),
                                      size_hint = (0.5, 0.8))
             
-            okayLabel = Label(
+            # Label which will display "Your Input Was Invalid"
+            messageLabel = Label(
                 size_hint = (0.5, 0.1),
                 pos_hint = {'center_x': 0.5, 'center_y': 0.7},
                 text = "Your Input Was\nInvalid",
@@ -395,25 +446,27 @@ class TaskCreatorScreen(Screen):
                 font_size = "20sp"
             )
             
+            # Okay Button which will close the popup
             okayButton = Button(
                 size_hint = (0.5, 0.1),
                 pos_hint = {'center_x': 0.5, 'center_y': 0.3},
                 text = "Okay"
             )
-            okayButton.bind(on_release = self.closeNotifyPopup)
+            okayButton.bind(on_release = self.closeCustomPopup) # Binds the Okay Button to self.closeCustomPopup()
             
-            self.notifyPopup.content.add_widget(okayLabel)
-            self.notifyPopup.content.add_widget(okayButton)
+            # Adds the label and the button to the popup
+            self.customPopup.content.add_widget(messageLabel)
+            self.customPopup.content.add_widget(okayButton)
             
-            self.notifyPopup.open()
+            self.customPopup.open() # Opens the popup
     
     # Callback button the cancels the Edit Popup
     def defaultPopupCancelCallback(self, instance):
         self.popup.dismiss()
     
     # Callback function that closes the notify popup
-    def closeNotifyPopup(self, instance):
-        self.notifyPopup.dismiss()
+    def closeCustomPopup(self, instance):
+        self.customPopup.dismiss()
     
     # Returns a newly generated popup
     # Contains the following widgets:
@@ -422,42 +475,49 @@ class TaskCreatorScreen(Screen):
         #Speed Text Input
     def getDefaultPopup(self, index):
         
-        currentPopupValuesIsEmpty = True
+        # Checks if all of the values in self.currentPopupValues are empty
+        # This is importing when opening a popup for an action which already has details/parameters set
+        currentPopupValuesIsEmpty = True 
         for value in self.currentPopupValues:
             if value != None:
                 currentPopupValuesIsEmpty = False
+                break
         
-        popup = Popup(title = "Editing Task " + index,
+        popup = Popup(title = "Editing Step " + index, # Sets the title of popup so it looks like this: "Editing Step 11"
                       content = FloatLayout(size = self.size),
                       size_hint = (0.5, 0.8))
         
+        # Creates a valve spinner, which allows the user to select the valve of used during the action
         valve = Spinner(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.75},
             text = "Select Valve",
-            values = ('1', '2', '3', '4', '5', '6')
+            values = ('1', '2', '3', '4', '5', '6') # The valves that the user can select are numbered 1-6
             )
-        if not currentPopupValuesIsEmpty:
+        if not currentPopupValuesIsEmpty: # Updates the text on the spinner if values are already entered for that parameter
             self.updateWidgetText(valve, 0)
-        valve.bind(text = self.valveSpinnerCallback)
+        valve.bind(text = self.valveSpinnerCallback) # self.valveSpinnerCallback is called on selection so that self.currentPopupValues is updated
         
+        # Creates a label that displays a title above the Valve Spinner
         valveLabel = Label(
             pos_hint = {"center_x": 0.5, "center_y": 0.85},
             text = "Valve:",
             halign = "center"
             )
         
+        # Creates a Text Input to input the volume of liquid to used for the action
         volumeInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
-            hint_text = "Volume (1 - 3000 μm)",
+            hint_text = "Volume (1 - 3000 steps)",
             multiline = False,
             input_filter = 'int'
             )
-        if not currentPopupValuesIsEmpty:
+        if not currentPopupValuesIsEmpty: # Updates the text in the text input if values are already entered for that parameter
             self.updateWidgetText(volumeInput, 1)
-        volumeInput.bind(text = self.volumeTextInputCallback)
+        volumeInput.bind(text = self.volumeTextInputCallback) # self.volumeTextCallback is called on selection so that self.currentPopupValues is updated
         
+        # Creates a Text Input to input the speed that the syringe will be for the action
         speedInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.45},
@@ -465,24 +525,30 @@ class TaskCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
-        if not currentPopupValuesIsEmpty:
+        if not currentPopupValuesIsEmpty: # Updates the text in the text input if values are already entered for that parameter
             self.updateWidgetText(speedInput, 2)
-        speedInput.bind(text = self.speedTextInputCallback)
+        speedInput.bind(text = self.speedTextInputCallback) # self.speedTextInputCallback is called on selection so that self.currentPopupValues is updated
         
+        # Creates a confirm button
+        # Button checks if the values that user selected for the parameters are correct
+        # If the values are correct, self.currentPopupValues is inserted into the main Task Dictionary (self.newTaskActions)
+        # In addition, the popup is closed and the Details Button displays a description of the values in a human-readable form
         confirmButton = Button(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.25, 'center_y': 0.3},
             text = "Confirm"
             )
-        confirmButton.bind(on_release = self.defaultPopupConfirmCallback)
+        confirmButton.bind(on_release = self.defaultPopupConfirmCallback) # Calls self.defaultPopupConfirmCallback on press
         
+        # Creates a cancel button which closes the popup
         cancelButton = Button(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.75, 'center_y': 0.3},
             text = "Cancel"
             )
-        cancelButton.bind(on_release = self.defaultPopupCancelCallback)
+        cancelButton.bind(on_release = self.defaultPopupCancelCallback) # Calls self.defaultPopupCancelCallback which closes the popup
         
+        # Adds all of the widgets created in this function to the popup
         popup.content.add_widget(valveLabel)
         popup.content.add_widget(valve)
         popup.content.add_widget(volumeInput)
@@ -490,9 +556,9 @@ class TaskCreatorScreen(Screen):
         popup.content.add_widget(confirmButton)
         popup.content.add_widget(cancelButton)
         
-        popup.open()
+        popup.open() # Opens the popup
         
-        return popup
+        return popup # Returns the popup, so it can be saved to a varialbe if needed
     
     #Returns a newly generated popup with an added widget for time
     #Contains the following widgets:
@@ -502,12 +568,14 @@ class TaskCreatorScreen(Screen):
         #Time Text Input
     def getTimePopup(self, index):
         
+        # Checks if all of the values in self.currentPopupValues are empty
+        # This is importing when opening a popup for an action which already has details/parameters set
         currentPopupValuesIsEmpty = True
         for value in self.currentPopupValues:
             if value != None:
                 currentPopupValuesIsEmpty = False
         
-        popup = Popup(title = "Editing Task " + index,
+        popup = Popup(title = "Editing Step " + index, # Sets the title of popup so it looks like this: "Editing Step 11"
                       content = FloatLayout(size = self.size),
                       size_hint = (0.5, 0.8))
         
@@ -530,7 +598,7 @@ class TaskCreatorScreen(Screen):
         volumeInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
-            hint_text = "Volume (1 - 3000 μm)",
+            hint_text = "Volume (1 - 3000 steps)",
             multiline = False,
             input_filter = 'int'
             )
@@ -552,7 +620,7 @@ class TaskCreatorScreen(Screen):
         timeInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.3},
-            hint_text = "Time",
+            hint_text = "Time (Seconds)",
             multiline = False,
             input_filter = 'int'
             )
@@ -595,12 +663,14 @@ class TaskCreatorScreen(Screen):
         #Time Text Input
     def getTimeAndExtraValvePopup(self, index):
         
+        # Checks if all of the values in self.currentPopupValues are empty
+        # This is importing when opening a popup for an action which already has details/parameters set
         currentPopupValuesIsEmpty = True
         for value in self.currentPopupValues:
             if value != None:
                 currentPopupValuesIsEmpty = False
         
-        popup = Popup(title = "Editing Task " + index,
+        popup = Popup(title = "Editing Step " + index, # Sets the title of popup so it looks like this: "Editing Step 11"
                       content = FloatLayout(size = self.size),
                       size_hint = (0.5, 0.8))
         
@@ -626,20 +696,20 @@ class TaskCreatorScreen(Screen):
         
         valveLabel = Label(
             pos_hint = {"center_x": 0.25, "center_y": 0.85},
-            text = "Main Valve:",
+            text = "Output Valve:",
             halign = "center"
             )
         
         extraValveLabel = Label(
             pos_hint = {"center_x": 0.75, "center_y": 0.85},
-            text = "Bypass Valve:",
+            text = "Input Valve:",
             halign = "center"
             )
         
         volumeInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
-            hint_text = "Volume (1 - 3000 μm)",
+            hint_text = "Volume (1 - 3000 steps)",
             multiline = False,
             input_filter = 'int'
             )
@@ -661,7 +731,7 @@ class TaskCreatorScreen(Screen):
         timeInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.3},
-            hint_text = "Time",
+            hint_text = "Time (Seconds)",
             multiline = False,
             input_filter = 'int'
             )
@@ -711,12 +781,12 @@ class DebugScreen(Screen):
                 response = SerialManager.executeRawCommand(self.rawCommandText.text)
                 self.rawCommandConsole.text = response
             else:
-                self.makeNotificationPopup("No Connected\nDevice Found")
+                self.makeCustomPopup("No Connected\nDevice Found")
         else:
-            self.makeNotificationPopup("Input is Empty")
+            self.makeCustomPopup("Input is Empty")
             
     # Generates a notification popup with the text given in the parameter
-    def makeNotificationPopup(self, textParameter):
+    def makeCustomPopup(self, textParameter):
         self.popup = Popup(title = "Warning",
                                  content = FloatLayout(size = self.size),
                                  size_hint = (0.5, 0.8))

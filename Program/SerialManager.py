@@ -88,7 +88,10 @@ class SerialManager(object):
         
         # Runs initialization
         self.runInitialization()
-        self.executionTextObject.text = "Initializing..."
+        try:
+            self.executionTextObject.text = "Initializing..."
+        except:
+            pass
         
         # Starts the taskLoop, which will update every second
         self.looper = ThreadUpdater(self.taskLoop, 1)
@@ -104,7 +107,12 @@ class SerialManager(object):
             else: #Still more actions let to execute
                 self.actionIndex += 1 #Increasing index by one
                 actionInfo = self.task[str(self.actionIndex)] #Getting a info of the task like mode, volume and speed
-                self.executionTextObject.text = "Executing Step " + str(self.actionIndex) + ":\n" + actionInfo[0] #Sets the display text in the user interface with information of the step being executed
+                
+                # Sets the display text in the user interface with information of the step being executed
+                try:
+                    self.executionTextObject.text = "Executing Step " + str(self.actionIndex) + ":\n" + actionInfo[0]
+                except:
+                    pass
                 
                 # Each action is run according to its mode
                 if actionInfo[0] == "Retrieve":
@@ -118,7 +126,10 @@ class SerialManager(object):
                 
     # Sets the display text in the user interface to "Task Completed" to let the user know that the task is completed
     def taskCompleted(self):
-        self.executionTextObject.text = "Task Completed"
+        try:
+            self.executionTextObject.text = "Task Completed"
+        except:
+            pass
         
     # Stops the current task be terminating the current command buffer and ending any task or action loops
     # Also changes the display text in the user interface to "Task Stopped" to let the user know that the task was stopped
