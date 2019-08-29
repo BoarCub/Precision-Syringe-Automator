@@ -1,4 +1,9 @@
 import os
+os.environ["KIVY_NO_CONSOLELOG"] = "1" # Prevents Kivy from leaving debug messages
+
+#Disables multitouch emulation
+from kivy.config import Config
+Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 from kivy.app import App
 from kivy.lang import Builder
