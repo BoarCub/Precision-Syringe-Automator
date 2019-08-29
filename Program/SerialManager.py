@@ -14,7 +14,7 @@ class SerialManager(object):
         self.VID = distribution_database["VID"]
         self.PID = distribution_database["PID"]
         
-        #A boolean used to track whether a time-based task is active
+        #A boolean used to track whether an action is currently active
         self.actionActive = False
         
         #Initial time used for time-based actions to know when the action started

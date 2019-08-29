@@ -6,6 +6,7 @@ InterfaceManager:
     DebugScreen:
     SaveFileScreen:
     PreviousFileScreen:
+        id: previous_file_screen
         
 # The first menu that the user sees
 <StartScreen>:
@@ -32,6 +33,7 @@ InterfaceManager:
         Button: #Show Previous File Button
             text: "Load File"
             on_release: app.root.current = "Previous File Screen"
+            on_release: app.root.ids.previous_file_screen.refresh()
         Button:
             text: "Debug Mode"
             on_release: app.root.current = "Debug Screen"
@@ -144,6 +146,7 @@ InterfaceManager:
 <SaveFileScreen>:
     name: "Save File Screen"
     text_input: text_input
+    filechooser: filechooser
     
     # This BoxLayout houses all of the widgets
     BoxLayout:
@@ -178,6 +181,7 @@ InterfaceManager:
 # Screen allowing the user to open and execute tasks from file
 <PreviousFileScreen>:
     name: "Previous File Screen"
+    filechooser: filechooser
     
     #Title Text
     Label:
@@ -192,7 +196,8 @@ InterfaceManager:
         pos_hint: {'center_x': .5, 'top': .85}
         orientation: 'vertical'
         # This widget acts as a file explorer, along the user to browse for a file to open
-        FileChooserIconView
+        FileChooserIconView:
+            id: filechooser
             path: root.getPath()
             on_selection: root.selectedFile = root.selectFile(*args) # args contains the file object path ([0]) and the file path in a list ([1][0])
     

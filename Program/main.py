@@ -33,10 +33,15 @@ class SaveFileScreen(Screen):
     # Saves the current task to that file
     def save(self, path, filename):
         FileManager.writeFile(path, filename)
+        self.refresh()
 
     # Returns the path of the Tasks folder, which stores all of the saved Tasks
     def getPath(self):
         return FileManager.shortenFilePath(os.path.dirname(os.path.realpath(__file__))) + "/Tasks"
+    
+    # Refreshes the filechooser so that new files are displayed
+    def refresh(self):
+        self.filechooser._update_files()
     
     
 # The container for the TaskCreator Screen
@@ -558,7 +563,7 @@ class TaskCreatorScreen(Screen):
         
         popup.open() # Opens the popup
         
-        return popup # Returns the popup, so it can be saved to a varialbe if needed
+        return popup # Returns the popup, so it can be saved to a variable if needed
     
     #Returns a newly generated popup with an added widget for time
     #Contains the following widgets:
@@ -579,22 +584,25 @@ class TaskCreatorScreen(Screen):
                       content = FloatLayout(size = self.size),
                       size_hint = (0.5, 0.8))
         
+        # Creates a valve spinner, which allows the user to select the valve of used during the action
         valve = Spinner(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.75},
             text = "Select Valve",
-            values = ('1', '2', '3', '4', '5', '6')
+            values = ('1', '2', '3', '4', '5', '6') # The valves that the user can select are numbered 1-6
             )
-        if not currentPopupValuesIsEmpty:
+        if not currentPopupValuesIsEmpty: # Updates the text in the spinner if values are already entered for that parameter
             self.updateWidgetText(valve, 0)
-        valve.bind(text = self.valveSpinnerCallback)
+        valve.bind(text = self.valveSpinnerCallback) # self.valveSpinnerCallback is called on selection so that self.currentPopupValues is updated
         
+        # Creates a label that displays a title above the Valve Spinner
         valveLabel = Label(
             pos_hint = {"center_x": 0.5, "center_y": 0.85},
             text = "Valve:",
             halign = "center"
             )
         
+        # Creates a Text Input to input the volume of liquid to used for the action
         volumeInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
@@ -602,10 +610,11 @@ class TaskCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
-        if not currentPopupValuesIsEmpty:
+        if not currentPopupValuesIsEmpty: # Updates the text in the text input if values are already entered for that parameter
             self.updateWidgetText(volumeInput, 1)
-        volumeInput.bind(text = self.volumeTextInputCallback)
+        volumeInput.bind(text = self.volumeTextInputCallback) # self.volumeTextCallback is called on selection so that self.currentPopupValues is updated
         
+        # Creates a Text Input to input the speed that the syringe will be for the action
         speedInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.45},
@@ -613,10 +622,11 @@ class TaskCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
-        if not currentPopupValuesIsEmpty:
+        if not currentPopupValuesIsEmpty: # Updates the text in the text input if values are already entered for that parameter
             self.updateWidgetText(speedInput, 2)
-        speedInput.bind(text = self.speedTextInputCallback)
+        speedInput.bind(text = self.speedTextInputCallback) # self.speedTextInputCallback is called on selection so that self.currentPopupValues is updated
         
+        # Creates a Time Input to input the length of time that the action should run
         timeInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.3},
@@ -624,24 +634,30 @@ class TaskCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
-        if not currentPopupValuesIsEmpty:
+        if not currentPopupValuesIsEmpty: # Updates the text in the text input if values are already entered for that parameter
             self.updateWidgetText(timeInput, 3)
-        timeInput.bind(text = self.timeTextInputCallback)
-        
+        timeInput.bind(text = self.timeTextInputCallback) # self.timeTextInputCallback is called on selection so that self.currentPopupValues is updated
+
+        # Creates a confirm button
+        # Button checks if the values that user selected for the parameters are correct
+        # If the values are correct, self.currentPopupValues is inserted into the main Task Dictionary (self.newTaskActions)
+        # In addition, the popup is closed and the Details Button displays a description of the values in a human-readable form
         confirmButton = Button(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.25, 'center_y': 0.15},
             text = "Confirm"
             )
-        confirmButton.bind(on_release = self.defaultPopupConfirmCallback)
+        confirmButton.bind(on_release = self.defaultPopupConfirmCallback) # Calls self.defaultPopupConfirmCallback on press
         
+        # Creates a cancel button which closes the popup
         cancelButton = Button(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.75, 'center_y': 0.15},
             text = "Cancel"
             )
-        cancelButton.bind(on_release = self.defaultPopupCancelCallback)
+        cancelButton.bind(on_release = self.defaultPopupCancelCallback) # Calls self.defaultPopupCancelCallback which closes the popup
         
+        # Adds all of the widgets created in this function to the popup
         popup.content.add_widget(valveLabel)
         popup.content.add_widget(valve)
         popup.content.add_widget(volumeInput)
@@ -650,9 +666,9 @@ class TaskCreatorScreen(Screen):
         popup.content.add_widget(confirmButton)
         popup.content.add_widget(cancelButton)
         
-        popup.open()
+        popup.open() # Opens the popup
         
-        return popup
+        return popup # Returns the popup, so it can be saved to a variable if needed
     
     #Returns a newly generated popup with an added widget for time
     #Contains the following widgets:
@@ -674,38 +690,43 @@ class TaskCreatorScreen(Screen):
                       content = FloatLayout(size = self.size),
                       size_hint = (0.5, 0.8))
         
+        # Creates a valve spinner, which allows the user to select the input valve used during the action
         valve = Spinner(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.25, 'center_y': 0.75},
             text = "Select Valve",
             values = ('1', '2', '3', '4', '5', '6')
             )
-        if not currentPopupValuesIsEmpty:
+        if not currentPopupValuesIsEmpty: # Updates the text in the spinner if values are already entered for that parameter
             self.updateWidgetText(valve, 0)
-        valve.bind(text = self.valveSpinnerCallback)
+        valve.bind(text = self.valveSpinnerCallback) # self.valveSpinnerCallback is called on selection so that self.currentPopupValues is updated
         
+        # Creates a valve spinner, which allow the user to select the output valve used during the action
         extraValve = Spinner(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.75, 'center_y': 0.75},
             text = "Select Valve",
             values = ('1', '2', '3', '4', '5', '6')
             )
-        if not currentPopupValuesIsEmpty:
+        if not currentPopupValuesIsEmpty: # Updates the text in the spinner if values are already entered for that parameter
             self.updateWidgetText(extraValve, 4)
-        extraValve.bind(text = self.secondValveSpinnerCallback)
+        extraValve.bind(text = self.secondValveSpinnerCallback) # self.valveSpinnerCallback is called on selection so that self.currentPopupValues is updated
         
+        # Creates a label that displays a title above the Output Valve Spinner
         valveLabel = Label(
             pos_hint = {"center_x": 0.25, "center_y": 0.85},
             text = "Output Valve:",
             halign = "center"
             )
         
+        # Creates a label that displays a title above the Input Valve Spinner
         extraValveLabel = Label(
             pos_hint = {"center_x": 0.75, "center_y": 0.85},
             text = "Input Valve:",
             halign = "center"
             )
         
+        # Creates a Text Input to input the volume of liquid to used for the action
         volumeInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.6},
@@ -713,10 +734,11 @@ class TaskCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
-        if not currentPopupValuesIsEmpty:
+        if not currentPopupValuesIsEmpty: # Updates the text in the text input if values are already entered for that parameter
             self.updateWidgetText(volumeInput, 1)
-        volumeInput.bind(text = self.volumeTextInputCallback)
+        volumeInput.bind(text = self.volumeTextInputCallback) # self.volumeTextCallback is called on selection so that self.currentPopupValues is updated
         
+        # Creates a Text Input to input the speed that the syringe will be for the action
         speedInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.45},
@@ -724,10 +746,11 @@ class TaskCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
-        if not currentPopupValuesIsEmpty:
+        if not currentPopupValuesIsEmpty: # Updates the text in the text input if values are already entered for that parameter
             self.updateWidgetText(speedInput, 2)
-        speedInput.bind(text = self.speedTextInputCallback)
+        speedInput.bind(text = self.speedTextInputCallback) # self.speedTextInputCallback is called on selection so that self.currentPopupValues is updated
         
+        # Creates a Time Input to input the length of time that the action should run
         timeInput = TextInput(
             size_hint = (0.6, 0.1),
             pos_hint = {'center_x': 0.5, 'center_y': 0.3},
@@ -735,24 +758,30 @@ class TaskCreatorScreen(Screen):
             multiline = False,
             input_filter = 'int'
             )
-        if not currentPopupValuesIsEmpty:
+        if not currentPopupValuesIsEmpty: # Updates the text in the text input if values are already entered for that parameter
             self.updateWidgetText(timeInput, 3)
-        timeInput.bind(text = self.timeTextInputCallback)
+        timeInput.bind(text = self.timeTextInputCallback) # self.timeTextInputCallback is called on selection so that self.currentPopupValues is updated
         
+        # Creates a confirm button
+        # Button checks if the values that user selected for the parameters are correct
+        # If the values are correct, self.currentPopupValues is inserted into the main Task Dictionary (self.newTaskActions)
+        # In addition, the popup is closed and the Details Button displays a description of the values in a human-readable formsssssssss
         confirmButton = Button(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.25, 'center_y': 0.15},
             text = "Confirm"
             )
-        confirmButton.bind(on_release = self.defaultPopupConfirmCallback)
+        confirmButton.bind(on_release = self.defaultPopupConfirmCallback) # Calls self.defaultPopupConfirmCallback on press
         
+        # Creates a cancel button which closes the popup
         cancelButton = Button(
             size_hint = (0.45, 0.1),
             pos_hint = {'center_x': 0.75, 'center_y': 0.15},
             text = "Cancel"
             )
-        cancelButton.bind(on_release = self.defaultPopupCancelCallback)
+        cancelButton.bind(on_release = self.defaultPopupCancelCallback) # Calls self.defaultPopupCancelCallback which closes the popups
         
+        # Adds all of the widgets created in this function to the popup
         popup.content.add_widget(valveLabel)
         popup.content.add_widget(extraValveLabel)
         popup.content.add_widget(valve)
@@ -763,9 +792,9 @@ class TaskCreatorScreen(Screen):
         popup.content.add_widget(confirmButton)
         popup.content.add_widget(cancelButton)
         
-        popup.open()
+        popup.open() # Opens the popup
         
-        return popup
+        return popup # Returns the popup, so it can be saved to a variable if needed
      
      
 #Acts as a container for the Debug Screen
@@ -825,6 +854,10 @@ class PreviousFileScreen(Screen):
             FileManager.setPath(args[1][0])
         except:
             pass
+        
+    # Refreshes the filechooser so that new files are displayed
+    def refresh(self):
+        self.filechooser._update_files()
     
     #signals the widgets to update based on the selected file
     def updateDisplay(self, object):
