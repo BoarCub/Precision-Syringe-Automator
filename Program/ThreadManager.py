@@ -1,7 +1,22 @@
 import threading
-import time
 
-#ThreadUpdater object runs loops a given function based on parameters
+"""
+ThreadUpdater can loops a given function at the given time interval
+Usage of ThreadUpdate looks like this:
+
+def exampleFunction():
+    whateverYouWant()
+    print("lorem ipsum")
+    
+updater = ThreadUpdater(exampleFunction, 0.1) #This ThreadUpdater will run exampleFunction() every 0.1 seconds
+updater.start() #Starts running updater (updater doesn't run at all before this)
+
+~Some Code Here~
+
+updater.stop() #Stops updater from executing exampleFunction
+
+"""
+
 class ThreadUpdater(threading.Thread):
     
     #function paramater is the function to be run and interval is the interval in seconds that the function will be looped
