@@ -210,7 +210,6 @@ InterfaceManager:
         Button: # Choose File Button: Opens the file that the user chooses in the Task Creator Screen
             text: "Choose File"
             on_release: root.updateDisplay(app.root.ids.task_creator_screen)  # Updates the table of Actions in File/Task
-            on_release: app.root.current = "Task Creator Screen" # Switches screen to Display File Screen
         Button: #Cancel Button, Returns to Main Menu
             text: "Cancel"
             on_release: app.root.current = "Start Screen"

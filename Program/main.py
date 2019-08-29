@@ -32,8 +32,10 @@ class SaveFileScreen(Screen):
     # Takes the parameter filename, which will be the name of the file
     # Saves the current task to that file
     def save(self, path, filename):
-        FileManager.writeFile(path, filename)
-        self.refresh()
+        FileManager.writeFile(path, filename) # Writes the task to the file
+        self.refresh() # Refreshes all of the files displayed in the filechooser
+        self.parent.current = "Task Creator Screen" # Switches to the Task Creator Screen
+        self.makeCustomPopup("Task Successfully Saved!") # Displays a popup to the user that tells the user that the task saved
 
     # Returns the path of the Tasks folder, which stores all of the saved Tasks
     def getPath(self):
@@ -42,6 +44,42 @@ class SaveFileScreen(Screen):
     # Refreshes the filechooser so that new files are displayed
     def refresh(self):
         self.filechooser._update_files()
+        
+    # Callback function that closes the custom popup
+    def closeCustomPopup(self, instance):
+        self.customPopup.dismiss()
+            
+    # Opens a custom popup which displays the text in the parameter
+    def makeCustomPopup(self, textParameter):
+        self.customPopup = Popup(title = "Warning",
+                                 content = FloatLayout(size = self.size),
+                                 size_hint = (0.5, 0.8))
+        
+        # Creates a label that will display the message in the textParameter to the user
+        messageLabel = Label(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.7},
+            text = textParameter,
+            halign = 'center',
+            font_size = "20sp"
+        )
+        
+        # Creates an "Okay" button
+        okayButton = Button(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+            text = "Okay"
+        )
+        
+        # Binds the Okay Button to self.closeCustomPopup which will close the popup
+        okayButton.bind(on_release = self.closeCustomPopup)
+        
+        # Adds the label and button to the popup
+        self.customPopup.content.add_widget(messageLabel)
+        self.customPopup.content.add_widget(okayButton)
+        
+        # Opens popup
+        self.customPopup.open()
     
     
 # The container for the TaskCreator Screen
@@ -861,9 +899,48 @@ class PreviousFileScreen(Screen):
     
     #signals the widgets to update based on the selected file
     def updateDisplay(self, object):
-        current_dict = FileManager.importFile()
-        if current_dict!= None:
-            object.replaceTask(current_dict)
+        current_dict = FileManager.importFile() # Imports file
+        if current_dict!= None: # Imported dictionary is applicable
+            object.replaceTask(current_dict) # Replace the task in Task Creator with the imported task
+            self.parent.current = "Task Creator Screen" # Switch to the task creator screen
+        else:
+            self.makeCustomPopup("The Selected File\nis not Compatible") # Open a popup notifying the user that the file was not compatible
+            
+    # Callback function that closes the custom popup
+    def closeCustomPopup(self, instance):
+        self.customPopup.dismiss()
+            
+    # Opens a custom popup which displays the text in the parameter
+    def makeCustomPopup(self, textParameter):
+        self.customPopup = Popup(title = "Warning",
+                                 content = FloatLayout(size = self.size),
+                                 size_hint = (0.5, 0.8))
+        
+        # Creates a label that will display the message in the textParameter to the user
+        messageLabel = Label(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.7},
+            text = textParameter,
+            halign = 'center',
+            font_size = "20sp"
+        )
+        
+        # Creates an "Okay" button
+        okayButton = Button(
+            size_hint = (0.5, 0.1),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.3},
+            text = "Okay"
+        )
+        
+        # Binds the Okay Button to self.closeCustomPopup which will close the popup
+        okayButton.bind(on_release = self.closeCustomPopup)
+        
+        # Adds the label and button to the popup
+        self.customPopup.content.add_widget(messageLabel)
+        self.customPopup.content.add_widget(okayButton)
+        
+        # Opens popup
+        self.customPopup.open()
 
 
 # Loads the .kv file needed
