@@ -466,7 +466,7 @@ class TaskCreatorScreen(Screen):
     # Otherwise, the values are accepted into the TaskManager.newTaskActions dictionary
     def defaultPopupConfirmCallback(self, instance):
         
-        # Gets the index of the popup (in terms of its step in the task) by splicing the title of its popup (grandparent widget)
+        # Gets the index of the popup (in terms of its step in the task) by splicing the title of its popup (great-great-grandparent widget)
         index = instance.parent.parent.parent.parent.title[13:]
         
         # Checks if the details/parameters entered by the user are valid
