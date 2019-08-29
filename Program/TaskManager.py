@@ -35,6 +35,10 @@ class TaskManager(object):
                     return "Not Enough Liquid Retrieved\nTo Execute Step " + str(i)
                 elif position > 3000:
                     return "Step " + str(i) + " Retrieves More\nLiquid Than Capacity"
+                
+            if position > 0:
+                return "Not All Liquid Dispensed\nBy End of Task"
+            
         except:
             return False
             

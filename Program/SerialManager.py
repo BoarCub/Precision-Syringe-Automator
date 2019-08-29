@@ -80,6 +80,7 @@ class SerialManager(object):
     
     # Executes a task when given a dictionary as the parameter
     # The dictionary is in the same format as the newTaskActions dictionary in TaskManager
+    # Makes sure to run makeConnection() before calling this function
     def executeTask(self, taskDictionary):
         
         # Gets correct actions ready

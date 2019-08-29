@@ -1,5 +1,5 @@
 import os
-os.environ["KIVY_NO_CONSOLELOG"] = "1" # Prevents Kivy from leaving debug messages
+os.environ["KIVY_NO_CONSOLELOG"] = "1" # Prevents Kivy from leaving debug messages in the console
 
 #Disables multitouch emulation
 from kivy.config import Config
