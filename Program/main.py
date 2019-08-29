@@ -329,7 +329,7 @@ class TaskCreatorScreen(Screen):
         # Creates a spinner that allows the user to select a mode
         spinner = Spinner(text = "Choose Mode",
                           id = "mode_spinner",
-                          values = ('Dispense', 'Retrieve', 'Back-and-Forth', 'Recycle'),
+                          values = ('Dispense', 'Retrieve', 'Back-and-Forth', 'Continuous Dispense'),
                           size_hint = (0.3, 1),
                           pos_hint = {'center_x': 0.3, 'center_y': 0.5}
                           )
@@ -409,7 +409,7 @@ class TaskCreatorScreen(Screen):
         elif mode == "Back-and-Forth":
             self.currentPopupValues = self.getCurrentValues([None, None, None, None], index)
             self.popup = self.getTimePopup(index) # Opens a popup with a Valve Spinner, Volume Input, Speed Input, and Time Length Input
-        elif mode == "Recycle":
+        elif mode == "Continuous Dispense":
             self.currentPopupValues = self.getCurrentValues([None, None, None, None, None], index)
             self.popup = self.getTimeAndExtraValvePopup(index) # Opens a popup with a Valve Spinner, Volume Input, Speed Input, Time Length Input and Extra Valve Input
             

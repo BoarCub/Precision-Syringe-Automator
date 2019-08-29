@@ -5,7 +5,7 @@ class TaskManager(object):
         
         # Holds all of the actions in a newly created task or imported task
         # Also referred to as the running task dictionary
-        # Follows this format {"# of Task Starting from 1": [Mode (Retrieve, Dispense, Back-and-Forth or Recycle), [# of Valve, Volume from 1-3000, Speed from 1-40 (1 fastest, 40 slowest), Time in seconds (only needed for Back-and-Forth and Recycle), Extra Valve (Only Needed for Back-and-Forth)]] }
+        # Follows this format {"# of Task Starting from 1": [Mode (Retrieve, Dispense, Back-and-Forth or Continuous Dispense), [# of Valve, Volume from 1-3000, Speed from 1-40 (1 fastest, 40 slowest), Time in seconds (only needed for Back-and-Forth and Continuous Dispense), Extra Valve (Only Needed for Back-and-Forth)]] }
         self.newTaskActions = {}
         
         # A list holding all of the layouts for each action row in the user interface
@@ -93,7 +93,7 @@ class TaskManager(object):
         except IndexError:
             pass
         try:
-            if action == "Recycle":
+            if action == "Continuous Dispense":
                 message = "Cycling " + str(parameters[1]) + " steps at speed " + str(parameters[2]) + "/40, to valve, " + str(parameters[0]) + "\nand returning through valve, " + str(parameters[4]) + " for " + str(parameters[3]) + " seconds"
         except IndexError:            
             pass
@@ -127,7 +127,7 @@ class TaskManager(object):
                 return False
             if parameters[2] <=0 or parameters[2] > 40:
                 return False
-        if action == "Recycle":
+        if action == "Continuous Dispense":
             if parameters[0] > 6 or parameters[0] <1:
                 return False
             if parameters[1] <= 0 or parameters[1] >3000:

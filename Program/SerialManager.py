@@ -123,7 +123,7 @@ class SerialManager(object):
                 elif actionInfo[0] == "Back-and-Forth":
                     self.runBackAndForth(actionInfo[1][0], actionInfo[1][1], actionInfo[1][2], actionInfo[1][3])
                 else:
-                    self.runRecycle(actionInfo[1][0], actionInfo[1][1], actionInfo[1][2], actionInfo[1][3], actionInfo[1][4])
+                    self.runContinuousDispense(actionInfo[1][0], actionInfo[1][1], actionInfo[1][2], actionInfo[1][3], actionInfo[1][4])
                 
     # Sets the display text in the user interface to "Task Completed" to let the user know that the task is completed
     def taskCompleted(self):
@@ -235,18 +235,18 @@ class SerialManager(object):
                 self.ser.write(command.encode())
                 self.ser.readline()
     
-    # Runs the Recycle Action on the Pump
-    def runRecycle(self, valve, volume, speed, length, recycleValve):
+    # Runs the Continuous Dispense Action on the Pump
+    def runContinuousDispense(self, valve, volume, speed, length, sourceValve):
         self.initialTime = time() #Gets the current time
         self.actionLength = length #Sets length
-        self.actionParameters = [valve, volume, speed, recycleValve] #Starts basicActionUpdate to wait until the current command is completed
+        self.actionParameters = [valve, volume, speed, sourceValve] #Starts basicActionUpdate to wait until the current command is completed
         self.actionActive = True #Action Active
         
-        self.updater = ThreadUpdater(self.recycleUpdate, 0.1) #Runs recyleUpdate every 0.1 seconds to continue the action
+        self.updater = ThreadUpdater(self.continuousDispenseUpdate, 0.1) #Runs recyleUpdate every 0.1 seconds to continue the action
         self.updater.start()
         
-    # Update Function that is called to run the Recycle command again when completed, until the length of the action passes
-    def recycleUpdate(self):
+    # Update Function that is called to run the Continuous Dispense command again when completed, until the length of the action passes
+    def continuousDispenseUpdate(self):
         if(time() > self.initialTime + self.actionLength): #When the time elapsed is greater than the length of the action
             self.updater.stop() #Task stopped
             self.updater = ThreadUpdater(self.basicActionUpdate, 0.1)
@@ -265,13 +265,13 @@ class SerialManager(object):
             if query == "": #If reponse is empty, the task is stopped
                 self.stopTask()
                 self.executionTextObject.text = "Could Not Connect\nTo Device"
-            elif query[2] != '@': #Otherwise, another Recycle command is issued
+            elif query[2] != '@': #Otherwise, another Continuous Dispense command is issued
                 valve = self.actionParameters[0]
                 volume = self.actionParameters[1]
                 speed = self.actionParameters[2]
-                recycleValve = self.actionParameters[3]
+                sourceValve = self.actionParameters[3]
         
-                command = '/1S' + str(speed) + 'O' + str(valve) + 'D' + str(volume) + 'I' + str(recycleValve) + 'P' + str(volume) + 'R\r'
+                command = '/1S' + str(speed) + 'O' + str(valve) + 'D' + str(volume) + 'I' + str(sourceValve) + 'P' + str(volume) + 'R\r'
                 self.ser.write(command.encode())
                 self.ser.readline()
 
