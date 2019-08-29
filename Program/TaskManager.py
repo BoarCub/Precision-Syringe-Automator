@@ -4,11 +4,13 @@ class TaskManager(object):
     def __init__ (self):
         
         # Holds all of the actions in a newly created task or imported task
+        # Also referred to as the running task dictionary
         # Follows this format {"# of Task Starting from 1": [Mode (Retrieve, Dispense, Back-and-Forth or Recycle), [# of Valve, Volume from 1-3000, Speed from 1-40 (1 fastest, 40 slowest), Time in seconds (only needed for Back-and-Forth and Recycle), Extra Valve (Only Needed for Back-and-Forth)]] }
         self.newTaskActions = {}
         
         # A list holding all of the layouts for each action row in the user interface
         # List is ordered, starting with row 1
+        # Each row corresponds to an action in self.newTaskActions
         self.taskRows = []
         
     # Checks if any steps in the task extend the syringe too much
@@ -32,7 +34,7 @@ class TaskManager(object):
                 if position < 0:
                     return "Not Enough Liquid Retrieved\nTo Execute Step " + str(i)
                 elif position > 3000:
-                    return "Step " + str(i) + " Retrieves More\nKiquid Than Capacity"
+                    return "Step " + str(i) + " Retrieves More\nLiquid Than Capacity"
         except:
             return False
             
@@ -108,21 +110,21 @@ class TaskManager(object):
                 return False
         
         if action == "Dispense":
-            if parameters[0] > 8 or parameters[0] <1:
+            if parameters[0] > 6 or parameters[0] <1:
                 return False
             if parameters[1] <= 0 or parameters[1] >3000:
                 return False
             if parameters[2] <=0 or parameters[2] > 40:
                 return False
         if action == "Retrieve":
-            if parameters[0] > 8 or parameters[0] <1:
+            if parameters[0] > 6 or parameters[0] <1:
                 return False
             if parameters[1] <= 0 or parameters[1] >3000:
                 return False
             if parameters[2] <=0 or parameters[2] > 40:
                 return False
         if action == "Recycle":
-            if parameters[0] > 8 or parameters[0] <1:
+            if parameters[0] > 6 or parameters[0] <1:
                 return False
             if parameters[1] <= 0 or parameters[1] >3000:
                 return False
@@ -133,7 +135,7 @@ class TaskManager(object):
             if parameters[4] > 8 or parameters[0] <1:
                 return False
         if action == "Back-and-Forth":
-            if parameters[0] > 8 or parameters[0] <1:
+            if parameters[0] > 6 or parameters[0] <1:
                 return False
             if parameters[1] <= 0 or parameters[1] >3000:
                 return False
@@ -142,6 +144,7 @@ class TaskManager(object):
             if parameters[3] <= 0:
                 return False
         return True            
+        
         
 # Creates a TaskManager object which can be used when the class is imported
 TaskManager = TaskManager()

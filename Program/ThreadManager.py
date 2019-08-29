@@ -14,7 +14,6 @@ updater.start() #Starts running updater (updater doesn't run at all before this)
 ~Some Code Here~
 
 updater.stop() #Stops updater from executing exampleFunction
-
 """
 
 class ThreadUpdater(threading.Thread):
