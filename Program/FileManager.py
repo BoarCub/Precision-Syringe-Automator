@@ -47,7 +47,7 @@ class FileManager(object):
         except:
             return None
     
-    #deletes the last location in a file path (ex: C:/Users/Aniket -> C:/Users/)
+    #deletes the last location in a file path (ex: C:/Users/Deepayan -> C:/Users/)
     def shortenFilePath(self, file_path):
         #counts the number of times a slash is found
         for index in range ((len(file_path)-1), 0, -1):
