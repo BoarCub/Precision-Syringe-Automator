@@ -123,4 +123,4 @@ All rights are reserved to InBios International
 
 ## Acknowledgments
 
-* The Kivy Documentation was a big help https://kivy.org/doc/stable/
+* MIT's Kivy Documention https://kivy.org/doc/stable/
