@@ -1,7 +1,7 @@
 
 ## Authors
 
-* **Aniket Das** - *Development* - [s-dasa](https://github.com/s-dasa, aniket.das@scienceinfinity.org)
+* **Aniket Das** - *Development* - [s-dasa](https://github.com/s-dasa) - (aniket.das@scienceinfinity.org)
 * **Deepayan Sanyal** - *Development* - [BoarCub](https://github.com/BoarCub)
 
 # Precision Syringe Automator
