@@ -1,8 +1,10 @@
-# Precision Syringe Automator
+
 ## Authors
 
 * **Aniket Das** - *Development* - [s-dasa](https://github.com/s-dasa, aniket.das@scienceinfinity.org)
 * **Deepayan Sanyal** - *Development* - [BoarCub](https://github.com/BoarCub)
+
+# Precision Syringe Automator
 The Precision Syringe Automator program creates a User Interface where communicaton with Hamilton's Precision Syringe Drive/4 is possible.
 It allows the user to have full control of the pump's functionality (dispensing, retrieving, etc.), and can create routines that can be 
 edited and loaded after the first use.
