@@ -111,8 +111,9 @@ python -m PyInstaller PrecisionSyringePump.spec
 
 ## Authors
 
-* **Deepayan Sanyal** - *Development* - [BoarCub](https://github.com/BoarCub)
 * **Aniket Das** - *Development* - [s-dasa](https://github.com/s-dasa)
+* **Deepayan Sanyal** - *Development* - [BoarCub](https://github.com/BoarCub)
+
 
 ## License
 
